@@ -36,7 +36,7 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
         <div className="flex items-center justify-between p-6 border-b">
           <h3 className="text-xl font-bold">{provider ? "编辑提供商" : "添加提供商"}</h3>

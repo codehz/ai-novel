@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
       <div className="max-w-3xl space-y-8">
-        <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl bg-linear-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
           AI Novel
         </h1>
         <p className="text-xl text-gray-600 leading-relaxed">
