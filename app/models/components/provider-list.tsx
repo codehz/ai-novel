@@ -33,33 +33,33 @@ export function ProviderList({ initialProviders }: ProviderListProps) {
       {initialProviders.map((provider) => (
         <div
           key={provider.id}
-          className={`p-6 min-w-0 rounded-xl border bg-card border-border shadow-sm transition-all ${
+          className={`p-4 min-w-0 rounded-xl border bg-card border-border shadow-sm transition-all ${
             !provider.isEnabled ? "opacity-60 grayscale-[0.5]" : ""
           }`}
         >
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex justify-between items-start mb-3">
             <div>
-              <h3 className="font-bold text-lg text-foreground">{provider.providerName}</h3>
+              <h3 className="font-bold text-foreground">{provider.providerName}</h3>
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono">
                 {provider.providerType}
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <button
                 onClick={() => toggleProviderStatus(provider.id, !provider.isEnabled)}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`p-1.5 rounded-lg transition-colors ${
                   provider.isEnabled ? "text-success hover:bg-success/10" : "text-muted-foreground hover:bg-muted"
                 }`}
                 title={provider.isEnabled ? "禁用" : "启用"}
               >
-                <Power size={18} />
+                <Power size={14} />
               </button>
               <button
                 onClick={() => handleEdit(provider)}
-                className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                className="p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors"
                 title="编辑"
               >
-                <Edit2 size={18} />
+                <Edit2 size={14} />
               </button>
               <button
                 onClick={() => {
@@ -67,14 +67,14 @@ export function ProviderList({ initialProviders }: ProviderListProps) {
                     deleteProvider(provider.id);
                   }
                 }}
-                className="p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                 title="删除"
               >
-                <Trash2 size={18} />
+                <Trash2 size={14} />
               </button>
             </div>
           </div>
-          <div className="space-y-2 text-sm">
+          <div className="text-xs space-y-1 text-muted-foreground">
             <div className="flex gap-2 items-baseline">
               <span className="text-muted-foreground whitespace-nowrap">端点:</span>
               <span
