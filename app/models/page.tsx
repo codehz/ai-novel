@@ -11,7 +11,7 @@ export default async function ModelsPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">模型配置</h1>
-            <p className="text-gray-500 mt-1">管理 AI 模型提供商及其具体的模型参数。</p>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">管理 AI 模型提供商及其具体的模型参数。</p>
           </div>
         </div>
       </section>
