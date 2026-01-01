@@ -15,9 +15,9 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
   const [formData, setFormData] = useState({
     id: provider?.id,
     providerType: provider?.providerType || "openai",
-    providerName: provider?.providerName || "",
+    providerName: provider?.providerName || "OpenAI",
     apiKey: provider?.apiKey || "",
-    apiEndpoint: provider?.apiEndpoint || "",
+    apiEndpoint: provider?.apiEndpoint || "https://api.openai.com/v1",
     isEnabled: provider?.isEnabled ?? true,
   });
 
@@ -90,7 +90,7 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">API 端点 (可选)</label>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">API 端点</label>
             <input
               type="url"
               value={formData.apiEndpoint}
