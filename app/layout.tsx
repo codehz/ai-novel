@@ -28,6 +28,9 @@ export default function RootLayout({
               <Link href="/models" className="text-sm font-medium hover:text-primary transition-colors">
                 模型配置
               </Link>
+              <Link href="/tools" className="text-sm font-medium hover:text-primary transition-colors">
+                工具箱
+              </Link>
             </nav>
           </div>
         </header>
