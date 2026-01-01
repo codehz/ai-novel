@@ -75,7 +75,7 @@ export function ProviderList({ initialProviders }: ProviderListProps) {
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-500">端点:</span>
-              <span className="font-mono truncate max-w-[150px]" title={provider.apiEndpoint || "默认"}>
+              <span className="font-mono truncate max-w-37.5" title={provider.apiEndpoint || "默认"}>
                 {provider.apiEndpoint || "默认"}
               </span>
             </div>
