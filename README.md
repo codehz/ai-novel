@@ -12,26 +12,31 @@
 ## 技术栈
 
 ### 前端
+
 - **Next.js 16** - React 框架，App Router 架构，服务端组件，Server Actions
 - **TypeScript** - 类型安全的开发体验
 - **Tailwind CSS** - 样式管理和处理
 - **ESLint** - 代码质量检查
 
 ### 后端
+
 - **Next.js API Routes** - 后端接口服务
 - **Node.js** - JavaScript 运行时环境
 - **Drizzle ORM** - 数据库 ORM 工具
 
 ### 数据库
+
 - 关系型数据库支持（通过 Drizzle ORM）
 
 ### 开发工具
+
 - **TypeScript** - 静态类型检查
 - **ESLint** - 代码规范
 
 ## 快速开始
 
 ### 前置要求
+
 - bun
 
 ### 安装与运行
