@@ -33,8 +33,8 @@ export function ModelList({ initialProviders }: ModelListProps) {
 
   if (initialProviders.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-50 dark:bg-zinc-900 rounded-2xl border-2 border-dashed border-gray-300 dark:border-zinc-700">
-        <p className="text-gray-500 dark:text-gray-400">请先添加模型提供商。</p>
+      <div className="text-center py-12 bg-muted rounded-2xl border-2 border-dashed border-border">
+        <p className="text-muted-foreground">请先添加模型提供商。</p>
       </div>
     );
   }
@@ -43,16 +43,16 @@ export function ModelList({ initialProviders }: ModelListProps) {
     <div className="space-y-8">
       {initialProviders.map((provider) => (
         <div key={provider.id} className="space-y-4">
-          <div className="flex items-center justify-between border-b border-gray-200 dark:border-zinc-800 pb-2">
+          <div className="flex items-center justify-between border-b border-border pb-2">
             <h3 className="text-lg font-bold flex items-center gap-2">
               {provider.providerName}
-              <span className="text-xs font-normal px-2 py-0.5 bg-gray-100 dark:bg-zinc-800 rounded text-gray-500 dark:text-gray-400 uppercase">
+              <span className="text-xs font-normal px-2 py-0.5 bg-muted rounded text-muted-foreground uppercase">
                 {provider.providerType}
               </span>
             </h3>
             <button
               onClick={() => handleAdd(provider.id)}
-              className="text-sm flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+              className="text-sm flex items-center gap-1 text-primary hover:opacity-80 font-medium"
             >
               <Plus size={16} /> 添加模型
             </button>
@@ -62,29 +62,27 @@ export function ModelList({ initialProviders }: ModelListProps) {
             {provider.models.map((model) => (
               <div
                 key={model.id}
-                className={`p-4 rounded-xl border bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800 shadow-sm dark:shadow-sm dark:shadow-zinc-900/30 transition-all ${
+                className={`p-4 rounded-xl border bg-card border-border shadow-sm transition-all ${
                   !model.isEnabled ? "opacity-60 grayscale-[0.5]" : ""
                 }`}
               >
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h4 className="font-bold text-gray-900 dark:text-gray-100">{model.displayName}</h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-500 font-mono">{model.modelName}</p>
+                    <h4 className="font-bold text-foreground">{model.displayName}</h4>
+                    <p className="text-xs text-muted-foreground font-mono">{model.modelName}</p>
                   </div>
                   <div className="flex gap-1">
                     <button
                       onClick={() => toggleModelStatus(model.id, !model.isEnabled)}
                       className={`p-1.5 rounded-lg transition-colors ${
-                        model.isEnabled
-                          ? "text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-950/30"
-                          : "text-gray-400 dark:text-gray-600 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                        model.isEnabled ? "text-success hover:bg-success/10" : "text-muted-foreground hover:bg-muted"
                       }`}
                     >
                       <Power size={14} />
                     </button>
                     <button
                       onClick={() => handleEdit(model)}
-                      className="p-1.5 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 rounded-lg transition-colors"
+                      className="p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors"
                     >
                       <Edit2 size={14} />
                     </button>
@@ -94,26 +92,26 @@ export function ModelList({ initialProviders }: ModelListProps) {
                           deleteModel(model.id);
                         }
                       }}
-                      className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+                      className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                     >
                       <Trash2 size={14} />
                     </button>
                   </div>
                 </div>
-                <div className="text-xs space-y-1 text-gray-500 dark:text-gray-400">
+                <div className="text-xs space-y-1 text-muted-foreground">
                   <div className="flex justify-between">
                     <span>输入价格:</span>
-                    <span>${model.inputPrice}/1k tokens</span>
+                    <span className="text-foreground">${model.inputPrice}/1k tokens</span>
                   </div>
                   <div className="flex justify-between">
                     <span>输出价格:</span>
-                    <span>${model.outputPrice}/1k tokens</span>
+                    <span className="text-foreground">${model.outputPrice}/1k tokens</span>
                   </div>
                 </div>
               </div>
             ))}
             {provider.models.length === 0 && (
-              <div className="col-span-full py-8 text-center text-gray-400 dark:text-gray-600 text-sm italic">
+              <div className="col-span-full py-8 text-center text-muted-foreground text-sm italic">
                 暂无模型，点击右上角添加。
               </div>
             )}

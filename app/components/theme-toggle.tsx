@@ -25,7 +25,7 @@ export function ThemeToggle() {
     >
       {/* Sun icon for light mode */}
       <svg
-        className="absolute w-5 h-5 text-yellow-500 dark:opacity-0 opacity-100 transition-opacity"
+        className="absolute w-5 h-5 text-warning dark:opacity-0 opacity-100 transition-opacity"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="none"
@@ -40,7 +40,7 @@ export function ThemeToggle() {
 
       {/* Moon icon for dark mode */}
       <svg
-        className="absolute w-5 h-5 text-blue-600 dark:opacity-100 opacity-0 transition-opacity"
+        className="absolute w-5 h-5 text-primary dark:opacity-100 opacity-0 transition-opacity"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="none"

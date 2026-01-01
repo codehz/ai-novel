@@ -37,36 +37,33 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-white dark:bg-zinc-950 rounded-2xl shadow-2xl dark:shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-zinc-800">
+      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="flex items-center justify-between p-6 border-b border-border">
           <h3 className="text-xl font-bold">{provider ? "编辑提供商" : "添加提供商"}</h3>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
-          >
+          <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors">
             <X size={20} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">提供商名称</label>
+            <label className="text-sm font-medium text-foreground">提供商名称</label>
             <input
               required
               type="text"
               value={formData.providerName}
               onChange={(e) => setFormData({ ...formData, providerName: e.target.value })}
               placeholder="例如: OpenAI, 阿里云"
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-4 py-2 rounded-lg border border-input-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-primary outline-none transition-all"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">提供商类型</label>
+            <label className="text-sm font-medium text-foreground">提供商类型</label>
             <select
               value={formData.providerType}
               onChange={(e) => setFormData({ ...formData, providerType: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-4 py-2 rounded-lg border border-input-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-primary outline-none transition-all"
             >
               <option value="openai">OpenAI 兼容</option>
               <option value="anthropic" disabled>
@@ -79,24 +76,24 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">API 密钥</label>
+            <label className="text-sm font-medium text-foreground">API 密钥</label>
             <input
               type="password"
               value={formData.apiKey}
               onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
               placeholder="sk-..."
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-4 py-2 rounded-lg border border-input-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-primary outline-none transition-all"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">API 端点</label>
+            <label className="text-sm font-medium text-foreground">API 端点</label>
             <input
               type="url"
               value={formData.apiEndpoint}
               onChange={(e) => setFormData({ ...formData, apiEndpoint: e.target.value })}
               placeholder="https://api.openai.com/v1"
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-4 py-2 rounded-lg border border-input-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-primary outline-none transition-all"
             />
           </div>
 
@@ -106,9 +103,9 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
               id="isEnabled"
               checked={formData.isEnabled}
               onChange={(e) => setFormData({ ...formData, isEnabled: e.target.checked })}
-              className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+              className="w-4 h-4 text-primary rounded focus:ring-ring"
             />
-            <label htmlFor="isEnabled" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="isEnabled" className="text-sm font-medium text-foreground">
               启用该提供商
             </label>
           </div>
@@ -117,14 +114,14 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-zinc-900 transition-colors"
+              className="flex-1 px-4 py-2 border border-border rounded-lg font-medium hover:bg-muted transition-colors"
             >
               取消
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg font-medium disabled:opacity-50 transition-colors"
+              className="flex-1 px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground rounded-lg font-medium disabled:opacity-50 transition-colors"
             >
               {loading ? "保存中..." : "保存"}
             </button>
