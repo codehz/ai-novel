@@ -40,7 +40,7 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 p-4">
       <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h3 className="text-xl font-bold">{model ? "编辑模型" : "添加模型"}</h3>
