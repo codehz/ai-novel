@@ -86,7 +86,7 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">输入价格 ($/1k)</label>
+              <label className="text-sm font-medium text-foreground">输入价格 ($/1M)</label>
               <input
                 type="number"
                 step="0.000001"
@@ -96,7 +96,7 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">输出价格 ($/1k)</label>
+              <label className="text-sm font-medium text-foreground">输出价格 ($/1M)</label>
               <input
                 type="number"
                 step="0.000001"

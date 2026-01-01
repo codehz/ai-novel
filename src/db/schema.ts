@@ -25,8 +25,8 @@ export const models = sqliteTable("models", {
   displayName: text("display_name").notNull(),
   description: text("description"),
   parameters: text("parameters", { mode: "json" }), // Default parameters like temperature, max_tokens
-  inputPrice: real("input_price").default(0), // Price per 1k tokens
-  outputPrice: real("output_price").default(0), // Price per 1k tokens
+  inputPrice: real("input_price").default(0), // Price per 1M tokens
+  outputPrice: real("output_price").default(0), // Price per 1M tokens
   isEnabled: integer("is_enabled", { mode: "boolean" }).notNull().default(true),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()

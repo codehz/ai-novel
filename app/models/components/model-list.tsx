@@ -101,11 +101,11 @@ export function ModelList({ initialProviders }: ModelListProps) {
                 <div className="text-xs space-y-1 text-muted-foreground">
                   <div className="flex justify-between">
                     <span>输入价格:</span>
-                    <span className="text-foreground">${model.inputPrice}/1k tokens</span>
+                    <span className="text-foreground">${model.inputPrice}/1M tokens</span>
                   </div>
                   <div className="flex justify-between">
                     <span>输出价格:</span>
-                    <span className="text-foreground">${model.outputPrice}/1k tokens</span>
+                    <span className="text-foreground">${model.outputPrice}/1M tokens</span>
                   </div>
                 </div>
               </div>
