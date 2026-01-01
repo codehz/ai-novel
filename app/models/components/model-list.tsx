@@ -4,7 +4,7 @@ import { ItemCard } from "@/app/components/item-card";
 import { deleteModel, toggleModelStatus } from "@/src/actions/models";
 import { modelProviders, models } from "@/src/db/schema";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import { ModelForm } from "./model-form";
 
 type ProviderWithModels = typeof modelProviders.$inferSelect & {
@@ -21,15 +21,19 @@ export function ModelList({ initialProviders }: ModelListProps) {
   const [selectedProviderId, setSelectedProviderId] = useState<number | null>(null);
 
   const handleEdit = (model: typeof models.$inferSelect) => {
-    setEditingModel(model);
-    setSelectedProviderId(model.providerId);
-    setIsFormOpen(true);
+    startTransition(() => {
+      setEditingModel(model);
+      setSelectedProviderId(model.providerId);
+      setIsFormOpen(true);
+    });
   };
 
   const handleAdd = (providerId: number) => {
-    setEditingModel(null);
-    setSelectedProviderId(providerId);
-    setIsFormOpen(true);
+    startTransition(() => {
+      setEditingModel(null);
+      setSelectedProviderId(providerId);
+      setIsFormOpen(true);
+    });
   };
 
   if (initialProviders.length === 0) {
@@ -91,7 +95,11 @@ export function ModelList({ initialProviders }: ModelListProps) {
       ))}
 
       {isFormOpen && (
-        <ModelForm model={editingModel} providerId={selectedProviderId!} onClose={() => setIsFormOpen(false)} />
+        <ModelForm
+          model={editingModel}
+          providerId={selectedProviderId!}
+          onClose={() => startTransition(() => setIsFormOpen(false))}
+        />
       )}
     </div>
   );
