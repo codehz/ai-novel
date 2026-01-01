@@ -86,7 +86,7 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
         <FormField label="输入价格 ($/1M)">
           <input
             type="number"
-            step="0.000001"
+            step="0.001"
             value={formData.inputPrice || 0}
             onChange={(e) => setFormData({ ...formData, inputPrice: parseFloat(e.target.value) })}
             className={inputClass}
@@ -95,7 +95,7 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
         <FormField label="输出价格 ($/1M)">
           <input
             type="number"
-            step="0.000001"
+            step="0.001"
             value={formData.outputPrice || 0}
             onChange={(e) => setFormData({ ...formData, outputPrice: parseFloat(e.target.value) })}
             className={inputClass}
