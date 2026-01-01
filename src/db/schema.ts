@@ -72,11 +72,11 @@ export const modelCallLogs = sqliteTable(
       .notNull()
       .default(sql`(unixepoch())`),
   },
-  (table) => ({
-    modelIdIdx: index("idx_model_call_logs_model_id").on(table.modelId),
-    providerIdIdx: index("idx_model_call_logs_provider_id").on(table.providerId),
-    createdAtIdx: index("idx_model_call_logs_created_at").on(table.createdAt),
-  }),
+  (table) => [
+    index("idx_model_call_logs_model_id").on(table.modelId),
+    index("idx_model_call_logs_provider_id").on(table.providerId),
+    index("idx_model_call_logs_created_at").on(table.createdAt),
+  ],
 );
 
 export const modelCallLogsRelations = relations(modelCallLogs, ({ one }) => ({
