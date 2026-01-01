@@ -1,8 +1,9 @@
 "use client";
 
+import { ItemCard } from "@/app/components/item-card";
 import { deleteModel, toggleModelStatus } from "@/src/actions/models";
 import { modelProviders, models } from "@/src/db/schema";
-import { Edit2, Plus, Power, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { ModelForm } from "./model-form";
 
@@ -60,55 +61,25 @@ export function ModelList({ initialProviders }: ModelListProps) {
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {provider.models.map((model) => (
-              <div
+              <ItemCard
                 key={model.id}
-                className={`p-4 rounded-xl border bg-card border-border shadow-sm transition-all ${
-                  !model.isEnabled ? "opacity-60 grayscale-[0.5]" : ""
-                }`}
+                title={model.displayName}
+                subtitle={model.modelName}
+                isEnabled={model.isEnabled}
+                onToggle={() => toggleModelStatus(model.id, !model.isEnabled)}
+                onEdit={() => handleEdit(model)}
+                onDelete={() => deleteModel(model.id)}
+                deleteConfirmMessage="确定要删除该模型吗？"
               >
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h4 className="font-bold text-foreground">{model.displayName}</h4>
-                    <p className="text-xs text-muted-foreground font-mono">{model.modelName}</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() => toggleModelStatus(model.id, !model.isEnabled)}
-                      className={`p-1.5 rounded-lg transition-colors ${
-                        model.isEnabled ? "text-success hover:bg-success/10" : "text-muted-foreground hover:bg-muted"
-                      }`}
-                    >
-                      <Power size={14} />
-                    </button>
-                    <button
-                      onClick={() => handleEdit(model)}
-                      className="p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                    >
-                      <Edit2 size={14} />
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (confirm("确定要删除该模型吗？")) {
-                          deleteModel(model.id);
-                        }
-                      }}
-                      className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
+                <div className="flex justify-between">
+                  <span>输入价格:</span>
+                  <span className="text-foreground">${model.inputPrice}/1M tokens</span>
                 </div>
-                <div className="text-xs space-y-1 text-muted-foreground">
-                  <div className="flex justify-between">
-                    <span>输入价格:</span>
-                    <span className="text-foreground">${model.inputPrice}/1M tokens</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>输出价格:</span>
-                    <span className="text-foreground">${model.outputPrice}/1M tokens</span>
-                  </div>
+                <div className="flex justify-between">
+                  <span>输出价格:</span>
+                  <span className="text-foreground">${model.outputPrice}/1M tokens</span>
                 </div>
-              </div>
+              </ItemCard>
             ))}
             {provider.models.length === 0 && (
               <div className="col-span-full py-8 text-center text-muted-foreground text-sm italic">

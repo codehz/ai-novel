@@ -1,8 +1,9 @@
 "use client";
 
+import { AddCard } from "@/app/components/add-card";
+import { ItemCard } from "@/app/components/item-card";
 import { deleteProvider, toggleProviderStatus } from "@/src/actions/models";
 import { modelProviders, models } from "@/src/db/schema";
-import { Edit2, Plus, Power, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { ProviderForm } from "./provider-form";
 
@@ -31,74 +32,33 @@ export function ProviderList({ initialProviders }: ProviderListProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {initialProviders.map((provider) => (
-        <div
+        <ItemCard
           key={provider.id}
-          className={`p-4 min-w-0 rounded-xl border bg-card border-border shadow-sm transition-all ${
-            !provider.isEnabled ? "opacity-60 grayscale-[0.5]" : ""
-          }`}
+          title={provider.providerName}
+          subtitle={provider.providerType}
+          isEnabled={provider.isEnabled}
+          onToggle={() => toggleProviderStatus(provider.id, !provider.isEnabled)}
+          onEdit={() => handleEdit(provider)}
+          onDelete={() => deleteProvider(provider.id)}
+          deleteConfirmMessage="确定要删除该提供商吗？这将同时删除其下的所有模型。"
         >
-          <div className="flex justify-between items-start mb-3">
-            <div>
-              <h3 className="font-bold text-foreground">{provider.providerName}</h3>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono">
-                {provider.providerType}
-              </p>
-            </div>
-            <div className="flex gap-1">
-              <button
-                onClick={() => toggleProviderStatus(provider.id, !provider.isEnabled)}
-                className={`p-1.5 rounded-lg transition-colors ${
-                  provider.isEnabled ? "text-success hover:bg-success/10" : "text-muted-foreground hover:bg-muted"
-                }`}
-                title={provider.isEnabled ? "禁用" : "启用"}
-              >
-                <Power size={14} />
-              </button>
-              <button
-                onClick={() => handleEdit(provider)}
-                className="p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                title="编辑"
-              >
-                <Edit2 size={14} />
-              </button>
-              <button
-                onClick={() => {
-                  if (confirm("确定要删除该提供商吗？这将同时删除其下的所有模型。")) {
-                    deleteProvider(provider.id);
-                  }
-                }}
-                className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-                title="删除"
-              >
-                <Trash2 size={14} />
-              </button>
-            </div>
+          <div className="flex gap-2 items-baseline">
+            <span className="text-muted-foreground whitespace-nowrap">端点:</span>
+            <span
+              className="font-mono truncate text-foreground flex-1 min-w-0 text-right"
+              title={provider.apiEndpoint || "默认"}
+            >
+              {provider.apiEndpoint || "默认"}
+            </span>
           </div>
-          <div className="text-xs space-y-1 text-muted-foreground">
-            <div className="flex gap-2 items-baseline">
-              <span className="text-muted-foreground whitespace-nowrap">端点:</span>
-              <span
-                className="font-mono truncate text-foreground flex-1 min-w-0 text-right"
-                title={provider.apiEndpoint || "默认"}
-              >
-                {provider.apiEndpoint || "默认"}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">模型数量:</span>
-              <span className="text-foreground">{provider.models.length}</span>
-            </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">模型数量:</span>
+            <span className="text-foreground">{provider.models.length}</span>
           </div>
-        </div>
+        </ItemCard>
       ))}
 
-      <button
-        onClick={handleAdd}
-        className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-dashed border-border hover:border-primary hover:bg-primary/5 transition-all group text-muted-foreground hover:text-primary"
-      >
-        <Plus size={32} className="mb-2 group-hover:scale-110 transition-transform" />
-        <span className="font-medium">添加提供商</span>
-      </button>
+      <AddCard onClick={handleAdd} label="添加提供商" />
 
       {isFormOpen && <ProviderForm provider={editingProvider} onClose={() => setIsFormOpen(false)} />}
     </div>
