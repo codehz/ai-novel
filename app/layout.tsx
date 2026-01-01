@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="zh-CN" suppressHydrationWarning>
       <body className="antialiased min-h-screen flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <header className="border-b bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md sticky top-0 z-50 transition-colors">
+          <header className="border-b border-border dark:border-zinc-700 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md sticky top-0 z-50 transition-colors">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
               <Link
                 href="/"
