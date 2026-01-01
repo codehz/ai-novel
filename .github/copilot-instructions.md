@@ -11,7 +11,7 @@
 
 ## 架构与数据流
 
-- Next.js App Router，根布局在 [app/layout.tsx](app/layout.tsx)，使用 `next-themes` 包裹全局并提供顶部导航/页脚。
+- Next.js App Router，根布局在 [app/layout.tsx](app/layout.tsx)，提供顶部导航/页脚。
 - 首页为静态展示页 [app/page.tsx](app/page.tsx)，引导到模型管理与写作入口。
 - 模型管理页 [app/models/page.tsx](app/models/page.tsx) 是 Server Component：服务端读取提供商+模型列表后传给客户端列表组件。
 - Server Actions集中在 [src/actions/models.ts](src/actions/models.ts)：CRUD provider/model，全程走 Drizzle，并在变更后 `revalidatePath("/models")` 保证 UI 刷新。
@@ -24,7 +24,7 @@
 - 表单：`ProviderForm`/`ModelForm` 直接调用对应 server action；插入/更新都用 `upsert*`，更新时附带 `updatedAt: new Date()`，保持与 sqlite 时间戳列一致。
 - 状态切换/删除：UI 做 `confirm` 弹窗，action 侧只做 Drizzle 更新/删除并刷新路径。
 - 价格字段为 `real`（浮点），参数字段为 JSON（`parameters`）；客户端默认 `parameters: {}` 避免 `null`。
-- 主题：`ThemeToggle` 用 `next-themes`，首屏有挂载防闪烁逻辑；Tailwind v4 样式变量集中在 [app/globals.css](app/globals.css)。(Note: tailwind v4 is already released)
+- 主题：使用纯 CSS 变量控制主题，Tailwind v4 样式变量集中在 [app/globals.css](app/globals.css)。(Note: tailwind v4 is already released)
 
 ## 开发提示
 
