@@ -33,7 +33,7 @@ export function ProviderList({ initialProviders }: ProviderListProps) {
       {initialProviders.map((provider) => (
         <div
           key={provider.id}
-          className={`p-6 rounded-xl border bg-card border-border shadow-sm transition-all ${
+          className={`p-6 min-w-0 rounded-xl border bg-card border-border shadow-sm transition-all ${
             !provider.isEnabled ? "opacity-60 grayscale-[0.5]" : ""
           }`}
         >
@@ -75,9 +75,12 @@ export function ProviderList({ initialProviders }: ProviderListProps) {
             </div>
           </div>
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">端点:</span>
-              <span className="font-mono truncate max-w-37.5 text-foreground" title={provider.apiEndpoint || "默认"}>
+            <div className="flex gap-2 items-baseline">
+              <span className="text-muted-foreground whitespace-nowrap">端点:</span>
+              <span
+                className="font-mono truncate text-foreground flex-1 min-w-0 text-right"
+                title={provider.apiEndpoint || "默认"}
+              >
                 {provider.apiEndpoint || "默认"}
               </span>
             </div>
