@@ -68,12 +68,13 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
               onChange={(e) => setFormData({ ...formData, providerType: e.target.value })}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
             >
-              <option value="openai">OpenAI</option>
-              <option value="anthropic">Anthropic</option>
-              <option value="google">Google Gemini</option>
-              <option value="deepseek">DeepSeek</option>
-              <option value="ollama">Ollama</option>
-              <option value="custom">自定义 (OpenAI 兼容)</option>
+              <option value="openai">OpenAI 兼容</option>
+              <option value="anthropic" disabled>
+                Anthropic 兼容(尚未支持)
+              </option>
+              <option value="ollama" disabled>
+                Ollama(尚未支持)
+              </option>
             </select>
           </div>
 
