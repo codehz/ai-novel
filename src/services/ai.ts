@@ -1,6 +1,7 @@
 import { db } from "@/src/db";
 import { modelProviders, models } from "@/src/db/schema";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+import { type ModelMessage } from "@ai-sdk/provider-utils";
 import { generateText, streamText, type LanguageModel } from "ai";
 import { eq } from "drizzle-orm";
 
@@ -9,8 +10,14 @@ export interface AIConfig {
   providerId: number;
 }
 
+export interface AIInput {
+  messages: ModelMessage[];
+  system?: string;
+}
+
 export interface AIResponse {
   content: string;
+  messages?: ModelMessage[];
   usage: {
     inputTokens: number;
     outputTokens: number;
@@ -71,12 +78,13 @@ export class AIService {
     };
   }
 
-  async generate(prompt: string, options: Record<string, unknown> = {}) {
+  async generate(input: AIInput, options: Record<string, unknown> = {}) {
     if (!this.model) await this.init();
 
     const result = await generateText({
       model: this.model!,
-      prompt,
+      messages: input.messages,
+      system: input.system,
       ...((this.modelConfig?.parameters as Record<string, unknown>) || {}),
       ...options,
     });
@@ -86,8 +94,18 @@ export class AIService {
 
     const cost = this.calculateCost(inputTokens, outputTokens);
 
+    // 构造完整的消息历史，包含助手响应
+    const responseMessages: ModelMessage[] = [
+      ...input.messages,
+      {
+        role: "assistant",
+        content: result.text,
+      } as ModelMessage,
+    ];
+
     return {
       content: result.text,
+      messages: responseMessages,
       usage: {
         inputTokens,
         outputTokens,
@@ -97,12 +115,13 @@ export class AIService {
     };
   }
 
-  async stream(prompt: string, options: Record<string, unknown> = {}) {
+  async stream(input: AIInput, options: Record<string, unknown> = {}) {
     if (!this.model) await this.init();
 
     return streamText({
       model: this.model!,
-      prompt,
+      messages: input.messages,
+      system: input.system,
       ...((this.modelConfig?.parameters as Record<string, unknown>) || {}),
       ...options,
     });
