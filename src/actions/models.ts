@@ -69,6 +69,15 @@ export async function toggleModelStatus(id: number, isEnabled: boolean) {
   revalidatePath("/models");
 }
 
+export async function getEnabledModel() {
+  return await db.query.models.findFirst({
+    where: eq(models.isEnabled, true),
+    with: {
+      provider: true,
+    },
+  });
+}
+
 // --- Call Log Actions ---
 
 export async function createCallLog(data: typeof modelCallLogs.$inferInsert) {
