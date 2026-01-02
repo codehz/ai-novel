@@ -55,8 +55,8 @@ export const modelCallLogs = sqliteTable(
     modelId: integer("model_id").notNull(), // No foreign key to avoid data loss on model deletion
     providerId: integer("provider_id").notNull(), // No foreign key to avoid data loss on provider deletion
     status: text("status").notNull().default("pending"), // 'pending', 'success', 'error'
-    input: text("input"),
-    output: text("output"),
+    input: text("input", { mode: "json" }),
+    output: text("output", { mode: "json" }),
     errorMessage: text("error_message"),
     inputTokens: integer("input_tokens").default(0),
     outputTokens: integer("output_tokens").default(0),
