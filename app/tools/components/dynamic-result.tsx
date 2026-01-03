@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { Icon } from "@/app/components/icon";
 import { OutputSchema } from "@/src/lib/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import * as Icons from "lucide-react";
@@ -67,10 +68,10 @@ function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
       icon: "Tag",
       color: "text-muted-foreground bg-muted",
     };
-    const Icon = (Icons as any)[config.icon || "Tag"] || Icons.Tag;
+    const IconElement = <Icon iconName={config.icon || "Tag"} defaultIcon={Icons.Tag} className="w-3 h-3" />;
     categoryEl = (
       <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium ${config.color}`}>
-        <Icon className="w-3 h-3" />
+        {IconElement}
         {config.label}
       </div>
     );
