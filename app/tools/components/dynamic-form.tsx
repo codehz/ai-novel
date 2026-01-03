@@ -3,6 +3,9 @@
 
 import { FormField } from "@/app/components/form-field";
 import { ModelSelector } from "@/app/components/model-selector";
+import { SelectInput } from "@/app/components/select-input";
+import { TextAreaInput } from "@/app/components/text-area-input";
+import { TextInput } from "@/app/components/text-input";
 import { InputSchema } from "@/src/lib/tool-types";
 import { Loader2, Sparkles } from "lucide-react";
 
@@ -62,12 +65,12 @@ export function DynamicForm({
           <FormField key={field.name} label={field.label} required={field.required} className="relative">
             {field.type === "textarea" ? (
               <div className="relative">
-                <textarea
+                <TextAreaInput
                   value={values[field.name] || ""}
                   onChange={(e) => handleFieldChange(field.name, e.target.value)}
                   placeholder={field.placeholder}
                   disabled={isLoading}
-                  className="w-full min-h-30 p-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 resize-y transition-all"
+                  className="min-h-30 resize-y"
                   maxLength={field.maxLength}
                 />
                 {field.maxLength && (
@@ -77,29 +80,19 @@ export function DynamicForm({
                 )}
               </div>
             ) : field.type === "select" ? (
-              <select
+              <SelectInput
                 value={values[field.name] || ""}
                 onChange={(e) => handleFieldChange(field.name, e.target.value)}
                 disabled={isLoading}
-                className="w-full p-2 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-              >
-                <option value="" disabled>
-                  请选择
-                </option>
-                {field.options?.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+                options={[{ label: "请选择", value: "" }, ...(field.options || [])]}
+              />
             ) : (
-              <input
+              <TextInput
                 type={field.type}
                 value={values[field.name] || ""}
                 onChange={(e) => handleFieldChange(field.name, e.target.value)}
                 placeholder={field.placeholder}
                 disabled={isLoading}
-                className="w-full p-2 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
                 maxLength={field.maxLength}
               />
             )}

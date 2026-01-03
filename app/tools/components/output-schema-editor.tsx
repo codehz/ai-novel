@@ -3,6 +3,8 @@
 import { FormField } from "@/app/components/form-field";
 import { HueColorPicker } from "@/app/components/hue-color-picker";
 import { IconPicker } from "@/app/components/icon-picker";
+import { SelectInput } from "@/app/components/select-input";
+import { TextInput } from "@/app/components/text-input";
 import { CategoryConfig, OutputRenderType, OutputSchema } from "@/src/lib/tool-types";
 import { Plus } from "lucide-react";
 import { ReorderControls } from "./reorder-controls";
@@ -43,46 +45,40 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
       </div>
 
       <FormField label="渲染方式" required>
-        <select
+        <SelectInput
           value={value.type}
           onChange={(e) => updateSchema({ type: e.target.value as OutputRenderType })}
-          className="w-full p-2 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
-        >
-          <option value="text">纯文本 (text)</option>
-          <option value="markdown">Markdown (markdown)</option>
-          <option value="card-list">卡片列表 (card-list)</option>
-          <option value="json">原始 JSON (json)</option>
-        </select>
+          options={[
+            { label: "纯文本 (text)", value: "text" },
+            { label: "Markdown (markdown)", value: "markdown" },
+            { label: "卡片列表 (card-list)", value: "card-list" },
+            { label: "原始 JSON (json)", value: "json" },
+          ]}
+        />
       </FormField>
 
       {value.type === "card-list" && (
         <div className="space-y-6 pt-4 border-t border-border">
           <div className="grid grid-cols-3 gap-4">
             <FormField label="标题字段">
-              <input
-                type="text"
+              <TextInput
                 value={value.titleField || ""}
                 onChange={(e) => updateSchema({ titleField: e.target.value })}
                 placeholder="输入字段名"
-                className="w-full p-2 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </FormField>
             <FormField label="描述字段">
-              <input
-                type="text"
+              <TextInput
                 value={value.descriptionField || ""}
                 onChange={(e) => updateSchema({ descriptionField: e.target.value })}
                 placeholder="输入字段名"
-                className="w-full p-2 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </FormField>
             <FormField label="分类字段">
-              <input
-                type="text"
+              <TextInput
                 value={value.categoryField || ""}
                 onChange={(e) => updateSchema({ categoryField: e.target.value })}
                 placeholder="输入字段名"
-                className="w-full p-2 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </FormField>
           </div>
@@ -107,20 +103,14 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
                     <div className="flex-1 grid grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">分类 ID</label>
-                        <input
-                          type="text"
-                          value={id}
-                          readOnly
-                          className="w-full p-1.5 text-xs rounded border border-input bg-muted/50 font-mono"
-                        />
+                        <TextInput value={id} readOnly className="p-1.5 text-xs bg-muted/50 font-mono" />
                       </div>
                       <div className="space-y-1">
                         <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">显示名称</label>
-                        <input
-                          type="text"
+                        <TextInput
                           value={cat.label}
                           onChange={(e) => updateCategory(id, { label: e.target.value })}
-                          className="w-full p-1.5 text-xs rounded border border-input bg-background"
+                          className="p-1.5 text-xs"
                         />
                       </div>
                     </div>

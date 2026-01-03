@@ -2,7 +2,10 @@
 
 import { FormField } from "@/app/components/form-field";
 import { ModalForm } from "@/app/components/modal-form";
+import { SelectInput } from "@/app/components/select-input";
 import { Switch } from "@/app/components/switch";
+import { TextAreaInput } from "@/app/components/text-area-input";
+import { TextInput } from "@/app/components/text-input";
 import { upsertProvider } from "@/src/actions/models";
 import { modelProviders } from "@/src/db/schema";
 import { useState } from "react";
@@ -49,9 +52,6 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
     }
   };
 
-  const inputClass =
-    "w-full px-4 py-2 rounded-lg border border-input-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-primary outline-none transition-all";
-
   return (
     <ModalForm
       title={provider ? "编辑提供商" : "添加提供商"}
@@ -72,59 +72,61 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
       </div>
 
       <FormField label="提供商名称" required>
-        <input
+        <TextInput
+          variant="primary"
           required
-          type="text"
           value={formData.providerName}
           onChange={(e) => setFormData({ ...formData, providerName: e.target.value })}
           placeholder="例如: OpenAI, 阿里云"
-          className={inputClass}
+          disabled={loading}
         />
       </FormField>
 
       <FormField label="提供商类型">
-        <select
+        <SelectInput
+          variant="primary"
           value={formData.providerType}
           onChange={(e) => setFormData({ ...formData, providerType: e.target.value })}
-          className={inputClass}
-        >
-          <option value="openai-compatible">OpenAI 兼容</option>
-          <option value="anthropic" disabled>
-            Anthropic 兼容(尚未支持)
-          </option>
-          <option value="ollama" disabled>
-            Ollama(尚未支持)
-          </option>
-        </select>
+          disabled={loading}
+          options={[
+            { label: "OpenAI 兼容", value: "openai-compatible" },
+            { label: "Anthropic 兼容(尚未支持)", value: "anthropic" },
+            { label: "Ollama(尚未支持)", value: "ollama" },
+          ]}
+        />
       </FormField>
 
       <FormField label="API 密钥">
-        <input
+        <TextInput
+          variant="primary"
           type="password"
           value={formData.apiKey}
           onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
           placeholder="sk-..."
-          className={inputClass}
+          disabled={loading}
         />
       </FormField>
 
       <FormField label="API 端点">
-        <input
+        <TextInput
+          variant="primary"
           type="url"
           value={formData.apiEndpoint}
           onChange={(e) => setFormData({ ...formData, apiEndpoint: e.target.value })}
           placeholder="https://api.openai.com/v1"
-          className={inputClass}
+          disabled={loading}
         />
       </FormField>
 
       <FormField label="额外配置 (JSON)">
-        <textarea
+        <TextAreaInput
+          variant="primary"
           value={formData.config}
           onChange={(e) => setFormData({ ...formData, config: e.target.value })}
           placeholder="{}"
           rows={4}
-          className={inputClass + " font-mono text-sm"}
+          className="font-mono text-sm"
+          disabled={loading}
         />
       </FormField>
     </ModalForm>

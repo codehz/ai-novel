@@ -5,6 +5,8 @@ import { FormField } from "@/app/components/form-field";
 import { IconPicker } from "@/app/components/icon-picker";
 import { ModalForm } from "@/app/components/modal-form";
 import { Switch } from "@/app/components/switch";
+import { TextAreaInput } from "@/app/components/text-area-input";
+import { TextInput } from "@/app/components/text-input";
 import { upsertToolConfig } from "@/src/actions/tools";
 import { InputSchema, OutputSchema, PromptSet, ToolConfig } from "@/src/lib/tool-types";
 import { useState } from "react";
@@ -80,48 +82,42 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
 
       <div className="grid grid-cols-2 gap-4">
         <FormField label="工具 ID" required>
-          <input
-            type="text"
+          <TextInput
             value={formData.toolId}
             onChange={(e) => setFormData({ ...formData, toolId: e.target.value })}
             disabled={!!tool || loading}
             placeholder="例如: my-tool"
-            className="w-full p-2 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
             required
           />
         </FormField>
         <FormField label="版本" required>
-          <input
-            type="text"
+          <TextInput
             value={formData.version}
             onChange={(e) => setFormData({ ...formData, version: e.target.value })}
             disabled={loading}
             placeholder="1.0.0"
-            className="w-full p-2 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
             required
           />
         </FormField>
       </div>
 
       <FormField label="名称" required>
-        <input
-          type="text"
+        <TextInput
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           disabled={loading}
           placeholder="工具显示名称"
-          className="w-full p-2 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
           required
         />
       </FormField>
 
       <FormField label="描述" required>
-        <textarea
+        <TextAreaInput
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           disabled={loading}
           placeholder="工具功能描述"
-          className="w-full p-2 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-20"
+          className="min-h-20"
           required
         />
       </FormField>

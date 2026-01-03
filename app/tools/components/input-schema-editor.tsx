@@ -1,6 +1,7 @@
 "use client";
 
 import { FormField } from "@/app/components/form-field";
+import { TextInput } from "@/app/components/text-input";
 import { InputField, InputSchema } from "@/src/lib/tool-types";
 import { Plus } from "lucide-react";
 import { FieldEditor } from "./field-editor";
@@ -79,12 +80,10 @@ export function InputSchemaEditor({ value, onChange }: InputSchemaEditorProps) {
 
       <div className="pt-4 border-t border-border">
         <FormField label="提交按钮文字">
-          <input
-            type="text"
+          <TextInput
             value={value.submitLabel || ""}
             onChange={(e) => onChange({ ...value, submitLabel: e.target.value })}
             placeholder="例如: 开始生成"
-            className="w-full p-2 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </FormField>
       </div>

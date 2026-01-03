@@ -2,7 +2,10 @@
 
 import { FormField } from "@/app/components/form-field";
 import { ModalForm } from "@/app/components/modal-form";
+import { NumberInput } from "@/app/components/number-input";
 import { Switch } from "@/app/components/switch";
+import { TextAreaInput } from "@/app/components/text-area-input";
+import { TextInput } from "@/app/components/text-input";
 import { upsertModel } from "@/src/actions/models";
 import { models } from "@/src/db/schema";
 import { useState } from "react";
@@ -71,9 +74,6 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
     }
   };
 
-  const inputClass =
-    "w-full px-4 py-2 rounded-lg border border-input-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-primary outline-none transition-all";
-
   return (
     <ModalForm
       title={model ? "编辑模型" : "添加模型"}
@@ -95,99 +95,104 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
       </div>
 
       <FormField label="显示名称" required>
-        <input
+        <TextInput
+          variant="primary"
           required
-          type="text"
           value={formData.displayName}
           onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
           placeholder="例如: GPT-4o"
-          className={inputClass}
+          disabled={loading}
         />
       </FormField>
 
       <FormField label="模型标识符 (API Name)" required>
-        <input
+        <TextInput
+          variant="primary"
           required
-          type="text"
           value={formData.modelName}
           onChange={(e) => setFormData({ ...formData, modelName: e.target.value })}
           placeholder="例如: gpt-4o"
-          className={`${inputClass} font-mono`}
+          className="font-mono"
+          disabled={loading}
         />
       </FormField>
 
       <FormField label="描述">
-        <textarea
+        <TextAreaInput
+          variant="primary"
           value={formData.description || ""}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           placeholder="模型描述..."
-          className={`${inputClass} resize-none h-20`}
+          className="h-20"
+          disabled={loading}
         />
       </FormField>
 
       <div className="grid grid-cols-2 gap-4">
         <FormField label="输入价格 ($/1M)">
-          <input
-            type="number"
+          <NumberInput
+            variant="primary"
             step="0.001"
             value={formData.inputPrice || 0}
             onChange={(e) => setFormData({ ...formData, inputPrice: parseFloat(e.target.value) })}
-            className={inputClass}
+            disabled={loading}
           />
         </FormField>
         <FormField label="输出价格 ($/1M)">
-          <input
-            type="number"
+          <NumberInput
+            variant="primary"
             step="0.001"
             value={formData.outputPrice || 0}
             onChange={(e) => setFormData({ ...formData, outputPrice: parseFloat(e.target.value) })}
-            className={inputClass}
+            disabled={loading}
           />
         </FormField>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
         <FormField label="Temperature">
-          <input
-            type="number"
+          <NumberInput
+            variant="primary"
             step="0.1"
             min="0"
             max="2"
             value={formData.temperature}
             onChange={(e) => setFormData({ ...formData, temperature: parseFloat(e.target.value) })}
-            className={inputClass}
+            disabled={loading}
           />
         </FormField>
         <FormField label="Max Tokens">
-          <input
-            type="number"
+          <NumberInput
+            variant="primary"
             step="1"
             min="1"
             value={formData.maxTokens}
             onChange={(e) => setFormData({ ...formData, maxTokens: parseInt(e.target.value) })}
-            className={inputClass}
+            disabled={loading}
           />
         </FormField>
         <FormField label="Top P">
-          <input
-            type="number"
+          <NumberInput
+            variant="primary"
             step="0.05"
             min="0"
             max="1"
             value={formData.topP}
             onChange={(e) => setFormData({ ...formData, topP: parseFloat(e.target.value) })}
-            className={inputClass}
+            disabled={loading}
           />
         </FormField>
       </div>
 
       <FormField label="其他参数 (JSON)">
-        <textarea
+        <TextAreaInput
+          variant="primary"
           value={formData.otherParameters}
           onChange={(e) => setFormData({ ...formData, otherParameters: e.target.value })}
           placeholder="{}"
           rows={3}
-          className={inputClass + " font-mono text-sm"}
+          className="font-mono text-sm"
+          disabled={loading}
         />
       </FormField>
     </ModalForm>

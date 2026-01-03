@@ -1,5 +1,6 @@
 "use client";
 
+import { TextInput } from "@/app/components/text-input";
 import { Plus } from "lucide-react";
 import { ReorderControls } from "./reorder-controls";
 
@@ -46,19 +47,17 @@ export function OptionsListEditor({
     <div className="space-y-2">
       {options.map((option, index) => (
         <div key={index} className="flex items-center gap-2">
-          <input
-            type="text"
+          <TextInput
             value={option.label}
             onChange={(e) => updateOption(index, "label", e.target.value)}
             placeholder={labelPlaceholder}
-            className="flex-1 p-1.5 text-sm rounded border border-input bg-background focus:outline-none focus:ring-1 focus:ring-primary/20"
+            className="flex-1 p-1.5 focus:ring-1"
           />
-          <input
-            type="text"
+          <TextInput
             value={option.value}
             onChange={(e) => updateOption(index, "value", e.target.value)}
             placeholder={valuePlaceholder}
-            className="flex-1 p-1.5 text-sm rounded border border-input bg-background font-mono focus:outline-none focus:ring-1 focus:ring-primary/20"
+            className="flex-1 p-1.5 font-mono focus:ring-1"
           />
           <ReorderControls
             onMoveUp={() => moveOption(index, "up")}

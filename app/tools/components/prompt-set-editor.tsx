@@ -1,6 +1,7 @@
 "use client";
 
 import { FormField } from "@/app/components/form-field";
+import { TextAreaInput } from "@/app/components/text-area-input";
 import { PromptSet } from "@/src/lib/tool-types";
 import { Plus, Sparkles } from "lucide-react";
 import { ReorderControls } from "./reorder-controls";
@@ -65,11 +66,11 @@ export function PromptSetEditor({ value, onChange, availableFields }: PromptSetE
       </div>
 
       <FormField label="系统提示词 (System Prompt)">
-        <textarea
+        <TextAreaInput
           value={value.systemTemplate || ""}
           onChange={(e) => updatePrompt({ systemTemplate: e.target.value })}
           placeholder="定义 AI 的角色和行为规范..."
-          className="w-full p-3 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-24"
+          className="min-h-24"
         />
       </FormField>
 
@@ -90,12 +91,12 @@ export function PromptSetEditor({ value, onChange, availableFields }: PromptSetE
             ))}
           </div>
         </div>
-        <textarea
+        <TextAreaInput
           id="userTemplate"
           value={value.userTemplate}
           onChange={(e) => updatePrompt({ userTemplate: e.target.value })}
           placeholder="使用 {{fieldName}} 来引用输入字段..."
-          className="w-full p-3 text-sm rounded-lg border border-input bg-background font-mono focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-40"
+          className="font-mono min-h-40"
           required
         />
         <p className="text-[10px] text-muted-foreground flex items-center gap-1">
@@ -126,18 +127,18 @@ export function PromptSetEditor({ value, onChange, availableFields }: PromptSetE
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">输入示例 (JSON)</label>
-                  <textarea
+                  <TextAreaInput
                     defaultValue={JSON.stringify(example.input, null, 2)}
                     onBlur={(e) => updateExample(index, "input", e.target.value)}
-                    className="w-full p-2 text-xs rounded border border-input bg-background font-mono min-h-24"
+                    className="p-2 text-xs font-mono min-h-24"
                   />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">输出示例 (JSON)</label>
-                  <textarea
+                  <TextAreaInput
                     defaultValue={JSON.stringify(example.output, null, 2)}
                     onBlur={(e) => updateExample(index, "output", e.target.value)}
-                    className="w-full p-2 text-xs rounded border border-input bg-background font-mono min-h-24"
+                    className="p-2 text-xs font-mono min-h-24"
                   />
                 </div>
               </div>
