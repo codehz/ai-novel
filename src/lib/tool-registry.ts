@@ -1,7 +1,7 @@
 import { ToolConfig } from "./tool-types";
 
-export const TOOLS_CONFIG: Record<string, ToolConfig> = {
-  "seed-expander": {
+export const TOOLS_CONFIG: ToolConfig[] = [
+  {
     id: "seed-expander",
     name: "种子想法扩展",
     description: "给AI一个简短的“种子”，生成10-20个不同的情节方向、冲突点或结局变体。",
@@ -49,12 +49,12 @@ export const TOOLS_CONFIG: Record<string, ToolConfig> = {
       userTemplate: "请根据以下种子想法生成扩展情节：{{idea}}",
     },
   },
-};
+];
 
 export function getToolConfig(toolId: string): ToolConfig | undefined {
-  return TOOLS_CONFIG[toolId];
+  return TOOLS_CONFIG.find((t) => t.id === toolId);
 }
 
 export function getAllTools(): ToolConfig[] {
-  return Object.values(TOOLS_CONFIG);
+  return TOOLS_CONFIG;
 }
