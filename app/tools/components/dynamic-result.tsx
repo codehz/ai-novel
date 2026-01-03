@@ -1,0 +1,124 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import { OutputSchema } from "@/src/lib/tool-types";
+import { Check, Copy, Flag, Heart, LucideIcon, MapPin, Tag, Zap } from "lucide-react";
+import { useState } from "react";
+
+interface DynamicResultProps {
+  schema: OutputSchema;
+  results: any[];
+  isLoading: boolean;
+}
+
+export function DynamicResult({ schema, results, isLoading }: DynamicResultProps) {
+  if (isLoading) {
+    return (
+      <div className="grid gap-6 md:grid-cols-2">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-48 rounded-2xl border border-border bg-card animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!results || results.length === 0) {
+    return null;
+  }
+
+  if (schema.type === "card-list") {
+    return (
+      <div className="grid gap-6 md:grid-cols-2">
+        {results.map((result, index) => (
+          <ResultCard key={result.id || index} result={result} schema={schema} />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4 rounded-xl border border-border bg-card">
+      <pre className="whitespace-pre-wrap text-sm">{JSON.stringify(results, null, 2)}</pre>
+    </div>
+  );
+}
+
+// Hardcoded category config for seed-expander compatibility
+// In a fully data-driven approach, this should be part of the tool config
+const CATEGORY_CONFIG: Record<string, { label: string; icon: LucideIcon; color: string }> = {
+  plot_direction: {
+    label: "情节方向",
+    icon: MapPin,
+    color: "text-blue-500 bg-blue-500/10",
+  },
+  conflict: {
+    label: "冲突点",
+    icon: Zap,
+    color: "text-amber-500 bg-amber-500/10",
+  },
+  ending_variant: {
+    label: "结局变体",
+    icon: Flag,
+    color: "text-purple-500 bg-purple-500/10",
+  },
+};
+
+function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
+  const [isCopied, setIsCopied] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const title = schema.titleField ? result[schema.titleField] : "Result";
+  const description = schema.descriptionField ? result[schema.descriptionField] : JSON.stringify(result);
+  const category = schema.categoryField ? result[schema.categoryField] : null;
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(`${title}\n${description}`);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  let categoryEl = null;
+  if (category) {
+    const config = CATEGORY_CONFIG[category] || {
+      label: category,
+      icon: Tag,
+      color: "text-muted-foreground bg-muted",
+    };
+    const Icon = config.icon;
+    categoryEl = (
+      <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium ${config.color}`}>
+        <Icon className="w-3 h-3" />
+        {config.label}
+      </div>
+    );
+  }
+
+  return (
+    <div className="group relative flex flex-col p-6 rounded-2xl border border-border bg-card hover:shadow-md hover:border-primary/30 transition-all">
+      <div className="flex items-start justify-between mb-4">
+        {categoryEl || <div />}
+        <div className="flex gap-2">
+          <button
+            onClick={() => setIsFavorite(!isFavorite)}
+            className={`p-2 rounded-lg transition-colors ${
+              isFavorite ? "text-red-500 bg-red-500/10" : "text-muted-foreground hover:bg-muted"
+            }`}
+          >
+            <Heart className={`w-4 h-4 ${isFavorite ? "fill-current" : ""}`} />
+          </button>
+          <button
+            onClick={handleCopy}
+            className="p-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
+          >
+            {isCopied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
+          </button>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <h3 className="text-lg font-bold leading-tight group-hover:text-primary transition-colors">{title}</h3>
+        <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+      </div>
+    </div>
+  );
+}
