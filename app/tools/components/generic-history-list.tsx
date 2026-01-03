@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolHistoryItem } from "@/src/lib/tool-types";
+import { AutoTransition } from "@codehz/auto-transition";
 import { ChevronRight, Clock, History, Trash2 } from "lucide-react";
 
 interface GenericHistoryListProps {
@@ -11,10 +12,21 @@ interface GenericHistoryListProps {
   currentId?: string;
 }
 
-export function GenericHistoryList({ history, onSelect, onDelete, onClear, currentId }: GenericHistoryListProps) {
+export function GenericHistoryList(props: GenericHistoryListProps) {
+  return (
+    <AutoTransition as="div" className="relative">
+      <GenericHistoryListInner {...props} />
+    </AutoTransition>
+  );
+}
+
+function GenericHistoryListInner({ history, onSelect, onDelete, onClear, currentId }: GenericHistoryListProps) {
   if (history.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-muted-foreground border-2 border-dashed border-border rounded-2xl">
+      <div
+        key="no-history"
+        className="flex flex-col items-center justify-center py-12 text-muted-foreground border-2 border-dashed border-border rounded-2xl"
+      >
         <History className="w-8 h-8 mb-2 opacity-20" />
         <p className="text-sm">暂无历史记录</p>
       </div>
@@ -40,7 +52,7 @@ export function GenericHistoryList({ history, onSelect, onDelete, onClear, curre
         </button>
       </div>
 
-      <div className="grid gap-2 max-h-150 overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
+      <AutoTransition as="div" className="grid gap-2 max-h-150 overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
         {history.map((item) => {
           // Try to find a meaningful title from inputs
           const title =
@@ -104,7 +116,7 @@ export function GenericHistoryList({ history, onSelect, onDelete, onClear, curre
             </div>
           );
         })}
-      </div>
+      </AutoTransition>
     </div>
   );
 }
