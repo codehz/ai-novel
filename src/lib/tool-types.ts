@@ -66,7 +66,7 @@ export interface ToolExecutionResult {
 }
 
 export interface ToolHistoryItem {
-  id: string;
+  id: number;
   toolId: string;
   inputs: Record<string, any>;
   outputs: any;

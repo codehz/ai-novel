@@ -88,3 +88,28 @@ export const modelCallLogsRelations = relations(modelCallLogs, ({ one }) => ({
     references: [modelProviders.id],
   }),
 }));
+
+export const toolHistories = sqliteTable(
+  "tool_histories",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    toolId: text("tool_id").notNull(),
+    inputs: text("inputs", { mode: "json" }).notNull(),
+    outputs: text("outputs", { mode: "json" }).notNull(),
+    timestamp: integer("timestamp").notNull(),
+    providerId: integer("provider_id"),
+    modelId: integer("model_id"),
+    modelName: text("model_name"),
+    providerName: text("provider_name"),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+    updatedAt: integer("updated_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (table) => [
+    index("idx_tool_histories_tool_id").on(table.toolId),
+    index("idx_tool_histories_created_at").on(table.createdAt),
+  ],
+);

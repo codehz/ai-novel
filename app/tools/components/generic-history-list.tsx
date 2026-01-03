@@ -7,9 +7,9 @@ import { ChevronRight, Clock, History, Trash2 } from "lucide-react";
 interface GenericHistoryListProps {
   history: ToolHistoryItem[];
   onSelect: (item: ToolHistoryItem) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
   onClear: () => void;
-  currentId?: string;
+  currentId?: number;
 }
 
 export const GenericHistoryList = withAutoTransition(GenericHistoryListInner, { as: "div", className: "relative" });

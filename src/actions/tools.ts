@@ -73,8 +73,7 @@ export async function executeTool(
 
   if (result.success && result.data) {
     // Save to history
-    const historyItem: ToolHistoryItem = {
-      id: Date.now().toString(),
+    await toolHistoryStore.save({
       toolId,
       inputs,
       outputs: result.data,
@@ -83,8 +82,7 @@ export async function executeTool(
       modelId,
       providerName,
       modelName,
-    };
-    await toolHistoryStore.save(historyItem);
+    });
   }
 
   return result;
@@ -94,7 +92,7 @@ export async function getToolHistory(toolId: string): Promise<ToolHistoryItem[]>
   return toolHistoryStore.get(toolId);
 }
 
-export async function deleteToolHistory(id: string): Promise<boolean> {
+export async function deleteToolHistory(id: number): Promise<boolean> {
   return toolHistoryStore.delete(id);
 }
 

@@ -20,7 +20,7 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
   const [results, setResults] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<ToolHistoryItem[]>([]);
-  const [currentHistoryId, setCurrentHistoryId] = useState<string | undefined>(undefined);
+  const [currentHistoryId, setCurrentHistoryId] = useState<number | undefined>(undefined);
   const [selectedProviderId, setSelectedProviderId] = useState<number | undefined>(undefined);
   const [selectedModelId, setSelectedModelId] = useState<number | undefined>(undefined);
 
@@ -86,7 +86,7 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleDeleteHistory = async (id: string) => {
+  const handleDeleteHistory = async (id: number) => {
     if (confirm("确定要删除这条记录吗？")) {
       await deleteToolHistory(id);
       await loadHistory();
