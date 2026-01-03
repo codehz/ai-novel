@@ -2,6 +2,7 @@
 
 import { db } from "@/src/db";
 import { modelCallLogs, modelProviders, models } from "@/src/db/schema";
+import { aiRegistry } from "@/src/lib/ai-registry";
 import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -21,6 +22,7 @@ export async function upsertProvider(data: typeof modelProviders.$inferInsert) {
       .update(modelProviders)
       .set({ ...data, updatedAt: new Date() })
       .where(eq(modelProviders.id, data.id));
+    aiRegistry.invalidateProvider(data.id);
   } else {
     await db.insert(modelProviders).values(data);
   }
@@ -29,11 +31,13 @@ export async function upsertProvider(data: typeof modelProviders.$inferInsert) {
 
 export async function deleteProvider(id: number) {
   await db.delete(modelProviders).where(eq(modelProviders.id, id));
+  aiRegistry.invalidateProvider(id);
   revalidatePath("/models");
 }
 
 export async function toggleProviderStatus(id: number, isEnabled: boolean) {
   await db.update(modelProviders).set({ isEnabled, updatedAt: new Date() }).where(eq(modelProviders.id, id));
+  aiRegistry.invalidateProvider(id);
   revalidatePath("/models");
 }
 
@@ -53,6 +57,7 @@ export async function upsertModel(data: typeof models.$inferInsert) {
       .update(models)
       .set({ ...data, updatedAt: new Date() })
       .where(eq(models.id, data.id));
+    aiRegistry.invalidateModel(data.providerId, data.id);
   } else {
     await db.insert(models).values(data);
   }
@@ -60,12 +65,20 @@ export async function upsertModel(data: typeof models.$inferInsert) {
 }
 
 export async function deleteModel(id: number) {
-  await db.delete(models).where(eq(models.id, id));
+  const model = await db.query.models.findFirst({ where: eq(models.id, id) });
+  if (model) {
+    await db.delete(models).where(eq(models.id, id));
+    aiRegistry.invalidateModel(model.providerId, id);
+  }
   revalidatePath("/models");
 }
 
 export async function toggleModelStatus(id: number, isEnabled: boolean) {
-  await db.update(models).set({ isEnabled, updatedAt: new Date() }).where(eq(models.id, id));
+  const model = await db.query.models.findFirst({ where: eq(models.id, id) });
+  if (model) {
+    await db.update(models).set({ isEnabled, updatedAt: new Date() }).where(eq(models.id, id));
+    aiRegistry.invalidateModel(model.providerId, id);
+  }
   revalidatePath("/models");
 }
 

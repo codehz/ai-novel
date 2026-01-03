@@ -23,14 +23,44 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
     inputPrice: model?.inputPrice || 0,
     outputPrice: model?.outputPrice || 0,
     isEnabled: model?.isEnabled ?? true,
-    parameters: model?.parameters || {},
+    temperature: ((model?.parameters as Record<string, unknown>)?.temperature as number) ?? 0.7,
+    maxTokens: ((model?.parameters as Record<string, unknown>)?.maxTokens as number) ?? 2048,
+    topP: ((model?.parameters as Record<string, unknown>)?.topP as number) ?? 1,
+    otherParameters: model?.parameters
+      ? JSON.stringify(
+          Object.fromEntries(
+            Object.entries(model.parameters as object).filter(
+              ([k]) => !["temperature", "maxTokens", "topP"].includes(k),
+            ),
+          ),
+          null,
+          2,
+        )
+      : "{}",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await upsertModel(formData as typeof models.$inferInsert);
+      let otherParams = {};
+      try {
+        otherParams = JSON.parse(formData.otherParameters);
+      } catch {
+        alert("其他参数 JSON 格式错误");
+        setLoading(false);
+        return;
+      }
+      const finalParameters = {
+        ...otherParams,
+        temperature: formData.temperature,
+        maxTokens: formData.maxTokens,
+        topP: formData.topP,
+      };
+      await upsertModel({
+        ...formData,
+        parameters: finalParameters,
+      });
       onClose();
     } catch (error) {
       console.error("Failed to save model:", error);
@@ -102,6 +132,51 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
           />
         </FormField>
       </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        <FormField label="Temperature">
+          <input
+            type="number"
+            step="0.1"
+            min="0"
+            max="2"
+            value={formData.temperature}
+            onChange={(e) => setFormData({ ...formData, temperature: parseFloat(e.target.value) })}
+            className={inputClass}
+          />
+        </FormField>
+        <FormField label="Max Tokens">
+          <input
+            type="number"
+            step="1"
+            min="1"
+            value={formData.maxTokens}
+            onChange={(e) => setFormData({ ...formData, maxTokens: parseInt(e.target.value) })}
+            className={inputClass}
+          />
+        </FormField>
+        <FormField label="Top P">
+          <input
+            type="number"
+            step="0.05"
+            min="0"
+            max="1"
+            value={formData.topP}
+            onChange={(e) => setFormData({ ...formData, topP: parseFloat(e.target.value) })}
+            className={inputClass}
+          />
+        </FormField>
+      </div>
+
+      <FormField label="其他参数 (JSON)">
+        <textarea
+          value={formData.otherParameters}
+          onChange={(e) => setFormData({ ...formData, otherParameters: e.target.value })}
+          placeholder="{}"
+          rows={3}
+          className={inputClass + " font-mono text-sm"}
+        />
+      </FormField>
 
       <div className="flex items-center gap-2 pt-2">
         <input

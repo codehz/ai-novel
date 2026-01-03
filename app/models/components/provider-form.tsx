@@ -15,10 +15,11 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     id: provider?.id,
-    providerType: provider?.providerType || "openai",
+    providerType: provider?.providerType || "openai-compatible",
     providerName: provider?.providerName || "OpenAI",
     apiKey: provider?.apiKey || "",
     apiEndpoint: provider?.apiEndpoint || "https://api.openai.com/v1",
+    config: provider?.config ? JSON.stringify(provider.config, null, 2) : "{}",
     isEnabled: provider?.isEnabled ?? true,
   });
 
@@ -26,7 +27,18 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
     e.preventDefault();
     setLoading(true);
     try {
-      await upsertProvider(formData as typeof modelProviders.$inferInsert);
+      let configObj = {};
+      try {
+        configObj = JSON.parse(formData.config);
+      } catch {
+        alert("配置 JSON 格式错误");
+        setLoading(false);
+        return;
+      }
+      await upsertProvider({
+        ...formData,
+        config: configObj,
+      } as typeof modelProviders.$inferInsert);
       onClose();
     } catch (error) {
       console.error("Failed to save provider:", error);
@@ -63,7 +75,7 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
           onChange={(e) => setFormData({ ...formData, providerType: e.target.value })}
           className={inputClass}
         >
-          <option value="openai">OpenAI 兼容</option>
+          <option value="openai-compatible">OpenAI 兼容</option>
           <option value="anthropic" disabled>
             Anthropic 兼容(尚未支持)
           </option>
@@ -90,6 +102,16 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
           onChange={(e) => setFormData({ ...formData, apiEndpoint: e.target.value })}
           placeholder="https://api.openai.com/v1"
           className={inputClass}
+        />
+      </FormField>
+
+      <FormField label="额外配置 (JSON)">
+        <textarea
+          value={formData.config}
+          onChange={(e) => setFormData({ ...formData, config: e.target.value })}
+          placeholder="{}"
+          rows={4}
+          className={inputClass + " font-mono text-sm"}
         />
       </FormField>
 

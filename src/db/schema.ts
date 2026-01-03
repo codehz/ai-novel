@@ -5,8 +5,9 @@ export const modelProviders = sqliteTable("model_providers", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   providerType: text("provider_type").notNull().unique(), // 'openai', 'anthropic', etc.
   providerName: text("provider_name").notNull(),
-  apiKey: text("api_key"), // Should be encrypted in application layer
+  apiKey: text("api_key"),
   apiEndpoint: text("api_endpoint"),
+  config: text("config", { mode: "json" }), // Provider specific configuration
   isEnabled: integer("is_enabled", { mode: "boolean" }).notNull().default(true),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
@@ -63,7 +64,9 @@ export const modelCallLogs = sqliteTable(
     inputCost: real("input_cost").default(0),
     outputCost: real("output_cost").default(0),
     totalCost: real("total_cost").default(0),
+    durationMs: integer("duration_ms").default(0),
     callReason: text("call_reason").notNull(), // URL format
+    modelConfigSnapshot: text("model_config_snapshot", { mode: "json" }).$type<Record<string, unknown>>().notNull(),
     metadata: text("metadata", { mode: "json" }),
     createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
