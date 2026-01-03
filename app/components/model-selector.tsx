@@ -14,7 +14,15 @@ interface ModelSelectorProps {
   disabled?: boolean;
 }
 
-export function ModelSelector({
+export function ModelSelector(props: ModelSelectorProps) {
+  return (
+    <AutoTransition as="div" className="relative">
+      <ModelSelectorInner {...props} />
+    </AutoTransition>
+  );
+}
+
+function ModelSelectorInner({
   selectedProviderId,
   selectedModelId,
   onSelectModel,
@@ -44,7 +52,10 @@ export function ModelSelector({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-10 px-4 rounded-lg border border-input bg-background text-muted-foreground text-sm">
+      <div
+        key="loading"
+        className="flex items-center justify-center h-10 px-4 rounded-lg border border-input bg-background text-muted-foreground text-sm"
+      >
         加载模型中...
       </div>
     );
@@ -52,7 +63,10 @@ export function ModelSelector({
 
   if (providers.length === 0) {
     return (
-      <div className="flex items-center justify-center h-10 px-4 rounded-lg border border-input bg-background text-muted-foreground text-sm">
+      <div
+        key="empty"
+        className="flex items-center justify-center h-10 px-4 rounded-lg border border-input bg-background text-muted-foreground text-sm"
+      >
         暂无可用模型
       </div>
     );
