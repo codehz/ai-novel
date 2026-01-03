@@ -16,6 +16,37 @@ export async function getProviders() {
   });
 }
 
+export interface ProviderWithModels {
+  providerId: number;
+  providerName: string;
+  models: Array<{
+    modelId: number;
+    displayName: string;
+    modelName: string;
+  }>;
+}
+
+export async function getAvailableModels(): Promise<ProviderWithModels[]> {
+  const providers = await db.query.modelProviders.findMany({
+    where: (fields) => eq(fields.isEnabled, true),
+    with: {
+      models: {
+        where: (fields) => eq(fields.isEnabled, true),
+      },
+    },
+  });
+
+  return providers.map((provider) => ({
+    providerId: provider.id,
+    providerName: provider.providerName,
+    models: provider.models.map((model) => ({
+      modelId: model.id,
+      displayName: model.displayName,
+      modelName: model.modelName,
+    })),
+  }));
+}
+
 export async function upsertProvider(data: typeof modelProviders.$inferInsert) {
   if (data.id) {
     await db

@@ -20,6 +20,8 @@ export function SeedExpander() {
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [currentHistoryId, setCurrentHistoryId] = useState<string | undefined>();
+  const [selectedProviderId, setSelectedProviderId] = useState<number | undefined>();
+  const [selectedModelId, setSelectedModelId] = useState<number | undefined>();
 
   // 加载历史记录
   const loadHistory = async () => {
@@ -35,14 +37,14 @@ export function SeedExpander() {
     loadHistory();
   }, []);
 
-  const handleExpand = async (inputIdea: string) => {
+  const handleExpand = async (inputIdea: string, providerId?: number, modelId?: number) => {
     setIsLoading(true);
     setError(null);
     setResults([]);
     setCurrentHistoryId(undefined);
 
     try {
-      const response = await expandSeed(inputIdea);
+      const response = await expandSeed(inputIdea, providerId, modelId);
       if (response.success && response.expansions) {
         setResults(response.expansions);
         // 重新加载历史记录以获取最新项
@@ -62,10 +64,22 @@ export function SeedExpander() {
     }
   };
 
+  const handleSelectModel = (providerId: number, modelId: number) => {
+    setSelectedProviderId(providerId);
+    setSelectedModelId(modelId);
+  };
+
+  const handleClearModel = () => {
+    setSelectedProviderId(undefined);
+    setSelectedModelId(undefined);
+  };
+
   const handleSelectHistory = (item: HistoryItem) => {
     setIdea(item.seed);
     setResults(item.results);
     setCurrentHistoryId(item.id);
+    setSelectedProviderId(item.providerId);
+    setSelectedModelId(item.modelId);
     setError(null);
     // 滚动到结果区域
     window.scrollTo({ top: 400, behavior: "smooth" });
@@ -78,6 +92,8 @@ export function SeedExpander() {
       if (currentHistoryId === id) {
         setResults([]);
         setCurrentHistoryId(undefined);
+        setSelectedProviderId(undefined);
+        setSelectedModelId(undefined);
       }
     } catch (e) {
       console.error("Failed to delete history", e);
@@ -90,6 +106,8 @@ export function SeedExpander() {
       setHistory([]);
       setResults([]);
       setCurrentHistoryId(undefined);
+      setSelectedProviderId(undefined);
+      setSelectedModelId(undefined);
     } catch (e) {
       console.error("Failed to clear history", e);
     }
@@ -99,7 +117,16 @@ export function SeedExpander() {
     <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
       <div className="space-y-12">
         <section className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-          <InputForm value={idea} onChange={setIdea} onExpand={handleExpand} isLoading={isLoading} />
+          <InputForm
+            value={idea}
+            onChange={setIdea}
+            onExpand={handleExpand}
+            isLoading={isLoading}
+            selectedProviderId={selectedProviderId}
+            selectedModelId={selectedModelId}
+            onSelectModel={handleSelectModel}
+            onClearModel={handleClearModel}
+          />
         </section>
 
         {error && (

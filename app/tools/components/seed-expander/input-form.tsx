@@ -1,20 +1,34 @@
 "use client";
 
 import { FormField } from "@/app/components/form-field";
+import { ModelSelector } from "@/app/components/model-selector";
 import { Loader2, Send, Trash2 } from "lucide-react";
 
 interface InputFormProps {
   value: string;
   onChange: (value: string) => void;
-  onExpand: (idea: string) => void;
+  onExpand: (idea: string, providerId?: number, modelId?: number) => void;
   isLoading: boolean;
+  selectedProviderId?: number;
+  selectedModelId?: number;
+  onSelectModel: (providerId: number, modelId: number) => void;
+  onClearModel?: () => void;
 }
 
-export function InputForm({ value, onChange, onExpand, isLoading }: InputFormProps) {
+export function InputForm({
+  value,
+  onChange,
+  onExpand,
+  isLoading,
+  selectedProviderId,
+  selectedModelId,
+  onSelectModel,
+  onClearModel,
+}: InputFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (value.trim().length >= 5) {
-      onExpand(value);
+      onExpand(value, selectedProviderId, selectedModelId);
     }
   };
 
@@ -29,6 +43,16 @@ export function InputForm({ value, onChange, onExpand, isLoading }: InputFormPro
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <FormField label="选择 AI 模型">
+        <ModelSelector
+          selectedProviderId={selectedProviderId}
+          selectedModelId={selectedModelId}
+          onSelectModel={onSelectModel}
+          onClear={onClearModel}
+          disabled={isLoading}
+        />
+      </FormField>
+
       <FormField label="你的种子想法" required>
         <div className="relative">
           <textarea

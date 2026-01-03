@@ -1,5 +1,8 @@
 "use server";
 
+import { db } from "@/src/db";
+import { eq } from "drizzle-orm";
+
 export type ExpansionCategory = "plot_direction" | "conflict" | "ending_variant";
 
 export interface ExpansionResult {
@@ -14,12 +17,19 @@ export interface HistoryItem {
   seed: string;
   results: ExpansionResult[];
   timestamp: number;
+  providerId?: number;
+  modelId?: number;
+  providerName?: string;
+  modelName?: string;
 }
 
 // Mock 服务端内存存储
 let mockHistory: HistoryItem[] = [];
-
-export async function expandSeed(idea: string): Promise<{
+export async function expandSeed(
+  idea: string,
+  providerId?: number,
+  modelId?: number,
+): Promise<{
   success: boolean;
   expansions?: ExpansionResult[];
   error?: string;
@@ -32,6 +42,31 @@ export async function expandSeed(idea: string): Promise<{
       success: false,
       error: "种子想法太短了，请至少输入 5 个字符。",
     };
+  }
+
+  // 验证选择的模型（如果提供）
+  let providerName: string | undefined;
+  let modelName: string | undefined;
+
+  if (providerId && modelId) {
+    const provider = await db.query.modelProviders.findFirst({
+      where: (fields) => eq(fields.id, providerId),
+      with: {
+        models: {
+          where: (fields) => eq(fields.id, modelId),
+        },
+      },
+    });
+
+    if (!provider || provider.models.length === 0) {
+      return {
+        success: false,
+        error: "选择的模型不存在或已被禁用。",
+      };
+    }
+
+    providerName = provider.providerName;
+    modelName = provider.models[0].displayName;
   }
 
   // Mock 数据生成逻辑
@@ -114,6 +149,10 @@ export async function expandSeed(idea: string): Promise<{
     seed: idea,
     results: mockExpansions,
     timestamp: Date.now(),
+    providerId,
+    modelId,
+    providerName,
+    modelName,
   };
   mockHistory = [newItem, ...mockHistory].slice(0, 50);
 
