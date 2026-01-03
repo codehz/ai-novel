@@ -92,11 +92,16 @@ function ModelSelectorInner({
                       : "hover:bg-muted/50 text-foreground"
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    {selectedModelId === model.modelId && selectedProviderId === provider.providerId && (
-                      <span className="text-primary">✓</span>
-                    )}
-                    {model.displayName}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      {selectedModelId === model.modelId && selectedProviderId === provider.providerId && (
+                        <span className="text-primary">✓</span>
+                      )}
+                      {model.displayName}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded shrink-0">
+                      ${model.inputPrice}/${model.outputPrice} (1M)
+                    </div>
                   </div>
                 </button>
               ))}
@@ -117,8 +122,13 @@ function ModelSelectorInner({
             <Package className="w-4 h-4 text-muted-foreground shrink-0" />
             <span className="truncate">
               {selectedModel ? (
-                <span>
-                  {selectedProvider?.providerName} - {selectedModel.displayName}
+                <span className="flex items-center gap-2">
+                  <span>
+                    {selectedProvider?.providerName} - {selectedModel.displayName}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground bg-muted px-1 rounded shrink-0">
+                    ${selectedModel.inputPrice}/${selectedModel.outputPrice}
+                  </span>
                 </span>
               ) : (
                 <span className="text-muted-foreground">选择模型</span>

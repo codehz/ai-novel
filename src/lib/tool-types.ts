@@ -43,7 +43,7 @@ export interface OutputSchema {
 }
 
 export interface PromptSet {
-  system?: string;
+  systemTemplate?: string;
   userTemplate: string;
   examples?: { input: any; output: any }[];
 }

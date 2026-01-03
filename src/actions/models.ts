@@ -23,6 +23,8 @@ export interface ProviderWithModels {
     modelId: number;
     displayName: string;
     modelName: string;
+    inputPrice: number;
+    outputPrice: number;
   }>;
 }
 
@@ -43,6 +45,8 @@ export async function getAvailableModels(): Promise<ProviderWithModels[]> {
       modelId: model.id,
       displayName: model.displayName,
       modelName: model.modelName,
+      inputPrice: model.inputPrice || 0,
+      outputPrice: model.outputPrice || 0,
     })),
   }));
 }
