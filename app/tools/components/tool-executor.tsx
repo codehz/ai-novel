@@ -3,6 +3,7 @@
 
 import { clearToolHistory, deleteToolHistory, executeTool, getToolHistory } from "@/src/actions/tools";
 import { ToolConfig, ToolHistoryItem } from "@/src/lib/tool-types";
+import { AutoTransition } from "@codehz/auto-transition";
 import { useEffect, useState } from "react";
 import { DynamicForm } from "./dynamic-form";
 import { DynamicResult } from "./dynamic-result";
@@ -123,10 +124,10 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
         {error && <div className="p-4 rounded-lg bg-destructive/10 text-destructive text-sm">{error}</div>}
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <AutoTransition as="div" className="flex items-center justify-between relative">
             <h2 className="text-lg font-semibold">生成结果</h2>
             {results.length > 0 && <span className="text-sm text-muted-foreground">{results.length} 个结果</span>}
-          </div>
+          </AutoTransition>
           <DynamicResult schema={config.outputSchema} results={results} isLoading={isLoading} />
         </div>
       </div>

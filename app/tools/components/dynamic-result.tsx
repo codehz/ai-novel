@@ -2,6 +2,7 @@
 "use client";
 
 import { OutputSchema } from "@/src/lib/tool-types";
+import { AutoTransition } from "@codehz/auto-transition";
 import { Check, Copy, Flag, Heart, LucideIcon, MapPin, Tag, Zap } from "lucide-react";
 import { useState } from "react";
 
@@ -11,10 +12,17 @@ interface DynamicResultProps {
   isLoading: boolean;
 }
 
-export function DynamicResult({ schema, results, isLoading }: DynamicResultProps) {
+export function DynamicResult(props: DynamicResultProps) {
+  return (
+    <AutoTransition as="div" className="relative">
+      <DynamicResultInner {...props} />
+    </AutoTransition>
+  );
+}
+function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) {
   if (isLoading) {
     return (
-      <div className="grid gap-6 md:grid-cols-2">
+      <div key="loading" className="grid gap-6 md:grid-cols-2">
         {[...Array(4)].map((_, i) => (
           <div key={i} className="h-48 rounded-2xl border border-border bg-card animate-pulse" />
         ))}
@@ -28,16 +36,16 @@ export function DynamicResult({ schema, results, isLoading }: DynamicResultProps
 
   if (schema.type === "card-list") {
     return (
-      <div className="grid gap-6 md:grid-cols-2">
+      <AutoTransition as="div" key="card-list" className="grid gap-6 md:grid-cols-2">
         {results.map((result, index) => (
           <ResultCard key={result.id || index} result={result} schema={schema} />
         ))}
-      </div>
+      </AutoTransition>
     );
   }
 
   return (
-    <div className="p-4 rounded-xl border border-border bg-card">
+    <div key="json" className="p-4 rounded-xl border border-border bg-card">
       <pre className="whitespace-pre-wrap text-sm">{JSON.stringify(results, null, 2)}</pre>
     </div>
   );
