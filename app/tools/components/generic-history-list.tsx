@@ -52,7 +52,10 @@ function GenericHistoryListInner({ history, onSelect, onDelete, onClear, current
         </button>
       </div>
 
-      <AutoTransition as="div" className="grid gap-2 max-h-150 overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
+      <AutoTransition
+        as="div"
+        className="grid gap-2 max-h-150 overflow-y-auto overflow-x-hidden -m-1 p-1 pr-2 custom-scrollbar"
+      >
         {history.map((item) => {
           // Try to find a meaningful title from inputs
           const title =
@@ -71,7 +74,7 @@ function GenericHistoryListInner({ history, onSelect, onDelete, onClear, current
             >
               <div className="flex items-center gap-2 min-w-0">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate pr-6" title={String(title)}>
+                  <p className="text-sm font-medium truncate" title={String(title)}>
                     {String(title)}
                   </p>
                 </div>
