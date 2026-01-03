@@ -71,6 +71,6 @@
 - 模型调用时注意记录日志，便于后续成本分析和调试。
 - 新增工具时遵循工具箱组件结构，保持一致的UI/UX。
 - AI 模型使用：通过 `aiRegistry.getModel(providerId, modelId)` 获取包装后的模型实例，自动应用日志和缓存。
-- 调用日志追踪：在 `providerOptions` 中传入 `callReason` 参数用于日志分类（如 `"/tools/seed-expander"`）。
+- 调用日志追踪：在 `providerOptions` 中传入 `logging: { callReason: <reason> }` 参数用于日志分类（如 `"/tools/seed-expander"`）。
 - 提供商扩展：新增提供商类型时，在 `provider-factory.ts` 中添加对应的创建逻辑。
 - 缓存管理：模型配置变更后自动失效缓存，无需手动处理。

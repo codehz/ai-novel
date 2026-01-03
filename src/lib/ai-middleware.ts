@@ -15,8 +15,8 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
     ...model,
     async doGenerate(options: LanguageModelV3CallOptions) {
       const startTime = Date.now();
-      const providerOptions = (options.providerOptions as Record<string, unknown>) || {};
-      const { callReason = "unknown", ...restProviderOptions } = providerOptions;
+      const providerOptions = options.providerOptions || {};
+      const { logging: { callReason = "unknown" } = {}, ...restProviderOptions } = providerOptions;
 
       const sanitizedOptions: LanguageModelV3CallOptions = {
         ...options,
@@ -71,8 +71,8 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
 
     async doStream(options: LanguageModelV3CallOptions) {
       const startTime = Date.now();
-      const providerOptions = (options.providerOptions as Record<string, unknown>) || {};
-      const { callReason = "unknown", ...restProviderOptions } = providerOptions;
+      const providerOptions = options.providerOptions || {};
+      const { logging: { callReason = "unknown" } = {}, ...restProviderOptions } = providerOptions;
 
       const sanitizedOptions: LanguageModelV3CallOptions = {
         ...options,
