@@ -12,6 +12,7 @@ interface ModalFormProps {
   submitLabel?: string;
   loadingLabel?: string;
   className?: string;
+  maxWidth?: string;
 }
 
 export function ModalForm({
@@ -23,10 +24,13 @@ export function ModalForm({
   submitLabel = "保存",
   loadingLabel = "保存中...",
   className = "",
+  maxWidth = "max-w-md",
 }: ModalFormProps) {
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+      <div
+        className={`bg-card rounded-2xl shadow-2xl w-full ${maxWidth} overflow-hidden animate-in fade-in zoom-in duration-200`}
+      >
         <div className="flex items-center justify-between p-6 border-b border-border">
           <h3 className="text-xl font-bold">{title}</h3>
           <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors">

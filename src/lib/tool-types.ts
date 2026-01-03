@@ -57,6 +57,7 @@ export interface ToolConfig {
   outputSchema: OutputSchema;
   prompts?: PromptSet;
   version: string;
+  isEnabled?: boolean;
 }
 
 export interface ToolExecutionResult {

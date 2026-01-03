@@ -7,7 +7,7 @@ import { getToolExecutor } from "@/src/lib/tool-executors";
 import { toolHistoryStore } from "@/src/lib/tool-history-store";
 import { getToolConfig } from "@/src/lib/tool-registry";
 import { toolRegistryCache } from "@/src/lib/tool-registry-cache";
-import { ToolExecutionResult, ToolHistoryItem } from "@/src/lib/tool-types";
+import { ToolConfig, ToolExecutionResult, ToolHistoryItem } from "@/src/lib/tool-types";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -101,6 +101,21 @@ export async function deleteToolHistory(id: number): Promise<boolean> {
 
 export async function clearToolHistory(toolId: string): Promise<boolean> {
   return toolHistoryStore.clear(toolId);
+}
+
+export async function getAllToolConfigs(): Promise<ToolConfig[]> {
+  const configs = await db.query.toolConfigs.findMany();
+  return configs.map((config) => ({
+    id: config.toolId,
+    name: config.name,
+    description: config.description,
+    icon: config.icon,
+    version: config.version,
+    inputSchema: config.inputSchema,
+    outputSchema: config.outputSchema,
+    prompts: config.prompts || undefined,
+    isEnabled: config.isEnabled,
+  }));
 }
 
 export async function upsertToolConfig(data: any) {

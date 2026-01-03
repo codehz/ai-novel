@@ -37,6 +37,7 @@ class ToolRegistryCache {
       inputSchema: config.inputSchema,
       outputSchema: config.outputSchema,
       prompts: config.prompts || undefined,
+      isEnabled: config.isEnabled,
     };
 
     this.toolCache.set(toolId, tool);
@@ -61,6 +62,7 @@ class ToolRegistryCache {
       inputSchema: config.inputSchema,
       outputSchema: config.outputSchema,
       prompts: config.prompts || undefined,
+      isEnabled: config.isEnabled,
     }));
 
     this.allToolsCache = tools;
