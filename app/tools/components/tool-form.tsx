@@ -8,6 +8,9 @@ import { Switch } from "@/app/components/switch";
 import { upsertToolConfig } from "@/src/actions/tools";
 import { InputSchema, OutputSchema, PromptSet, ToolConfig } from "@/src/lib/tool-types";
 import { useState } from "react";
+import { InputSchemaEditor } from "./input-schema-editor";
+import { OutputSchemaEditor } from "./output-schema-editor";
+import { PromptSetEditor } from "./prompt-set-editor";
 
 interface ToolFormProps {
   tool?: ToolConfig;
@@ -27,13 +30,9 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
     isEnabled: tool?.isEnabled ?? true,
   });
 
-  const [inputSchema, setInputSchema] = useState<string>(
-    JSON.stringify(tool?.inputSchema || { fields: [], submitLabel: "执行" }, null, 2),
-  );
-  const [outputSchema, setOutputSchema] = useState<string>(
-    JSON.stringify(tool?.outputSchema || { type: "text" }, null, 2),
-  );
-  const [prompts, setPrompts] = useState<string>(JSON.stringify(tool?.prompts || { userTemplate: "" }, null, 2));
+  const [inputSchema, setInputSchema] = useState<InputSchema>(tool?.inputSchema || { fields: [], submitLabel: "执行" });
+  const [outputSchema, setOutputSchema] = useState<OutputSchema>(tool?.outputSchema || { type: "text" });
+  const [prompts, setPrompts] = useState<PromptSet>(tool?.prompts || { userTemplate: "" });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,34 +40,11 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
     setError(null);
 
     try {
-      // Validate JSON
-      let parsedInputSchema: InputSchema;
-      let parsedOutputSchema: OutputSchema;
-      let parsedPrompts: PromptSet | undefined;
-
-      try {
-        parsedInputSchema = JSON.parse(inputSchema);
-      } catch {
-        throw new Error("输入模式 JSON 格式错误");
-      }
-
-      try {
-        parsedOutputSchema = JSON.parse(outputSchema);
-      } catch {
-        throw new Error("输出模式 JSON 格式错误");
-      }
-
-      try {
-        parsedPrompts = prompts ? JSON.parse(prompts) : undefined;
-      } catch {
-        throw new Error("提示词配置 JSON 格式错误");
-      }
-
       await upsertToolConfig({
         ...formData,
-        inputSchema: parsedInputSchema,
-        outputSchema: parsedOutputSchema,
-        prompts: parsedPrompts,
+        inputSchema,
+        outputSchema,
+        prompts,
       });
 
       onClose();
@@ -154,35 +130,22 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
         <IconPicker value={formData.icon} onChange={(icon) => setFormData({ ...formData, icon })} disabled={loading} />
       </FormField>
 
-      <div className="space-y-4 pt-4 border-t border-border">
-        <FormField label="输入模式 (InputSchema JSON)" required>
-          <textarea
-            value={inputSchema}
-            onChange={(e) => setInputSchema(e.target.value)}
-            disabled={loading}
-            className="w-full p-2 rounded-lg border border-input bg-background font-mono text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-40"
-            required
-          />
-        </FormField>
+      <div className="space-y-8 pt-6 mt-6 border-t border-border">
+        <div className="p-4 rounded-2xl border border-border bg-muted/5 space-y-6">
+          <InputSchemaEditor value={inputSchema} onChange={setInputSchema} />
+        </div>
 
-        <FormField label="输出模式 (OutputSchema JSON)" required>
-          <textarea
-            value={outputSchema}
-            onChange={(e) => setOutputSchema(e.target.value)}
-            disabled={loading}
-            className="w-full p-2 rounded-lg border border-input bg-background font-mono text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-40"
-            required
-          />
-        </FormField>
+        <div className="p-4 rounded-2xl border border-border bg-muted/5 space-y-6">
+          <OutputSchemaEditor value={outputSchema} onChange={setOutputSchema} />
+        </div>
 
-        <FormField label="提示词配置 (PromptSet JSON)">
-          <textarea
+        <div className="p-4 rounded-2xl border border-border bg-muted/5 space-y-6">
+          <PromptSetEditor
             value={prompts}
-            onChange={(e) => setPrompts(e.target.value)}
-            disabled={loading}
-            className="w-full p-2 rounded-lg border border-input bg-background font-mono text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 min-h-40"
+            onChange={setPrompts}
+            availableFields={inputSchema.fields.map((f) => f.name)}
           />
-        </FormField>
+        </div>
       </div>
     </ModalForm>
   );
