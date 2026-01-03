@@ -131,7 +131,7 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
         </div>
       </div>
 
-      <div className="hidden lg:block sticky top-8">
+      <div className="hidden lg:block sticky lg:top-20 top-8">
         <GenericHistoryList
           history={history}
           onSelect={handleSelectHistory}
