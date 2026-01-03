@@ -2,7 +2,7 @@
 
 import { getAvailableModels, type ProviderWithModels } from "@/src/actions/models";
 import { ChevronDown, Package } from "lucide-react";
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 
 interface ModelSelectorProps {
   selectedProviderId?: number;
@@ -27,11 +27,11 @@ export function ModelSelector({
     const loadModels = async () => {
       try {
         const data = await getAvailableModels();
-        setProviders(data);
+        startTransition(() => setProviders(data));
       } catch (error) {
         console.error("Failed to load models", error);
       } finally {
-        setIsLoading(false);
+        startTransition(() => setIsLoading(false));
       }
     };
 
@@ -62,7 +62,7 @@ export function ModelSelector({
       <div className="relative flex items-center">
         <button
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => startTransition(() => setIsOpen(!isOpen))}
           disabled={disabled}
           className="w-full flex items-center justify-between h-10 px-4 rounded-lg border border-border bg-card text-foreground text-sm hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
@@ -87,7 +87,7 @@ export function ModelSelector({
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              onClear?.();
+              startTransition(() => onClear?.());
             }}
             className="absolute right-10 p-1 hover:bg-destructive/10 rounded text-muted-foreground hover:text-destructive transition-colors"
             title="清除选择"
@@ -111,10 +111,12 @@ export function ModelSelector({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    onSelectModel(provider.providerId, model.modelId);
-                    setIsOpen(false);
+                    startTransition(() => {
+                      onSelectModel(provider.providerId, model.modelId);
+                      setIsOpen(false);
+                    });
                   }}
-                  className={`w-full text-left px-4 py-3 text-sm transition-colors border-b border-border/50 last:border-b-0 ${
+                  className={`cursor-pointer w-full text-left px-4 py-3 text-sm transition-colors border-b border-border/50 last:border-b-0 ${
                     selectedModelId === model.modelId && selectedProviderId === provider.providerId
                       ? "bg-primary/10 text-primary font-medium"
                       : "hover:bg-muted/50 text-foreground"
