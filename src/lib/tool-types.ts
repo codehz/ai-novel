@@ -35,7 +35,6 @@ export interface CategoryConfig {
 
 export interface OutputSchema {
   type: OutputRenderType;
-  fields?: OutputField[]; // For structured output like card-list
   titleField?: string; // Which field to use as title in card
   descriptionField?: string; // Which field to use as description in card
   categoryField?: string; // Which field to use for categorization/grouping
