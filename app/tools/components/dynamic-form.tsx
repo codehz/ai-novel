@@ -48,17 +48,14 @@ export function DynamicForm({
 
   return (
     <div className="space-y-6">
-      <div className="p-4 rounded-xl border border-border bg-card/50 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium text-muted-foreground">选择模型</h3>
-          <ModelSelector
-            selectedProviderId={selectedProviderId}
-            selectedModelId={selectedModelId}
-            onSelectModel={onSelectModel}
-            disabled={isLoading}
-          />
-        </div>
-      </div>
+      <FormField label="选择模型" required>
+        <ModelSelector
+          selectedProviderId={selectedProviderId}
+          selectedModelId={selectedModelId}
+          onSelectModel={onSelectModel}
+          disabled={isLoading}
+        />
+      </FormField>
 
       <div className="space-y-4">
         {schema.fields.map((field) => (
