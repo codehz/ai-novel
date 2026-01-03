@@ -1,7 +1,7 @@
 "use client";
 
 import { ToolHistoryItem } from "@/src/lib/tool-types";
-import { AutoTransition } from "@codehz/auto-transition";
+import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import { ChevronRight, Clock, History, Trash2 } from "lucide-react";
 
 interface GenericHistoryListProps {
@@ -12,13 +12,7 @@ interface GenericHistoryListProps {
   currentId?: string;
 }
 
-export function GenericHistoryList(props: GenericHistoryListProps) {
-  return (
-    <AutoTransition as="div" className="relative">
-      <GenericHistoryListInner {...props} />
-    </AutoTransition>
-  );
-}
+export const GenericHistoryList = withAutoTransition(GenericHistoryListInner, { as: "div", className: "relative" });
 
 function GenericHistoryListInner({ history, onSelect, onDelete, onClear, currentId }: GenericHistoryListProps) {
   if (history.length === 0) {

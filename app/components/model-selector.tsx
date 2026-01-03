@@ -1,7 +1,7 @@
 "use client";
 
 import { getAvailableModels, type ProviderWithModels } from "@/src/actions/models";
-import { AutoTransition } from "@codehz/auto-transition";
+import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import { ChevronDown, Package } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Dropdown } from "./dropdown";
@@ -14,13 +14,7 @@ interface ModelSelectorProps {
   disabled?: boolean;
 }
 
-export function ModelSelector(props: ModelSelectorProps) {
-  return (
-    <AutoTransition as="div" className="relative">
-      <ModelSelectorInner {...props} />
-    </AutoTransition>
-  );
-}
+export const ModelSelector = withAutoTransition(ModelSelectorInner, { as: "div", className: "relative" });
 
 function ModelSelectorInner({
   selectedProviderId,

@@ -2,7 +2,7 @@
 "use client";
 
 import { OutputSchema } from "@/src/lib/tool-types";
-import { AutoTransition } from "@codehz/auto-transition";
+import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import * as Icons from "lucide-react";
 import { Check, Copy, Heart } from "lucide-react";
 import { useState } from "react";
@@ -13,13 +13,7 @@ interface DynamicResultProps {
   isLoading: boolean;
 }
 
-export function DynamicResult(props: DynamicResultProps) {
-  return (
-    <AutoTransition as="div" className="relative">
-      <DynamicResultInner {...props} />
-    </AutoTransition>
-  );
-}
+export const DynamicResult = withAutoTransition(DynamicResultInner, { as: "div", className: "relative" });
 function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) {
   if (isLoading) {
     return (

@@ -6,7 +6,7 @@
       "name": "ai-novel",
       "dependencies": {
         "@ai-sdk/openai-compatible": "^2.0.2",
-        "@codehz/auto-transition": "^0.0.2",
+        "@codehz/auto-transition": "^0.0.3",
         "@codehz/workflow-bun-sqlite": "^0.0.1",
         "@toolwind/anchors": "^1.0.10",
         "ai": "^6.0.5",
@@ -152,7 +152,7 @@
 
     "@cbor-extract/cbor-extract-win32-x64": ["@cbor-extract/cbor-extract-win32-x64@2.2.0", "", { "os": "win32", "cpu": "x64" }, "sha512-l2M+Z8DO2vbvADOBNLbbh9y5ST1RY5sqkWOg/58GkUPBYou/cuNZ68SGQ644f1CvZ8kcOxyZtw06+dxWHIoN/w=="],
 
-    "@codehz/auto-transition": ["@codehz/auto-transition@0.0.2", "", { "dependencies": { "@radix-ui/react-slot": "^1.2.4" }, "peerDependencies": { "react": "^19.2.3" } }, "sha512-N/nmLloVUY8QpIqD/Jyc/qWQRXi2+1q3PSaEkpDMK0ARvtAnIMn5TJ+aXWL2oBkkSY9iWA+ttKmFnvKaRsBEAw=="],
+    "@codehz/auto-transition": ["@codehz/auto-transition@0.0.3", "", { "dependencies": { "@radix-ui/react-slot": "^1.2.4" }, "peerDependencies": { "react": "^19.2.3" } }, "sha512-WF9kZYboHgZhsX2kBSrFFDux0Mnt8teiIF3vgm2hEgzXXlae2Iq0WOYJMiq0FDtBzxdd4A7b14vIMdFOoAPIWw=="],
 
     "@codehz/workflow-bun-sqlite": ["@codehz/workflow-bun-sqlite@0.0.1", "", { "dependencies": { "@vercel/queue": "^0.0.0-alpha.33", "@workflow/errors": "^4.0.1-beta.13", "@workflow/world": "^4.0.1-beta.11", "@workflow/world-local": "^4.0.1-beta.24", "cbor-x": "^1.6.0", "drizzle-orm": "^0.45.1", "ulid": "^3.0.2", "zod": "^4.3.4" }, "peerDependencies": { "typescript": "^5" } }, "sha512-EIbWPTco8Xs7JHiEZz4Bf2lrYttn35xssoCYqBtpO74qqZ59dS1t9I57Bf0uqHA5YrRAArXWoNJuSFTdtTDBlA=="],
 
