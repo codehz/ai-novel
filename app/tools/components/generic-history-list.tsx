@@ -40,7 +40,7 @@ export function GenericHistoryList({ history, onSelect, onDelete, onClear, curre
         </button>
       </div>
 
-      <div className="grid gap-2 max-h-[600px] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
+      <div className="grid gap-2 max-h-150 overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
         {history.map((item) => {
           // Try to find a meaningful title from inputs
           const title =

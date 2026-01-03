@@ -70,7 +70,7 @@ export function DynamicForm({
                   onChange={(e) => handleFieldChange(field.name, e.target.value)}
                   placeholder={field.placeholder}
                   disabled={isLoading}
-                  className="w-full min-h-[120px] p-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 resize-y transition-all"
+                  className="w-full min-h-30 p-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 resize-y transition-all"
                   maxLength={field.maxLength}
                 />
                 {field.maxLength && (
