@@ -27,6 +27,23 @@ export const TOOLS_CONFIG: Record<string, ToolConfig> = {
       titleField: "title",
       descriptionField: "description",
       categoryField: "category",
+      categories: {
+        plot_direction: {
+          label: "情节方向",
+          icon: "MapPin",
+          color: "text-blue-500 bg-blue-500/10",
+        },
+        conflict: {
+          label: "冲突点",
+          icon: "Zap",
+          color: "text-amber-500 bg-amber-500/10",
+        },
+        ending_variant: {
+          label: "结局变体",
+          icon: "Flag",
+          color: "text-purple-500 bg-purple-500/10",
+        },
+      },
     },
     prompts: {
       userTemplate: "请根据以下种子想法生成扩展情节：{{idea}}",

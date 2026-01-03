@@ -27,12 +27,19 @@ export interface OutputField {
   type: "string" | "number" | "boolean" | "json";
 }
 
+export interface CategoryConfig {
+  label: string;
+  icon?: string; // Icon name from lucide
+  color?: string; // Tailwind color classes
+}
+
 export interface OutputSchema {
   type: OutputRenderType;
   fields?: OutputField[]; // For structured output like card-list
   titleField?: string; // Which field to use as title in card
   descriptionField?: string; // Which field to use as description in card
   categoryField?: string; // Which field to use for categorization/grouping
+  categories?: Record<string, CategoryConfig>;
 }
 
 export interface PromptSet {

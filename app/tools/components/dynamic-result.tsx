@@ -3,7 +3,8 @@
 
 import { OutputSchema } from "@/src/lib/tool-types";
 import { AutoTransition } from "@codehz/auto-transition";
-import { Check, Copy, Flag, Heart, LucideIcon, MapPin, Tag, Zap } from "lucide-react";
+import * as Icons from "lucide-react";
+import { Check, Copy, Heart } from "lucide-react";
 import { useState } from "react";
 
 interface DynamicResultProps {
@@ -51,26 +52,6 @@ function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) 
   );
 }
 
-// Hardcoded category config for seed-expander compatibility
-// In a fully data-driven approach, this should be part of the tool config
-const CATEGORY_CONFIG: Record<string, { label: string; icon: LucideIcon; color: string }> = {
-  plot_direction: {
-    label: "情节方向",
-    icon: MapPin,
-    color: "text-blue-500 bg-blue-500/10",
-  },
-  conflict: {
-    label: "冲突点",
-    icon: Zap,
-    color: "text-amber-500 bg-amber-500/10",
-  },
-  ending_variant: {
-    label: "结局变体",
-    icon: Flag,
-    color: "text-purple-500 bg-purple-500/10",
-  },
-};
-
 function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
   const [isCopied, setIsCopied] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -87,12 +68,12 @@ function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
 
   let categoryEl = null;
   if (category) {
-    const config = CATEGORY_CONFIG[category] || {
+    const config = schema.categories?.[category] || {
       label: category,
-      icon: Tag,
+      icon: "Tag",
       color: "text-muted-foreground bg-muted",
     };
-    const Icon = config.icon;
+    const Icon = (Icons as any)[config.icon || "Tag"] || Icons.Tag;
     categoryEl = (
       <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium ${config.color}`}>
         <Icon className="w-3 h-3" />
