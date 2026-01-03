@@ -47,7 +47,14 @@ export function ToolManager({ tools }: ToolManagerProps) {
         {tools.map((tool) => (
           <ItemCard
             key={tool.id}
-            title={tool.name}
+            title={
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-primary/10">
+                  <ToolIcon name={tool.icon} className="w-4 h-4 text-primary" />
+                </div>
+                {tool.name}
+              </div>
+            }
             subtitle={tool.id}
             isEnabled={tool.isEnabled}
             onToggle={() => handleToggleStatus(tool.id, !!tool.isEnabled)}
@@ -56,9 +63,6 @@ export function ToolManager({ tools }: ToolManagerProps) {
             deleteConfirmMessage="确定要删除这个工具吗？这将同时删除所有相关的历史记录。"
           >
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-lg bg-primary/10">
-                <ToolIcon name={tool.icon} className="w-4 h-4 text-primary" />
-              </div>
               <span className="text-xs font-mono bg-muted px-1.5 py-0.5 rounded text-muted-foreground">
                 v{tool.version}
               </span>

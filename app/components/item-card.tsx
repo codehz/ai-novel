@@ -2,7 +2,7 @@ import { Edit2, Power, Trash2 } from "lucide-react";
 import { ReactNode } from "react";
 
 interface ItemCardProps {
-  title: string;
+  title: ReactNode;
   subtitle?: string;
   isEnabled?: boolean;
   onToggle?: () => void;
@@ -29,10 +29,8 @@ export function ItemCard({
       }`}
     >
       <div className="flex justify-between items-start mb-3">
-        <div className="min-w-0 flex-1">
-          <h3 className="font-bold text-foreground truncate" title={title}>
-            {title}
-          </h3>
+        <div className="min-w-0 flex-1 space-y-2">
+          <h3 className="font-bold text-foreground truncate">{title}</h3>
           {subtitle && (
             <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono truncate" title={subtitle}>
               {subtitle}
