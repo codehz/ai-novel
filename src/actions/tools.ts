@@ -121,6 +121,19 @@ export async function getAllToolConfigs(): Promise<ToolConfig[]> {
 export async function upsertToolConfig(data: any) {
   const { toolId, ...rest } = data;
 
+  // Validate hue values in outputSchema.categories
+  if (rest.outputSchema?.categories) {
+    for (const [categoryId, config] of Object.entries(rest.outputSchema.categories)) {
+      const categoryConfig = config as any;
+      if (categoryConfig.hue !== undefined) {
+        const hue = categoryConfig.hue;
+        if (typeof hue !== "number" || hue < 0 || hue > 360) {
+          throw new Error(`Invalid hue value for category "${categoryId}": must be between 0 and 360`);
+        }
+      }
+    }
+  }
+
   await db
     .insert(toolConfigs)
     .values({

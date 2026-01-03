@@ -30,7 +30,7 @@ export interface OutputField {
 export interface CategoryConfig {
   label: string;
   icon?: string; // Icon name from lucide
-  color?: string; // Tailwind color classes
+  hue?: number; // HSL hue value (0-360)
 }
 
 export interface OutputSchema {

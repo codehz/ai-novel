@@ -35,7 +35,7 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
   const addCategory = () => {
     const categories = { ...(value.categories || {}) };
     const id = `cat_${Object.keys(categories).length + 1}`;
-    categories[id] = { label: "新分类", icon: "Tag", color: "text-primary bg-primary/10" };
+    categories[id] = { label: "新分类", icon: "Tag", hue: 210 }; // Default to PRIMARY blue
     updateSchema({ categories });
   };
 
@@ -212,15 +212,28 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">
-                        颜色样式 (Tailwind)
+                        颜色 (HSL Hue: 0-360)
                       </label>
-                      <input
-                        type="text"
-                        value={cat.color || ""}
-                        onChange={(e) => updateCategory(id, { color: e.target.value })}
-                        placeholder="text-blue-500 bg-blue-500/10"
-                        className="w-full p-1.5 text-xs rounded border border-input bg-background font-mono"
-                      />
+                      <div className="flex gap-2">
+                        <input
+                          type="number"
+                          min="0"
+                          max="360"
+                          value={cat.hue !== undefined ? cat.hue : ""}
+                          onChange={(e) =>
+                            updateCategory(id, { hue: e.target.value ? parseInt(e.target.value) : undefined })
+                          }
+                          placeholder="0-360"
+                          className="w-full p-1.5 text-xs rounded border border-input bg-background"
+                        />
+                        {cat.hue !== undefined && (
+                          <div
+                            className="w-10 h-10 rounded border border-border"
+                            style={{ backgroundColor: `hsl(${cat.hue}, 70%, 50%)` }}
+                            title={`hsl(${cat.hue}, 70%, 50%)`}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

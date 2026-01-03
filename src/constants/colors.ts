@@ -69,3 +69,47 @@ export const COLOR_CLASSES = {
     PRIMARY: "border-primary",
   },
 } as const;
+
+/**
+ * 分类配置的 HSL Hue 预设值 (0-360)
+ * 用于替代 Tailwind 动态类名方案
+ */
+export const CATEGORY_HUES = {
+  PRIMARY: 210, // 蓝色
+  SECONDARY: 270, // 紫色
+  SUCCESS: 160, // 绿色
+  WARNING: 45, // 琥珀/黄色
+  DESTRUCTIVE: 0, // 红色
+  INFO: 210, // 蓝色
+  // 其他常见颜色
+  CYAN: 187,
+  TEAL: 174,
+  ROSE: 340,
+  PINK: 330,
+  INDIGO: 243,
+  VIOLET: 280,
+} as const;
+
+/**
+ * 将 HSL hue 值转换为完整的 HSL 颜色字符串
+ * @param hue - HSL hue 值 (0-360)
+ * @param saturation - 饱和度百分比，默认为 100
+ * @returns CSS 可用的 hsl() 字符串，支持浅/深色模式自动切换
+ */
+export function toHslColor(hue: number, saturation: number = 100): string {
+  // 在浅色模式下使用较深的亮度(30%)，在深色模式下使用较亮的亮度(60%)
+  // 使用 light-dark() CSS 函数自动根据系统偏好切换
+  return `light-dark(hsl(${hue}, ${saturation}%, 30%), hsl(${hue}, ${saturation}%, 60%))`;
+}
+
+/**
+ * 获取分类配置的样式对象
+ * @param hue - HSL hue 值，默认为 PRIMARY (210)
+ * @returns 包含 color 和 backgroundColor 的 React 样式对象
+ */
+export function getCategoryStyle(hue: number = CATEGORY_HUES.PRIMARY): React.CSSProperties {
+  return {
+    color: `light-dark(hsl(${hue}, 100%, 30%), hsl(${hue}, 100%, 60%))`,
+    backgroundColor: `light-dark(hsl(${hue}, 100%, 95%), hsl(${hue}, 100%, 15%))`,
+  };
+}
