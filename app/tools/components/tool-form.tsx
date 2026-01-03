@@ -4,6 +4,7 @@
 import { FormField } from "@/app/components/form-field";
 import { IconPicker } from "@/app/components/icon-picker";
 import { ModalForm } from "@/app/components/modal-form";
+import { Switch } from "@/app/components/switch";
 import { upsertToolConfig } from "@/src/actions/tools";
 import { InputSchema, OutputSchema, PromptSet, ToolConfig } from "@/src/lib/tool-types";
 import { useState } from "react";
@@ -89,6 +90,18 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
     >
       {error && <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-lg">{error}</div>}
 
+      <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border/50 mb-2">
+        <div className="space-y-0.5">
+          <div className="text-sm font-medium">启用状态</div>
+          <div className="text-xs text-muted-foreground">控制该工具是否在工作流中可用</div>
+        </div>
+        <Switch
+          checked={formData.isEnabled}
+          onChange={(checked) => setFormData({ ...formData, isEnabled: checked })}
+          disabled={loading}
+        />
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <FormField label="工具 ID" required>
           <input
@@ -137,27 +150,9 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
         />
       </FormField>
 
-      <div className="grid grid-cols-2 gap-4">
-        <FormField label="图标 (Lucide 名称)">
-          <IconPicker
-            value={formData.icon}
-            onChange={(icon) => setFormData({ ...formData, icon })}
-            disabled={loading}
-          />
-        </FormField>
-        <div className="flex items-center pt-8">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={formData.isEnabled}
-              onChange={(e) => setFormData({ ...formData, isEnabled: e.target.checked })}
-              disabled={loading}
-              className="w-4 h-4 rounded border-input text-primary focus:ring-primary/20"
-            />
-            <span className="text-sm font-medium">启用工具</span>
-          </label>
-        </div>
-      </div>
+      <FormField label="图标 (Lucide 名称)">
+        <IconPicker value={formData.icon} onChange={(icon) => setFormData({ ...formData, icon })} disabled={loading} />
+      </FormField>
 
       <div className="space-y-4 pt-4 border-t border-border">
         <FormField label="输入模式 (InputSchema JSON)" required>

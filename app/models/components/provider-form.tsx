@@ -2,6 +2,7 @@
 
 import { FormField } from "@/app/components/form-field";
 import { ModalForm } from "@/app/components/modal-form";
+import { Switch } from "@/app/components/switch";
 import { upsertProvider } from "@/src/actions/models";
 import { modelProviders } from "@/src/db/schema";
 import { useState } from "react";
@@ -58,6 +59,18 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
       onSubmit={handleSubmit}
       loading={loading}
     >
+      <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border/50 mb-2">
+        <div className="space-y-0.5">
+          <div className="text-sm font-medium">启用状态</div>
+          <div className="text-xs text-muted-foreground">控制该提供商及其下的所有模型是否可用</div>
+        </div>
+        <Switch
+          checked={formData.isEnabled}
+          onChange={(checked) => setFormData({ ...formData, isEnabled: checked })}
+          disabled={loading}
+        />
+      </div>
+
       <FormField label="提供商名称" required>
         <input
           required
@@ -114,19 +127,6 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
           className={inputClass + " font-mono text-sm"}
         />
       </FormField>
-
-      <div className="flex items-center gap-2 pt-2">
-        <input
-          type="checkbox"
-          id="isEnabled"
-          checked={formData.isEnabled}
-          onChange={(e) => setFormData({ ...formData, isEnabled: e.target.checked })}
-          className="w-4 h-4 text-primary rounded focus:ring-ring"
-        />
-        <label htmlFor="isEnabled" className="text-sm font-medium text-foreground">
-          启用该提供商
-        </label>
-      </div>
     </ModalForm>
   );
 }

@@ -2,6 +2,7 @@
 
 import { FormField } from "@/app/components/form-field";
 import { ModalForm } from "@/app/components/modal-form";
+import { Switch } from "@/app/components/switch";
 import { upsertModel } from "@/src/actions/models";
 import { models } from "@/src/db/schema";
 import { useState } from "react";
@@ -81,6 +82,18 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
       loading={loading}
       className="max-h-[80vh] overflow-y-auto"
     >
+      <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border/50 mb-2">
+        <div className="space-y-0.5">
+          <div className="text-sm font-medium">启用状态</div>
+          <div className="text-xs text-muted-foreground">控制该模型是否在对话或工作流中可用</div>
+        </div>
+        <Switch
+          checked={formData.isEnabled}
+          onChange={(checked) => setFormData({ ...formData, isEnabled: checked })}
+          disabled={loading}
+        />
+      </div>
+
       <FormField label="显示名称" required>
         <input
           required
@@ -177,19 +190,6 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
           className={inputClass + " font-mono text-sm"}
         />
       </FormField>
-
-      <div className="flex items-center gap-2 pt-2">
-        <input
-          type="checkbox"
-          id="modelIsEnabled"
-          checked={formData.isEnabled}
-          onChange={(e) => setFormData({ ...formData, isEnabled: e.target.checked })}
-          className="w-4 h-4 text-primary rounded focus:ring-ring"
-        />
-        <label htmlFor="modelIsEnabled" className="text-sm font-medium text-foreground">
-          启用该模型
-        </label>
-      </div>
     </ModalForm>
   );
 }
