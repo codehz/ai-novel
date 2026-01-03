@@ -2,11 +2,14 @@
 "use server";
 
 import { db } from "@/src/db";
+import { toolConfigs } from "@/src/db/schema";
 import { getToolExecutor } from "@/src/lib/tool-executors";
 import { toolHistoryStore } from "@/src/lib/tool-history-store";
 import { getToolConfig } from "@/src/lib/tool-registry";
+import { toolRegistryCache } from "@/src/lib/tool-registry-cache";
 import { ToolExecutionResult, ToolHistoryItem } from "@/src/lib/tool-types";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function executeTool(
   toolId: string,
@@ -14,12 +17,12 @@ export async function executeTool(
   providerId?: number,
   modelId?: number,
 ): Promise<ToolExecutionResult> {
-  const config = getToolConfig(toolId);
+  const config = await getToolConfig(toolId);
   if (!config) {
     return { success: false, error: "Tool not found" };
   }
 
-  const executor = getToolExecutor(toolId);
+  const executor = await getToolExecutor(toolId);
   if (!executor) {
     return { success: false, error: "Tool executor not implemented" };
   }
@@ -98,4 +101,39 @@ export async function deleteToolHistory(id: number): Promise<boolean> {
 
 export async function clearToolHistory(toolId: string): Promise<boolean> {
   return toolHistoryStore.clear(toolId);
+}
+
+export async function upsertToolConfig(data: any) {
+  const { toolId, ...rest } = data;
+
+  await db
+    .insert(toolConfigs)
+    .values({
+      toolId,
+      ...rest,
+      updatedAt: new Date(),
+    })
+    .onConflictDoUpdate({
+      target: toolConfigs.toolId,
+      set: {
+        ...rest,
+        updatedAt: new Date(),
+      },
+    });
+
+  toolRegistryCache.invalidateTool(toolId);
+  revalidatePath("/tools");
+}
+
+export async function deleteToolConfig(toolId: string) {
+  await db.delete(toolConfigs).where(eq(toolConfigs.toolId, toolId));
+  toolRegistryCache.invalidateTool(toolId);
+  revalidatePath("/tools");
+}
+
+export async function toggleToolStatus(toolId: string, isEnabled: boolean) {
+  await db.update(toolConfigs).set({ isEnabled, updatedAt: new Date() }).where(eq(toolConfigs.toolId, toolId));
+
+  toolRegistryCache.invalidateTool(toolId);
+  revalidatePath("/tools");
 }

@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import { index, integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { InputSchema, OutputSchema, PromptSet } from "../lib/tool-types";
 
 export const modelProviders = sqliteTable("model_providers", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -111,5 +112,30 @@ export const toolHistories = sqliteTable(
   (table) => [
     index("idx_tool_histories_tool_id").on(table.toolId),
     index("idx_tool_histories_created_at").on(table.createdAt),
+  ],
+);
+
+export const toolConfigs = sqliteTable(
+  "tool_configs",
+  {
+    toolId: text("tool_id").primaryKey(),
+    name: text("name").notNull(),
+    description: text("description").notNull(),
+    icon: text("icon"),
+    version: text("version").notNull(),
+    inputSchema: text("input_schema", { mode: "json" }).$type<InputSchema>().notNull(),
+    outputSchema: text("output_schema", { mode: "json" }).$type<OutputSchema>().notNull(),
+    prompts: text("prompts", { mode: "json" }).$type<PromptSet>(),
+    isEnabled: integer("is_enabled", { mode: "boolean" }).notNull().default(true),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+    updatedAt: integer("updated_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (table) => [
+    index("idx_tool_configs_is_enabled").on(table.isEnabled),
+    index("idx_tool_configs_created_at").on(table.createdAt),
   ],
 );

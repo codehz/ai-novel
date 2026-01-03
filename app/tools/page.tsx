@@ -3,8 +3,8 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { ToolIcon } from "./components/tool-icon";
 
-export default function ToolsPage() {
-  const tools = getAllTools();
+export default async function ToolsPage() {
+  const tools = await getAllTools();
 
   return (
     <div className="space-y-8">

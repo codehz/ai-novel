@@ -17,7 +17,7 @@ async function executeGenericTool(
   inputs: Record<string, any>,
   options?: { providerId?: number; modelId?: number },
 ): Promise<ToolExecutionResult> {
-  const config = getToolConfig(toolId);
+  const config = await getToolConfig(toolId);
   if (!config) {
     return { success: false, error: "找不到工具配置" };
   }
@@ -77,14 +77,14 @@ export const TOOL_EXECUTORS: Record<string, ToolExecutorFn> = {
   // 如果有特殊的工具逻辑，可以在这里覆盖
 };
 
-export function getToolExecutor(toolId: string): ToolExecutorFn | undefined {
+export async function getToolExecutor(toolId: string): Promise<ToolExecutorFn | undefined> {
   // 优先检查是否有自定义执行器
   if (TOOL_EXECUTORS[toolId]) {
     return TOOL_EXECUTORS[toolId];
   }
 
   // 否则，如果工具在配置中存在，则使用通用执行器
-  const config = getToolConfig(toolId);
+  const config = await getToolConfig(toolId);
   if (config) {
     return (inputs, options) => executeGenericTool(toolId, inputs, options);
   }

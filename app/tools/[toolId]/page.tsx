@@ -11,7 +11,7 @@ interface PageProps {
 
 export default async function ToolPage({ params }: PageProps) {
   const { toolId } = await params;
-  const config = getToolConfig(toolId);
+  const config = await getToolConfig(toolId);
 
   if (!config) {
     notFound();
