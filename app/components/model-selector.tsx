@@ -2,7 +2,7 @@
 
 import { getAvailableModels, type ProviderWithModels } from "@/src/actions/models";
 import { ChevronDown, Package } from "lucide-react";
-import { startTransition, useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 interface ModelSelectorProps {
   selectedProviderId?: number;
@@ -21,17 +21,17 @@ export function ModelSelector({
 }: ModelSelectorProps) {
   const [providers, setProviders] = useState<ProviderWithModels[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
+  const popoverId = useId();
 
   useEffect(() => {
     const loadModels = async () => {
       try {
         const data = await getAvailableModels();
-        startTransition(() => setProviders(data));
+        setProviders(data);
       } catch (error) {
         console.error("Failed to load models", error);
       } finally {
-        startTransition(() => setIsLoading(false));
+        setIsLoading(false);
       }
     };
 
@@ -58,11 +58,11 @@ export function ModelSelector({
   }
 
   return (
-    <div className="relative">
+    <>
       <div className="relative flex items-center">
         <button
           type="button"
-          onClick={() => startTransition(() => setIsOpen(!isOpen))}
+          popoverTarget={popoverId}
           disabled={disabled}
           className="w-full flex items-center justify-between h-10 px-4 rounded-lg border border-border bg-card text-foreground text-sm hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
@@ -78,16 +78,14 @@ export function ModelSelector({
               )}
             </span>
           </span>
-          <ChevronDown
-            className={`w-4 h-4 text-muted-foreground transition-transform ml-2 shrink-0 ${isOpen ? "rotate-180" : ""}`}
-          />
+          <ChevronDown className="w-4 h-4 text-muted-foreground ml-2 shrink-0" />
         </button>
         {selectedModel && (
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              startTransition(() => onClear?.());
+              onClear?.();
             }}
             className="absolute right-10 p-1 hover:bg-destructive/10 rounded text-muted-foreground hover:text-destructive transition-colors"
             title="清除选择"
@@ -97,8 +95,19 @@ export function ModelSelector({
         )}
       </div>
 
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+      <div
+        id={popoverId}
+        popover="auto"
+        className="
+          anchored-bottom-span-left my-2 w-anchor try-flip-y
+          max-h-2/3 overflow-y-auto
+          bg-card border border-border rounded-lg shadow-lg
+          starting:opacity-0 starting:scale-95 starting:duration-100
+          not-popover-open:opacity-0 not-popover-open:scale-95
+          transition-all duration-200 ease-out
+          transition-discrete"
+      >
+        <div className="">
           {providers.map((provider) => (
             <div key={provider.providerId} className="border-b border-border last:border-b-0">
               <div className="px-4 py-2 bg-muted/50 sticky top-0 text-xs font-semibold text-muted-foreground">
@@ -111,10 +120,12 @@ export function ModelSelector({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    startTransition(() => {
-                      onSelectModel(provider.providerId, model.modelId);
-                      setIsOpen(false);
-                    });
+
+                    onSelectModel(provider.providerId, model.modelId);
+                    const popoverElement = document.getElementById(popoverId);
+                    if (popoverElement && popoverElement.hasAttribute("popover")) {
+                      popoverElement.hidePopover();
+                    }
                   }}
                   className={`cursor-pointer w-full text-left px-4 py-3 text-sm transition-colors border-b border-border/50 last:border-b-0 ${
                     selectedModelId === model.modelId && selectedProviderId === provider.providerId
@@ -133,7 +144,7 @@ export function ModelSelector({
             </div>
           ))}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }

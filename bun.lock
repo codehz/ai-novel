@@ -7,6 +7,7 @@
       "dependencies": {
         "@ai-sdk/openai-compatible": "^2.0.2",
         "@codehz/workflow-bun-sqlite": "^0.0.1",
+        "@toolwind/anchors": "^1.0.10",
         "ai": "^6.0.5",
         "drizzle-orm": "^0.45.1",
         "lucide-react": "^0.562.0",
@@ -481,6 +482,8 @@
     "@tailwindcss/oxide-win32-x64-msvc": ["@tailwindcss/oxide-win32-x64-msvc@4.1.18", "", { "os": "win32", "cpu": "x64" }, "sha512-bJWbyYpUlqamC8dpR7pfjA0I7vdF6t5VpUGMWRkXVE3AXgIZjYUYAK7II1GNaxR8J1SSrSrppRar8G++JekE3Q=="],
 
     "@tailwindcss/postcss": ["@tailwindcss/postcss@4.1.18", "", { "dependencies": { "@alloc/quick-lru": "^5.2.0", "@tailwindcss/node": "4.1.18", "@tailwindcss/oxide": "4.1.18", "postcss": "^8.4.41", "tailwindcss": "4.1.18" } }, "sha512-Ce0GFnzAOuPyfV5SxjXGn0CubwGcuDB0zcdaPuCSzAa/2vII24JTkH+I6jcbXLb1ctjZMZZI6OjDaLPJQL1S0g=="],
+
+    "@toolwind/anchors": ["@toolwind/anchors@1.0.10", "", { "peerDependencies": { "tailwindcss": ">=3.0.0 || >=4.0.0" } }, "sha512-F3J/lxGGPUy+GIpT49NmYMF1X7l0d7UzdDASni29il2ro5sT4cYfPBFHBAfOM0lpgKOr/HnqINlomngt8BcvnA=="],
 
     "@tybys/wasm-util": ["@tybys/wasm-util@0.10.1", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg=="],
 
