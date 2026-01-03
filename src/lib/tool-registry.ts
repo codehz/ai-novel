@@ -49,7 +49,7 @@ export const TOOLS_CONFIG: ToolConfig[] = [
       systemTemplate:
         "你是一个专业的创意写作助手，擅长发散思维和情节构建。请根据用户提供的种子想法，生成多个具有深度和吸引力的情节扩展方向。你的输出必须是纯 JSON 数组格式，不要包含任何解释性文字或 Markdown 标签。",
       userTemplate:
-        "请根据以下种子想法生成 10 个不同的情节扩展方向、冲突点或结局变体：\n\n{{idea}}\n\n要求：\n1. 返回一个 JSON 数组，每个对象包含 title (简短标题), description (详细描述), category (分类)。\n2. category 必须是 plot_direction (情节方向), conflict (冲突点), ending_variant (结局变体) 之一。\n3. 描述应富有想象力，字数在 50-100 字之间。",
+        "请根据以下种子想法生成 10-20 个不同的情节扩展方向、冲突点或结局变体：\n\n{{idea}}\n\n要求：\n1. 返回一个 JSON 数组，每个对象包含 title (简短标题), description (详细描述), category (分类)。\n2. category 必须是 plot_direction (情节方向), conflict (冲突点), ending_variant (结局变体) 之一。\n3. 描述应富有想象力，字数在 50-100 字之间。",
     },
   },
 ];
