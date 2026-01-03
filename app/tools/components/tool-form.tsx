@@ -2,6 +2,7 @@
 "use client";
 
 import { FormField } from "@/app/components/form-field";
+import { IconPicker } from "@/app/components/icon-picker";
 import { ModalForm } from "@/app/components/modal-form";
 import { upsertToolConfig } from "@/src/actions/tools";
 import { InputSchema, OutputSchema, PromptSet, ToolConfig } from "@/src/lib/tool-types";
@@ -138,13 +139,10 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
 
       <div className="grid grid-cols-2 gap-4">
         <FormField label="图标 (Lucide 名称)">
-          <input
-            type="text"
+          <IconPicker
             value={formData.icon}
-            onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+            onChange={(icon) => setFormData({ ...formData, icon })}
             disabled={loading}
-            placeholder="Sparkles"
-            className="w-full p-2 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </FormField>
         <div className="flex items-center pt-8">
