@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Ignore auto-generated workflow directory
+    "app/.well-known/workflow/**",
   ]),
 ]);
 
