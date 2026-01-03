@@ -1,6 +1,7 @@
 "use client";
 
 import { FormField } from "@/app/components/form-field";
+import { HueColorPicker } from "@/app/components/hue-color-picker";
 import { IconPicker } from "@/app/components/icon-picker";
 import { CategoryConfig, OutputField, OutputRenderType, OutputSchema } from "@/src/lib/tool-types";
 import { Plus, Settings2 } from "lucide-react";
@@ -212,28 +213,13 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">
-                        颜色 (HSL Hue: 0-360)
+                        颜色 (HSL Hue)
                       </label>
-                      <div className="flex gap-2">
-                        <input
-                          type="number"
-                          min="0"
-                          max="360"
-                          value={cat.hue !== undefined ? cat.hue : ""}
-                          onChange={(e) =>
-                            updateCategory(id, { hue: e.target.value ? parseInt(e.target.value) : undefined })
-                          }
-                          placeholder="0-360"
-                          className="w-full p-1.5 text-xs rounded border border-input bg-background"
-                        />
-                        {cat.hue !== undefined && (
-                          <div
-                            className="w-10 h-10 rounded border border-border"
-                            style={{ backgroundColor: `hsl(${cat.hue}, 70%, 50%)` }}
-                            title={`hsl(${cat.hue}, 70%, 50%)`}
-                          />
-                        )}
-                      </div>
+                      <HueColorPicker
+                        value={cat.hue}
+                        onChange={(hue) => updateCategory(id, { hue })}
+                        className="w-full h-9"
+                      />
                     </div>
                   </div>
                 </div>
