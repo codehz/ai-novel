@@ -44,7 +44,6 @@ export interface OutputSchema {
 export interface PromptSet {
   systemTemplate?: string;
   userTemplate: string;
-  examples?: { input: any; output: any }[];
 }
 
 export interface ToolConfig {

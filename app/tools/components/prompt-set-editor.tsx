@@ -3,8 +3,7 @@
 import { FormField } from "@/app/components/form-field";
 import { TextAreaInput } from "@/app/components/text-area-input";
 import { PromptSet } from "@/src/lib/tool-types";
-import { Plus, Sparkles } from "lucide-react";
-import { ReorderControls } from "./reorder-controls";
+import { Sparkles } from "lucide-react";
 
 interface PromptSetEditorProps {
   value: PromptSet;
@@ -15,27 +14,6 @@ interface PromptSetEditorProps {
 export function PromptSetEditor({ value, onChange, availableFields }: PromptSetEditorProps) {
   const updatePrompt = (updates: Partial<PromptSet>) => {
     onChange({ ...value, ...updates });
-  };
-
-  const addExample = () => {
-    const examples = [...(value.examples || []), { input: {}, output: {} }];
-    updatePrompt({ examples });
-  };
-
-  const updateExample = (index: number, field: "input" | "output", jsonStr: string) => {
-    try {
-      const parsed = JSON.parse(jsonStr);
-      const examples = [...(value.examples || [])];
-      examples[index] = { ...examples[index], [field]: parsed };
-      updatePrompt({ examples });
-    } catch {
-      // Ignore invalid JSON while typing
-    }
-  };
-
-  const removeExample = (index: number) => {
-    const examples = (value.examples || []).filter((_, i) => i !== index);
-    updatePrompt({ examples });
   };
 
   const insertPlaceholder = (field: string) => {
@@ -103,48 +81,6 @@ export function PromptSetEditor({ value, onChange, availableFields }: PromptSetE
           <Sparkles className="w-3 h-3" />
           提示：点击上方的字段名可快速插入占位符
         </p>
-      </div>
-
-      <div className="space-y-4 pt-4 border-t border-border">
-        <div className="flex items-center justify-between">
-          <div className="text-sm font-medium">少样本示例 (Few-shot Examples)</div>
-          <button
-            type="button"
-            onClick={addExample}
-            className="text-xs text-primary hover:underline flex items-center gap-1"
-          >
-            <Plus className="w-3 h-3" />
-            添加示例
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          {(value.examples || []).map((example, index) => (
-            <div key={index} className="p-4 rounded-xl border border-border bg-muted/10 space-y-3 relative">
-              <div className="absolute top-2 right-2">
-                <ReorderControls onDelete={() => removeExample(index)} />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">输入示例 (JSON)</label>
-                  <TextAreaInput
-                    defaultValue={JSON.stringify(example.input, null, 2)}
-                    onBlur={(e) => updateExample(index, "input", e.target.value)}
-                    className="p-2 text-xs font-mono min-h-24"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">输出示例 (JSON)</label>
-                  <TextAreaInput
-                    defaultValue={JSON.stringify(example.output, null, 2)}
-                    onBlur={(e) => updateExample(index, "output", e.target.value)}
-                    className="p-2 text-xs font-mono min-h-24"
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
