@@ -6,7 +6,7 @@ import { getCategoryStyle } from "@/src/constants/colors";
 import { OutputSchema } from "@/src/lib/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import * as Icons from "lucide-react";
-import { Check, Copy, Heart } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 
 interface DynamicResultProps {
@@ -119,7 +119,6 @@ function CopyButton({ text }: { text: string }) {
 
 function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
   const [isCopied, setIsCopied] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
 
   const title = result.title || "Result";
   const description = result.description || (typeof result === "string" ? result : JSON.stringify(result));
@@ -156,14 +155,6 @@ function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
       <div className="flex items-start justify-between mb-4">
         {categoryEl || <div />}
         <div className="flex gap-2">
-          <button
-            onClick={() => setIsFavorite(!isFavorite)}
-            className={`p-2 rounded-lg transition-colors ${
-              isFavorite ? "text-red-500 bg-red-500/10" : "text-muted-foreground hover:bg-muted"
-            }`}
-          >
-            <Heart className={`w-4 h-4 ${isFavorite ? "fill-current" : ""}`} />
-          </button>
           <button
             onClick={handleCopy}
             className="p-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
