@@ -37,11 +37,10 @@ async function executeGenericTool(
       userPrompt = userPrompt.replace(new RegExp(`{{${key}}}`, "g"), String(value));
     }
 
-    const fullPrompt = `${systemPrompt}\n\n${userPrompt}\n\n请确保输出为纯 JSON 格式，不要包含任何 Markdown 代码块标签或额外的解释文字。`;
-
     const { text } = await generateText({
       model,
-      prompt: fullPrompt,
+      system: systemPrompt,
+      prompt: userPrompt,
       providerOptions: {
         logging: {
           callReason: `/tools/${toolId}`,
