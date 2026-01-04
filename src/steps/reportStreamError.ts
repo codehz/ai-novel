@@ -6,6 +6,10 @@ export default async function reportStreamError<T>(
 ) {
   "use step";
   const writer = writable.getWriter();
-  await writer.write({ type: "error", error: errorMessage });
-  await writer.close();
+  try {
+    await writer.write({ type: "error", error: errorMessage });
+    await writer.close();
+  } finally {
+    writer.releaseLock();
+  }
 }
