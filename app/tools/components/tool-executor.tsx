@@ -207,6 +207,7 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
           onDelete={handleDeleteHistory}
           onClear={handleClearHistory}
           currentId={currentHistoryId}
+          titleField={config.inputSchema.titleField}
         />
       </div>
     </div>

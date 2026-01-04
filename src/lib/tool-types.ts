@@ -17,6 +17,7 @@ export interface InputField {
 export interface InputSchema {
   fields: InputField[];
   submitLabel?: string;
+  titleField?: string;
 }
 
 export type OutputRenderType = "card-list" | "text";

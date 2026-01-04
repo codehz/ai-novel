@@ -1,6 +1,7 @@
 "use client";
 
 import { FormField } from "@/app/components/form-field";
+import { SelectInput } from "@/app/components/select-input";
 import { TextInput } from "@/app/components/text-input";
 import { InputField, InputSchema } from "@/src/lib/tool-types";
 import { Plus } from "lucide-react";
@@ -78,7 +79,18 @@ export function InputSchemaEditor({ value, onChange }: InputSchemaEditorProps) {
         )}
       </div>
 
-      <div className="pt-4 border-t border-border">
+      <div className="pt-4 border-t border-border space-y-4">
+        <FormField label="标题字段" description="选择一个字段作为历史记录的标题">
+          <SelectInput
+            value={value.titleField || ""}
+            onChange={(e) => onChange({ ...value, titleField: e.target.value })}
+            options={[
+              { label: "自动选择", value: "" },
+              ...value.fields.map((f) => ({ label: f.label || f.name, value: f.name })),
+            ]}
+          />
+        </FormField>
+
         <FormField label="提交按钮文字">
           <TextInput
             value={value.submitLabel || ""}

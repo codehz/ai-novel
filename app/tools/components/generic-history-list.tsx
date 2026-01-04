@@ -10,11 +10,19 @@ interface GenericHistoryListProps {
   onDelete: (id: number) => void;
   onClear: () => void;
   currentId?: number;
+  titleField?: string;
 }
 
 export const GenericHistoryList = withAutoTransition(GenericHistoryListInner, { as: "div", className: "relative" });
 
-function GenericHistoryListInner({ history, onSelect, onDelete, onClear, currentId }: GenericHistoryListProps) {
+function GenericHistoryListInner({
+  history,
+  onSelect,
+  onDelete,
+  onClear,
+  currentId,
+  titleField,
+}: GenericHistoryListProps) {
   if (history.length === 0) {
     return (
       <div
@@ -53,7 +61,9 @@ function GenericHistoryListInner({ history, onSelect, onDelete, onClear, current
         {history.map((item) => {
           // Try to find a meaningful title from inputs
           const title =
-            Object.values(item.inputs).find((v) => typeof v === "string" && v.length > 0) || "Untitled Execution";
+            titleField && item.inputs[titleField] !== undefined && item.inputs[titleField] !== null
+              ? String(item.inputs[titleField])
+              : Object.values(item.inputs).find((v) => typeof v === "string" && v.length > 0) || "Untitled Execution";
           const resultCount = Array.isArray(item.outputs) ? item.outputs.length : 1;
 
           return (
