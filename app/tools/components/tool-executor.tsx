@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { clearToolHistory, deleteToolHistory, executeTool, getToolHistory } from "@/src/actions/tools";
+import { clearToolHistory, deleteToolHistory, getToolHistory } from "@/src/actions/tools";
 import { ToolConfig, ToolHistoryItem } from "@/src/lib/tool-types";
 import { AutoTransition } from "@codehz/auto-transition";
 import { useEffect, useState } from "react";
@@ -57,21 +57,60 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
     setCurrentHistoryId(undefined);
 
     try {
-      const result = await executeTool(toolId, inputs, selectedModelId);
+      const response = await fetch("/api/tools/execute", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          toolId,
+          inputs,
+          modelId: selectedModelId,
+        }),
+      });
 
-      if (result.success && result.data) {
-        setResults(result.data);
-        await loadHistory(); // Refresh history to show new item
-        // Optionally select the new item (it's the first one)
-        const newHistory = await getToolHistory(toolId);
-        if (newHistory.length > 0) {
-          setCurrentHistoryId(newHistory[0].id);
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No reader");
+
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          const trimmedLine = line.trim();
+          if (!trimmedLine) continue;
+
+          if (trimmedLine.startsWith("data: ")) {
+            try {
+              const chunk = JSON.parse(trimmedLine.substring(6));
+              if (chunk.type === "item") {
+                setResults((prev) => [...prev, chunk.data]);
+              } else if (chunk.type === "complete") {
+                await loadHistory();
+                const newHistory = await getToolHistory(toolId);
+                if (newHistory.length > 0) {
+                  setCurrentHistoryId(newHistory[0].id);
+                }
+              }
+            } catch (e) {
+              console.error("Failed to parse chunk", trimmedLine, e);
+            }
+          }
         }
-      } else {
-        setError(result.error || "Unknown error occurred");
       }
     } catch (err) {
-      setError("Failed to execute tool");
+      setError(err instanceof Error ? err.message : "Failed to execute tool");
       console.error(err);
     } finally {
       setIsLoading(false);

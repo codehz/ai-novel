@@ -17,7 +17,7 @@ interface DynamicResultProps {
 
 export const DynamicResult = withAutoTransition(DynamicResultInner, { as: "div", className: "relative" });
 function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) {
-  if (isLoading) {
+  if (isLoading && (!results || results.length === 0)) {
     return (
       <div key="loading" className="grid gap-6 md:grid-cols-2">
         {[...Array(4)].map((_, i) => (
@@ -33,19 +33,29 @@ function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) 
 
   if (schema.type === "card-list") {
     return (
-      <AutoTransition as="div" key="card-list" className="grid gap-6 md:grid-cols-2">
-        {results.map((result, index) => (
-          <ResultCard key={result.id || index} result={result} schema={schema} />
-        ))}
-      </AutoTransition>
+      <div className="space-y-6">
+        <AutoTransition as="div" key="card-list" className="grid gap-6 md:grid-cols-2">
+          {results.map((result, index) => (
+            <ResultCard key={result.id || index} result={result} schema={schema} />
+          ))}
+          {isLoading && (
+            <div className="grid gap-6">
+              <div className="h-48 rounded-2xl border border-border bg-card animate-pulse" />
+            </div>
+          )}
+        </AutoTransition>
+      </div>
     );
   }
 
   return (
-    <div key="text" className="p-4 rounded-xl border border-border bg-card">
-      <pre className="whitespace-pre-wrap text-sm">
-        {typeof results === "string" ? results : JSON.stringify(results, null, 2)}
-      </pre>
+    <div className="space-y-4">
+      <div key="text" className="p-4 rounded-xl border border-border bg-card">
+        <pre className="whitespace-pre-wrap text-sm">
+          {typeof results === "string" ? results : JSON.stringify(results, null, 2)}
+        </pre>
+      </div>
+      {isLoading && <div className="h-20 rounded-xl border border-border bg-card animate-pulse" />}
     </div>
   );
 }

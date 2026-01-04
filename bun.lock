@@ -11,6 +11,7 @@
         "@toolwind/anchors": "^1.0.10",
         "ai": "^6.0.5",
         "drizzle-orm": "^0.45.1",
+        "jsonriver": "^1.1.1",
         "lucide-react": "^0.562.0",
         "next": "16.1.1",
         "react": "19.2.3",
@@ -1105,6 +1106,8 @@
     "json5": ["json5@1.0.2", "", { "dependencies": { "minimist": "^1.2.0" }, "bin": { "json5": "lib/cli.js" } }, "sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA=="],
 
     "jsonfile": ["jsonfile@6.2.0", "", { "dependencies": { "universalify": "^2.0.0" }, "optionalDependencies": { "graceful-fs": "^4.1.6" } }, "sha512-FGuPw30AdOIUTRMC2OMRtQV+jkVj2cfPqSeWXv1NEAJ1qZ5zb1X6z1mFhbfOB/iy3ssJCD+3KuZ8r8C3uVFlAg=="],
+
+    "jsonriver": ["jsonriver@1.1.1", "", {}, "sha512-w/y/ZvC0YlJxRjySXt6hEji3RltOLAbSiDe3jlWekbIT7qLIOJF+tGNscwTWJZhoNQzi1dItJVMM2jEPZbHSEQ=="],
 
     "jsx-ast-utils": ["jsx-ast-utils@3.3.5", "", { "dependencies": { "array-includes": "^3.1.6", "array.prototype.flat": "^1.3.1", "object.assign": "^4.1.4", "object.values": "^1.1.6" } }, "sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ=="],
 
