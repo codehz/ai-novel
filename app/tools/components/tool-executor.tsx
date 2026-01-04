@@ -16,12 +16,31 @@ interface ToolExecutorProps {
 
 export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [inputs, setInputs] = useState<Record<string, any>>({});
+  const [inputs, setInputs] = useState<Record<string, any>>(() => {
+    const initialInputs: Record<string, any> = {};
+    config.inputSchema.fields.forEach((field) => {
+      if (field.defaultValue !== undefined) {
+        initialInputs[field.name] = field.defaultValue;
+      }
+    });
+    return initialInputs;
+  });
   const [results, setResults] = useState<any>([]);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<ToolHistoryItem[]>([]);
   const [currentHistoryId, setCurrentHistoryId] = useState<number | undefined>(undefined);
   const [selectedModelId, setSelectedModelId] = useState<number | undefined>(undefined);
+
+  // Initialize inputs with default values when config changes
+  useEffect(() => {
+    const initialInputs: Record<string, any> = {};
+    config.inputSchema.fields.forEach((field) => {
+      if (field.defaultValue !== undefined) {
+        initialInputs[field.name] = field.defaultValue;
+      }
+    });
+    setInputs(initialInputs);
+  }, [toolId, config.inputSchema.fields]);
 
   // Load history on mount
   useEffect(() => {

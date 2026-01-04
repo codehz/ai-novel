@@ -59,7 +59,7 @@ export function DynamicForm({
             {field.type === "textarea" ? (
               <div className="relative">
                 <TextAreaInput
-                  value={values[field.name] || ""}
+                  value={values[field.name] ?? ""}
                   onChange={(e) => handleFieldChange(field.name, e.target.value)}
                   placeholder={field.placeholder}
                   disabled={isLoading}
@@ -68,13 +68,13 @@ export function DynamicForm({
                 />
                 {field.maxLength && (
                   <div className="absolute bottom-2 right-2 text-xs text-muted-foreground bg-background/80 px-1 rounded">
-                    {(values[field.name] || "").length}/{field.maxLength}
+                    {(values[field.name] ?? "").length}/{field.maxLength}
                   </div>
                 )}
               </div>
             ) : field.type === "select" ? (
               <SelectInput
-                value={values[field.name] || ""}
+                value={values[field.name] ?? ""}
                 onChange={(e) => handleFieldChange(field.name, e.target.value)}
                 disabled={isLoading}
                 options={[{ label: "请选择", value: "" }, ...(field.options || [])]}
@@ -82,7 +82,7 @@ export function DynamicForm({
             ) : (
               <TextInput
                 type={field.type}
-                value={values[field.name] || ""}
+                value={values[field.name] ?? ""}
                 onChange={(e) => handleFieldChange(field.name, e.target.value)}
                 placeholder={field.placeholder}
                 disabled={isLoading}

@@ -4,6 +4,7 @@ import { FormField } from "@/app/components/form-field";
 import { NumberInput } from "@/app/components/number-input";
 import { SelectInput } from "@/app/components/select-input";
 import { Switch } from "@/app/components/switch";
+import { TextAreaInput } from "@/app/components/text-area-input";
 import { TextInput } from "@/app/components/text-input";
 import { InputField, InputType } from "@/src/lib/tool-types";
 import { OptionsListEditor } from "./options-list-editor";
@@ -90,6 +91,35 @@ export function FieldEditor({
           onChange={(e) => updateField({ description: e.target.value })}
           placeholder="对该字段的详细解释"
         />
+      </FormField>
+
+      <FormField label="默认值">
+        {field.type === "number" ? (
+          <NumberInput
+            value={field.defaultValue ?? ""}
+            onChange={(e) => updateField({ defaultValue: e.target.value ? parseFloat(e.target.value) : undefined })}
+            placeholder="该字段的初始数字"
+          />
+        ) : field.type === "select" ? (
+          <SelectInput
+            value={field.defaultValue || ""}
+            onChange={(e) => updateField({ defaultValue: e.target.value })}
+            options={[{ label: "无默认值", value: "" }, ...(field.options || [])]}
+          />
+        ) : field.type === "textarea" ? (
+          <TextAreaInput
+            value={field.defaultValue || ""}
+            onChange={(e) => updateField({ defaultValue: e.target.value })}
+            placeholder="该字段的初始文本"
+            className="min-h-20"
+          />
+        ) : (
+          <TextInput
+            value={field.defaultValue || ""}
+            onChange={(e) => updateField({ defaultValue: e.target.value })}
+            placeholder="该字段的初始值"
+          />
+        )}
       </FormField>
 
       <div className="flex items-center gap-8">
