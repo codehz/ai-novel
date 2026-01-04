@@ -7,7 +7,7 @@ export function Icon({
   defaultIcon,
   className,
 }: {
-  iconName?: string;
+  iconName?: string | null;
   defaultIcon?: LucideIcon;
   className?: string;
 }) {
