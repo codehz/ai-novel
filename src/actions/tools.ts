@@ -2,7 +2,6 @@
 
 import { db } from "@/src/db";
 import { toolConfigs } from "@/src/db/schema";
-import { executeGenericTool } from "@/src/lib/tool-executors";
 import { toolHistoryStore } from "@/src/lib/tool-history-store";
 import { getToolConfig } from "@/src/lib/tool-registry";
 import { toolRegistryCache } from "@/src/lib/tool-registry-cache";
@@ -16,6 +15,8 @@ import {
 } from "@/src/lib/tool-types";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { start } from "workflow/api";
+import executeToolWorkflow from "../workflows/executeToolWorkflow";
 
 export async function executeTool(
   toolId: string,
@@ -26,46 +27,20 @@ export async function executeTool(
   if (!config) {
     return { success: false, error: "Tool not found" };
   }
-
-  // Validate inputs (basic validation based on schema)
-  for (const field of config.inputSchema.fields) {
-    const value = inputs[field.name];
-    if (field.required && (value === undefined || value === null || value === "")) {
-      return { success: false, error: `Field ${field.label || field.name} is required` };
-    }
-    if (field.type === "textarea" || field.type === "text") {
-      if (typeof value === "string") {
-        if (field.minLength && value.length < field.minLength) {
-          return {
-            success: false,
-            error: `Field ${field.label || field.name} must be at least ${field.minLength} characters`,
-          };
-        }
-        if (field.maxLength && value.length > field.maxLength) {
-          return {
-            success: false,
-            error: `Field ${field.label || field.name} must be at most ${field.maxLength} characters`,
-          };
-        }
-      }
-    }
+  try {
+    const run = await start(executeToolWorkflow, [inputs, { modelId }, config]);
+    const data = await run.returnValue;
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    console.error(`Error executing tool workflow for ${toolId}:`, error);
+    return {
+      success: false,
+      error: `${error}`,
+    };
   }
-
-  // Execute tool
-  const result = await executeGenericTool(inputs, { modelId }, config);
-
-  if (result.success && result.data) {
-    // Save to history
-    await toolHistoryStore.save({
-      toolId,
-      inputs,
-      outputs: result.data,
-      timestamp: Date.now(),
-      modelId,
-    });
-  }
-
-  return result;
 }
 
 export async function getToolHistory(toolId: string): Promise<ToolHistoryItem[]> {
