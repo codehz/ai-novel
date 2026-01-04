@@ -4,7 +4,7 @@ import { InputSchema, OutputSchema, PromptSet } from "../lib/tool-types";
 
 export const modelProviders = sqliteTable("model_providers", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  providerType: text("provider_type").notNull().unique(), // 'openai', 'anthropic', etc.
+  providerType: text("provider_type").notNull(), // 'openai', 'anthropic', etc.
   providerName: text("provider_name").notNull(),
   apiKey: text("api_key"),
   apiEndpoint: text("api_endpoint"),

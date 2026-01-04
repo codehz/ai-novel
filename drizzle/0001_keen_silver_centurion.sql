@@ -1,0 +1,1 @@
+DROP INDEX `model_providers_provider_type_unique`;

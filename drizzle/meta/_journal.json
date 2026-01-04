@@ -8,6 +8,13 @@
       "when": 1767493645033,
       "tag": "0000_gray_shatterstar",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1767522907199,
+      "tag": "0001_keen_silver_centurion",
+      "breakpoints": true
     }
   ]
 }
