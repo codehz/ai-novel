@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { db } from "@/src/db";
@@ -7,13 +6,20 @@ import { getToolExecutor } from "@/src/lib/tool-executors";
 import { toolHistoryStore } from "@/src/lib/tool-history-store";
 import { getToolConfig } from "@/src/lib/tool-registry";
 import { toolRegistryCache } from "@/src/lib/tool-registry-cache";
-import { ToolConfig, ToolExecutionResult, ToolHistoryItem } from "@/src/lib/tool-types";
+import {
+  InputSchema,
+  OutputSchema,
+  PromptSet,
+  ToolConfig,
+  ToolExecutionResult,
+  ToolHistoryItem,
+} from "@/src/lib/tool-types";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function executeTool(
   toolId: string,
-  inputs: Record<string, any>,
+  inputs: Record<string, unknown>,
   modelId: number,
 ): Promise<ToolExecutionResult> {
   const config = await getToolConfig(toolId);
@@ -94,13 +100,22 @@ export async function getAllToolConfigs(): Promise<ToolConfig[]> {
   }));
 }
 
-export async function upsertToolConfig(data: any) {
+export async function upsertToolConfig(data: {
+  toolId: string;
+  name: string;
+  description: string;
+  icon?: string | null;
+  version: string;
+  inputSchema: InputSchema;
+  outputSchema: OutputSchema;
+  prompts?: PromptSet | null;
+  isEnabled?: boolean;
+}) {
   const { toolId, ...rest } = data;
 
   // Validate hue values in outputSchema.categories
-  if (Array.isArray(rest.outputSchema?.categories)) {
-    for (const config of rest.outputSchema.categories) {
-      const categoryConfig = config as any;
+  if (rest.outputSchema.categories) {
+    for (const categoryConfig of rest.outputSchema.categories) {
       if (categoryConfig.hue !== undefined) {
         const hue = categoryConfig.hue;
         if (typeof hue !== "number" || hue < 0 || hue > 360) {

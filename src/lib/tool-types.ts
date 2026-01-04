@@ -51,7 +51,7 @@ export interface ToolConfig {
   id: string;
   name: string;
   description: string;
-  icon?: any; // We might need to store icon name string and resolve it in UI, or just use a component if defined in code
+  icon?: string | null; // Icon name from lucide
   inputSchema: InputSchema;
   outputSchema: OutputSchema;
   prompts?: PromptSet;
