@@ -2,7 +2,7 @@
 
 import { db } from "@/src/db";
 import { toolConfigs } from "@/src/db/schema";
-import { getToolExecutor } from "@/src/lib/tool-executors";
+import { executeGenericTool } from "@/src/lib/tool-executors";
 import { toolHistoryStore } from "@/src/lib/tool-history-store";
 import { getToolConfig } from "@/src/lib/tool-registry";
 import { toolRegistryCache } from "@/src/lib/tool-registry-cache";
@@ -25,11 +25,6 @@ export async function executeTool(
   const config = await getToolConfig(toolId);
   if (!config) {
     return { success: false, error: "Tool not found" };
-  }
-
-  const executor = await getToolExecutor(toolId);
-  if (!executor) {
-    return { success: false, error: "Tool executor not implemented" };
   }
 
   // Validate inputs (basic validation based on schema)
@@ -57,7 +52,7 @@ export async function executeTool(
   }
 
   // Execute tool
-  const result = await executor(inputs, { modelId });
+  const result = await executeGenericTool(inputs, { modelId }, config);
 
   if (result.success && result.data) {
     // Save to history

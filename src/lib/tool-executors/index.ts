@@ -1,24 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { generateText } from "ai";
 import { aiRegistry } from "../ai-registry";
-import { getToolConfig } from "../tool-registry";
-import { ToolExecutionResult } from "../tool-types";
-
-type ToolExecutorFn = (inputs: Record<string, any>, options: { modelId: number }) => Promise<ToolExecutionResult>;
+import { ToolConfig, ToolExecutionResult } from "../tool-types";
 
 /**
  * 通用工具执行器，根据工具配置调用 AI 模型
  */
-async function executeGenericTool(
-  toolId: string,
+export async function executeGenericTool(
   inputs: Record<string, any>,
   options: { modelId: number },
+  config: ToolConfig,
 ): Promise<ToolExecutionResult> {
-  const config = await getToolConfig(toolId);
-  if (!config) {
-    return { success: false, error: "找不到工具配置" };
-  }
-
+  const toolId = config.id;
   try {
     const model = await aiRegistry.getModel(options.modelId);
 
@@ -63,23 +56,4 @@ async function executeGenericTool(
       error: `执行失败: ${error.message || "未知错误"}`,
     };
   }
-}
-
-export const TOOL_EXECUTORS: Record<string, ToolExecutorFn> = {
-  // 如果有特殊的工具逻辑，可以在这里覆盖
-};
-
-export async function getToolExecutor(toolId: string): Promise<ToolExecutorFn | undefined> {
-  // 优先检查是否有自定义执行器
-  if (TOOL_EXECUTORS[toolId]) {
-    return TOOL_EXECUTORS[toolId];
-  }
-
-  // 否则，如果工具在配置中存在，则使用通用执行器
-  const config = await getToolConfig(toolId);
-  if (config) {
-    return (inputs, options) => executeGenericTool(toolId, inputs, options);
-  }
-
-  return undefined;
 }
