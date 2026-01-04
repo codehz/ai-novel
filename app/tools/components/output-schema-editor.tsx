@@ -20,21 +20,28 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
   };
 
   const addCategory = () => {
-    const categories = { ...(value.categories || {}) };
-    const id = `cat_${Object.keys(categories).length + 1}`;
-    categories[id] = { label: "新分类", icon: "Tag", hue: 210 }; // Default to PRIMARY blue
+    const categories = [...(value.categories || [])];
+    const id = `cat_${categories.length + 1}`;
+    categories.push({ id, label: "新分类", icon: "Tag", hue: 210 }); // Default to PRIMARY blue
     updateSchema({ categories });
   };
 
-  const updateCategory = (id: string, updates: Partial<CategoryConfig>) => {
-    const categories = { ...(value.categories || {}) };
-    categories[id] = { ...categories[id], ...updates };
+  const updateCategory = (index: number, updates: Partial<CategoryConfig>) => {
+    const categories = [...(value.categories || [])];
+    categories[index] = { ...categories[index], ...updates };
     updateSchema({ categories });
   };
 
-  const removeCategory = (id: string) => {
-    const categories = { ...(value.categories || {}) };
-    delete categories[id];
+  const removeCategory = (index: number) => {
+    const categories = (value.categories || []).filter((_, i) => i !== index);
+    updateSchema({ categories });
+  };
+
+  const moveCategory = (index: number, direction: "up" | "down") => {
+    const categories = [...(value.categories || [])];
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= categories.length) return;
+    [categories[index], categories[newIndex]] = [categories[newIndex], categories[index]];
     updateSchema({ categories });
   };
 
@@ -97,29 +104,40 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
             </div>
 
             <div className="space-y-3">
-              {Object.entries(value.categories || {}).map(([id, cat]) => (
-                <div key={id} className="p-4 rounded-xl border border-border bg-muted/10 space-y-3">
+              {(value.categories || []).map((cat, index) => (
+                <div key={index} className="p-4 rounded-xl border border-border bg-muted/10 space-y-3">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 grid grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">分类 ID</label>
-                        <TextInput value={id} readOnly className="p-1.5 text-xs bg-muted/50 font-mono" />
+                        <TextInput
+                          value={cat.id}
+                          onChange={(e) => updateCategory(index, { id: e.target.value })}
+                          className="p-1.5 text-xs font-mono"
+                        />
                       </div>
                       <div className="space-y-1">
                         <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">显示名称</label>
                         <TextInput
                           value={cat.label}
-                          onChange={(e) => updateCategory(id, { label: e.target.value })}
+                          onChange={(e) => updateCategory(index, { label: e.target.value })}
                           className="p-1.5 text-xs"
                         />
                       </div>
                     </div>
-                    <ReorderControls onDelete={() => removeCategory(id)} className="mt-4" />
+                    <ReorderControls
+                      onMoveUp={() => moveCategory(index, "up")}
+                      onMoveDown={() => moveCategory(index, "down")}
+                      onDelete={() => removeCategory(index)}
+                      canMoveUp={index > 0}
+                      canMoveDown={index < (value.categories?.length || 0) - 1}
+                      className="mt-4"
+                    />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
                       <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">图标</label>
-                      <IconPicker value={cat.icon || "Tag"} onChange={(icon) => updateCategory(id, { icon })} />
+                      <IconPicker value={cat.icon || "Tag"} onChange={(icon) => updateCategory(index, { icon })} />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">
@@ -127,7 +145,7 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
                       </label>
                       <HueColorPicker
                         value={cat.hue}
-                        onChange={(hue) => updateCategory(id, { hue })}
+                        onChange={(hue) => updateCategory(index, { hue })}
                         className="w-full h-9"
                       />
                     </div>

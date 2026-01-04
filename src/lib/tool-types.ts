@@ -28,6 +28,7 @@ export interface OutputField {
 }
 
 export interface CategoryConfig {
+  id: string;
   label: string;
   icon?: string; // Icon name from lucide
   hue?: number; // HSL hue value (0-360)
@@ -38,7 +39,7 @@ export interface OutputSchema {
   titleField?: string; // Which field to use as title in card
   descriptionField?: string; // Which field to use as description in card
   categoryField?: string; // Which field to use for categorization/grouping
-  categories?: Record<string, CategoryConfig>;
+  categories?: CategoryConfig[];
 }
 
 export interface PromptSet {

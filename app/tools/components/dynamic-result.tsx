@@ -64,7 +64,8 @@ function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
 
   let categoryEl = null;
   if (category) {
-    const config = schema.categories?.[category] || {
+    const config = schema.categories?.find((c) => c.id === category) || {
+      id: category,
       label: category,
       icon: "Tag",
       hue: 210,
