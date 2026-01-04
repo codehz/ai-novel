@@ -1,7 +1,7 @@
 import { LanguageModelV3 } from "@ai-sdk/provider";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
-import { modelProviders, models } from "../db/schema";
+import { models } from "../db/schema";
 import { wrapLanguageModelWithLogging } from "./ai-middleware";
 import { createProviderClient } from "./provider-factory";
 
@@ -18,23 +18,24 @@ class AIRegistry {
     return AIRegistry.instance;
   }
 
-  public async getModel(providerId: number, modelId: number): Promise<LanguageModelV3> {
-    const cacheKey = `${providerId}:${modelId}`;
+  public async getModel(modelId: number): Promise<LanguageModelV3> {
+    const cacheKey = String(modelId);
     if (this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey)!;
     }
 
-    const provider = await db.query.modelProviders.findFirst({
-      where: eq(modelProviders.id, providerId),
-    });
-
     const model = await db.query.models.findFirst({
       where: eq(models.id, modelId),
+      with: {
+        provider: true,
+      },
     });
 
-    if (!provider || !model) {
-      throw new Error("Provider or Model not found");
+    if (!model || !model.provider) {
+      throw new Error("Model or Provider not found");
     }
+
+    const provider = model.provider;
 
     const client = createProviderClient(
       provider.providerType,
@@ -48,8 +49,8 @@ class AIRegistry {
     const rawModel = (client as (modelId: string) => LanguageModelV3)(model.modelName);
 
     const wrappedModel = wrapLanguageModelWithLogging(rawModel, {
-      providerId,
-      modelId,
+      providerName: provider.providerName,
+      modelName: model.modelName,
       inputPrice: model.inputPrice ?? 0,
       outputPrice: model.outputPrice ?? 0,
       defaultParameters: (model.parameters as Record<string, unknown>) || {},
@@ -70,15 +71,16 @@ class AIRegistry {
     return wrappedModel;
   }
 
-  public invalidateModel(providerId: number, modelId: number) {
-    this.cache.delete(`${providerId}:${modelId}`);
+  public invalidateModel(modelId: number) {
+    this.cache.delete(String(modelId));
   }
 
-  public invalidateProvider(providerId: number) {
-    for (const key of this.cache.keys()) {
-      if (key.startsWith(`${providerId}:`)) {
-        this.cache.delete(key);
-      }
+  public async invalidateProvider(providerId: number) {
+    const providerModels = await db.query.models.findMany({
+      where: eq(models.providerId, providerId),
+    });
+    for (const model of providerModels) {
+      this.cache.delete(String(model.id));
     }
   }
 }

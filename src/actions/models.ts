@@ -57,7 +57,7 @@ export async function upsertProvider(data: typeof modelProviders.$inferInsert) {
       .update(modelProviders)
       .set({ ...data, updatedAt: new Date() })
       .where(eq(modelProviders.id, data.id));
-    aiRegistry.invalidateProvider(data.id);
+    await aiRegistry.invalidateProvider(data.id);
   } else {
     await db.insert(modelProviders).values(data);
   }
@@ -66,13 +66,13 @@ export async function upsertProvider(data: typeof modelProviders.$inferInsert) {
 
 export async function deleteProvider(id: number) {
   await db.delete(modelProviders).where(eq(modelProviders.id, id));
-  aiRegistry.invalidateProvider(id);
+  await aiRegistry.invalidateProvider(id);
   revalidatePath("/models");
 }
 
 export async function toggleProviderStatus(id: number, isEnabled: boolean) {
   await db.update(modelProviders).set({ isEnabled, updatedAt: new Date() }).where(eq(modelProviders.id, id));
-  aiRegistry.invalidateProvider(id);
+  await aiRegistry.invalidateProvider(id);
   revalidatePath("/models");
 }
 
@@ -92,7 +92,7 @@ export async function upsertModel(data: typeof models.$inferInsert) {
       .update(models)
       .set({ ...data, updatedAt: new Date() })
       .where(eq(models.id, data.id));
-    aiRegistry.invalidateModel(data.providerId, data.id);
+    aiRegistry.invalidateModel(data.id);
   } else {
     await db.insert(models).values(data);
   }
@@ -103,7 +103,7 @@ export async function deleteModel(id: number) {
   const model = await db.query.models.findFirst({ where: eq(models.id, id) });
   if (model) {
     await db.delete(models).where(eq(models.id, id));
-    aiRegistry.invalidateModel(model.providerId, id);
+    aiRegistry.invalidateModel(id);
   }
   revalidatePath("/models");
 }
@@ -112,7 +112,7 @@ export async function toggleModelStatus(id: number, isEnabled: boolean) {
   const model = await db.query.models.findFirst({ where: eq(models.id, id) });
   if (model) {
     await db.update(models).set({ isEnabled, updatedAt: new Date() }).where(eq(models.id, id));
-    aiRegistry.invalidateModel(model.providerId, id);
+    aiRegistry.invalidateModel(id);
   }
   revalidatePath("/models");
 }
@@ -143,8 +143,6 @@ export async function updateCallLog(id: number, data: Partial<typeof modelCallLo
 }
 
 export async function getCallLogs(filters?: {
-  providerId?: number;
-  modelId?: number;
   status?: string;
   startDate?: Date;
   endDate?: Date;
@@ -152,8 +150,6 @@ export async function getCallLogs(filters?: {
   offset?: number;
 }) {
   const where = [];
-  if (filters?.providerId) where.push(eq(modelCallLogs.providerId, filters.providerId));
-  if (filters?.modelId) where.push(eq(modelCallLogs.modelId, filters.modelId));
   if (filters?.status) where.push(eq(modelCallLogs.status, filters.status));
   if (filters?.startDate) where.push(gte(modelCallLogs.createdAt, filters.startDate));
   if (filters?.endDate) where.push(lte(modelCallLogs.createdAt, filters.endDate));
@@ -163,21 +159,11 @@ export async function getCallLogs(filters?: {
     orderBy: [desc(modelCallLogs.createdAt)],
     limit: filters?.limit ?? 50,
     offset: filters?.offset ?? 0,
-    with: {
-      provider: true,
-    },
   });
 }
 
-export async function getCallStatistics(filters?: {
-  providerId?: number;
-  modelId?: number;
-  startDate?: Date;
-  endDate?: Date;
-}) {
+export async function getCallStatistics(filters?: { startDate?: Date; endDate?: Date }) {
   const where = [];
-  if (filters?.providerId) where.push(eq(modelCallLogs.providerId, filters.providerId));
-  if (filters?.modelId) where.push(eq(modelCallLogs.modelId, filters.modelId));
   if (filters?.startDate) where.push(gte(modelCallLogs.createdAt, filters.startDate));
   if (filters?.endDate) where.push(lte(modelCallLogs.createdAt, filters.endDate));
 

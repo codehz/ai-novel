@@ -7,22 +7,15 @@ import { useEffect, useState } from "react";
 import { Dropdown } from "./dropdown";
 
 interface ModelSelectorProps {
-  selectedProviderId?: number;
   selectedModelId?: number;
-  onSelectModel: (providerId: number, modelId: number) => void;
+  onSelectModel: (modelId: number) => void;
   onClear?: () => void;
   disabled?: boolean;
 }
 
 export const ModelSelector = withAutoTransition(ModelSelectorInner, { as: "div", className: "relative" });
 
-function ModelSelectorInner({
-  selectedProviderId,
-  selectedModelId,
-  onSelectModel,
-  onClear,
-  disabled = false,
-}: ModelSelectorProps) {
+function ModelSelectorInner({ selectedModelId, onSelectModel, onClear, disabled = false }: ModelSelectorProps) {
   const [providers, setProviders] = useState<ProviderWithModels[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,8 +34,9 @@ function ModelSelectorInner({
     loadModels();
   }, []);
 
-  const selectedProvider = providers.find((p) => p.providerId === selectedProviderId);
-  const selectedModel = selectedProvider?.models.find((m) => m.modelId === selectedModelId);
+  const selectedModel = providers
+    .flatMap((p) => p.models.map((m) => ({ ...m, providerName: p.providerName })))
+    .find((m) => m.modelId === selectedModelId);
 
   if (isLoading) {
     return (
@@ -83,20 +77,18 @@ function ModelSelectorInner({
                     e.preventDefault();
                     e.stopPropagation();
 
-                    onSelectModel(provider.providerId, model.modelId);
+                    onSelectModel(model.modelId);
                     close();
                   }}
                   className={`cursor-pointer w-full text-left px-4 py-3 text-sm transition-colors border-b border-border/50 last:border-b-0 ${
-                    selectedModelId === model.modelId && selectedProviderId === provider.providerId
+                    selectedModelId === model.modelId
                       ? "bg-primary/10 text-primary font-medium"
                       : "hover:bg-muted/50 text-foreground"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      {selectedModelId === model.modelId && selectedProviderId === provider.providerId && (
-                        <span className="text-primary">✓</span>
-                      )}
+                      {selectedModelId === model.modelId && <span className="text-primary">✓</span>}
                       {model.displayName}
                     </div>
                     <div className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded shrink-0">
@@ -115,16 +107,13 @@ function ModelSelectorInner({
           disabled={disabled}
           className="w-full flex items-center justify-between h-10 px-4 rounded-lg border border-input bg-background text-foreground text-sm hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <span
-            key={selectedModel ? `${selectedProvider?.providerId}-${selectedModel.modelId}` : "none"}
-            className="flex items-center gap-2 truncate"
-          >
+          <span key={selectedModel ? selectedModel.modelId : "none"} className="flex items-center gap-2 truncate">
             <Package className="w-4 h-4 text-muted-foreground shrink-0" />
             <span className="truncate">
               {selectedModel ? (
                 <span className="flex items-center gap-2">
                   <span>
-                    {selectedProvider?.providerName} - {selectedModel.displayName}
+                    {selectedModel.providerName} - {selectedModel.displayName}
                   </span>
                   <span className="text-[10px] text-muted-foreground bg-muted px-1 rounded shrink-0">
                     ${selectedModel.inputPrice}/${selectedModel.outputPrice}

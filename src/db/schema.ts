@@ -40,7 +40,6 @@ export const models = sqliteTable("models", {
 
 export const modelProvidersRelations = relations(modelProviders, ({ many }) => ({
   models: many(models),
-  callLogs: many(modelCallLogs),
 }));
 
 export const modelsRelations = relations(models, ({ one }) => ({
@@ -54,8 +53,8 @@ export const modelCallLogs = sqliteTable(
   "model_call_logs",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    modelId: integer("model_id").notNull(), // No foreign key to avoid data loss on model deletion
-    providerId: integer("provider_id").notNull(), // No foreign key to avoid data loss on provider deletion
+    providerName: text("provider_name").notNull(),
+    modelName: text("model_name").notNull(),
     status: text("status").notNull().default("pending"), // 'pending', 'success', 'error'
     input: text("input", { mode: "json" }),
     output: text("output", { mode: "json" }),
@@ -76,19 +75,8 @@ export const modelCallLogs = sqliteTable(
       .notNull()
       .default(sql`(unixepoch())`),
   },
-  (table) => [
-    index("idx_model_call_logs_model_id").on(table.modelId),
-    index("idx_model_call_logs_provider_id").on(table.providerId),
-    index("idx_model_call_logs_created_at").on(table.createdAt),
-  ],
+  (table) => [index("idx_model_call_logs_created_at").on(table.createdAt)],
 );
-
-export const modelCallLogsRelations = relations(modelCallLogs, ({ one }) => ({
-  provider: one(modelProviders, {
-    fields: [modelCallLogs.providerId],
-    references: [modelProviders.id],
-  }),
-}));
 
 export const toolHistories = sqliteTable(
   "tool_histories",
@@ -98,8 +86,7 @@ export const toolHistories = sqliteTable(
     inputs: text("inputs", { mode: "json" }).notNull(),
     outputs: text("outputs", { mode: "json" }).notNull(),
     timestamp: integer("timestamp").notNull(),
-    providerId: integer("provider_id"),
-    modelId: integer("model_id"),
+    modelId: integer("model_id").references(() => models.id, { onDelete: "set null" }),
     modelName: text("model_name"),
     providerName: text("provider_name"),
     createdAt: integer("created_at", { mode: "timestamp" })

@@ -14,7 +14,6 @@ import { revalidatePath } from "next/cache";
 export async function executeTool(
   toolId: string,
   inputs: Record<string, any>,
-  providerId?: number,
   modelId?: number,
 ): Promise<ToolExecutionResult> {
   const config = await getToolConfig(toolId);
@@ -51,28 +50,8 @@ export async function executeTool(
     }
   }
 
-  // Fetch model info if provided
-  let providerName: string | undefined;
-  let modelName: string | undefined;
-
-  if (providerId && modelId) {
-    const provider = await db.query.modelProviders.findFirst({
-      where: (fields) => eq(fields.id, providerId),
-      with: {
-        models: {
-          where: (fields) => eq(fields.id, modelId),
-        },
-      },
-    });
-
-    if (provider && provider.models.length > 0) {
-      providerName = provider.providerName;
-      modelName = provider.models[0].displayName;
-    }
-  }
-
   // Execute tool
-  const result = await executor(inputs, { providerId, modelId });
+  const result = await executor(inputs, { modelId });
 
   if (result.success && result.data) {
     // Save to history
@@ -81,10 +60,7 @@ export async function executeTool(
       inputs,
       outputs: result.data,
       timestamp: Date.now(),
-      providerId,
       modelId,
-      providerName,
-      modelName,
     });
   }
 

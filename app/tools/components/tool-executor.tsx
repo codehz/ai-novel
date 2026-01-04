@@ -21,7 +21,6 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<ToolHistoryItem[]>([]);
   const [currentHistoryId, setCurrentHistoryId] = useState<number | undefined>(undefined);
-  const [selectedProviderId, setSelectedProviderId] = useState<number | undefined>(undefined);
   const [selectedModelId, setSelectedModelId] = useState<number | undefined>(undefined);
 
   // Load history on mount
@@ -53,7 +52,7 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
     setCurrentHistoryId(undefined);
 
     try {
-      const result = await executeTool(toolId, inputs, selectedProviderId, selectedModelId);
+      const result = await executeTool(toolId, inputs, selectedModelId);
 
       if (result.success && result.data) {
         setResults(result.data);
@@ -78,7 +77,6 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
     setInputs(item.inputs);
     setResults(item.outputs);
     setCurrentHistoryId(item.id);
-    setSelectedProviderId(item.providerId);
     setSelectedModelId(item.modelId);
     setError(null);
 
@@ -113,10 +111,8 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
           onChange={setInputs}
           onSubmit={handleExecute}
           isLoading={isLoading}
-          selectedProviderId={selectedProviderId}
           selectedModelId={selectedModelId}
-          onSelectModel={(pid, mid) => {
-            setSelectedProviderId(pid);
+          onSelectModel={(mid) => {
             setSelectedModelId(mid);
           }}
         />

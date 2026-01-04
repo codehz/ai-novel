@@ -2,8 +2,8 @@ import { LanguageModelV3, LanguageModelV3CallOptions, SharedV3ProviderOptions } 
 import { createCallLog } from "../actions/models";
 
 export interface LoggingContext {
-  providerId: number;
-  modelId: number;
+  providerName: string;
+  modelName: string;
   inputPrice: number;
   outputPrice: number;
   configSnapshot: Record<string, unknown>;
@@ -37,8 +37,8 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
         const totalCost = inputCost + outputCost;
 
         createCallLog({
-          providerId: context.providerId,
-          modelId: context.modelId,
+          providerName: context.providerName,
+          modelName: context.modelName,
           status: "success",
           input: options.prompt,
           output: result.content,
@@ -56,8 +56,8 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
       } catch (error) {
         const durationMs = Date.now() - startTime;
         createCallLog({
-          providerId: context.providerId,
-          modelId: context.modelId,
+          providerName: context.providerName,
+          modelName: context.modelName,
           status: "error",
           input: options.prompt,
           errorMessage: error instanceof Error ? error.message : String(error),
@@ -96,8 +96,8 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
             const totalCost = inputCost + outputCost;
 
             createCallLog({
-              providerId: context.providerId,
-              modelId: context.modelId,
+              providerName: context.providerName,
+              modelName: context.modelName,
               status: "success",
               input: options.prompt,
               output: { message: "Stream completed" },
@@ -114,8 +114,8 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
           if (chunk.type === "error") {
             const durationMs = Date.now() - startTime;
             createCallLog({
-              providerId: context.providerId,
-              modelId: context.modelId,
+              providerName: context.providerName,
+              modelName: context.modelName,
               status: "error",
               input: options.prompt,
               errorMessage: String(chunk.error),

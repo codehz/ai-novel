@@ -12,7 +12,7 @@ export default async function LogsPage() {
           <div className="text-center py-12 text-muted-foreground">暂无调用日志</div>
         ) : (
           logs.map((log) => (
-            <ItemCard key={log.id} title={`${log.provider?.providerName || "未知提供商"} - ${log.callReason}`}>
+            <ItemCard key={log.id} title={`${log.providerName} - ${log.modelName} (${log.callReason})`}>
               <div className="text-sm text-muted-foreground space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="flex items-center gap-2">

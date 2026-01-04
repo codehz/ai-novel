@@ -43,6 +43,7 @@
 - `model_call_logs` 表：记录模型调用日志（输入输出、成本、状态等），支持统计分析
   - `duration_ms` 字段：记录调用耗时
   - `model_config_snapshot` JSON字段：保存调用时的完整配置快照用于审计
+  - `providerName` 和 `modelName` 字段：保存调用时的名称快照
 - 使用 SQLite 的 unixepoch() 函数处理时间戳
 - 价格字段使用 `real` 类型存储每百万token的价格
 - 参数字段使用 JSON 类型存储模型参数配置
@@ -70,7 +71,7 @@
 - icon 使用 lucide-react；UI 使用简洁容器 + 阴影样式，保持现有视觉语言。
 - 模型调用时注意记录日志，便于后续成本分析和调试。
 - 新增工具时遵循工具箱组件结构，保持一致的UI/UX。
-- AI 模型使用：通过 `aiRegistry.getModel(providerId, modelId)` 获取包装后的模型实例，自动应用日志和缓存。
+- AI 模型使用：通过 `aiRegistry.getModel(modelId)` 获取包装后的模型实例，自动应用日志和缓存。
 - 调用日志追踪：在 `providerOptions` 中传入 `logging: { callReason: <reason> }` 参数用于日志分类（如 `"/tools/seed-expander"`）。
 - 提供商扩展：新增提供商类型时，在 `provider-factory.ts` 中添加对应的创建逻辑。
 - 缓存管理：模型配置变更后自动失效缓存，无需手动处理。

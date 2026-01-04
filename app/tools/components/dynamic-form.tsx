@@ -15,9 +15,8 @@ interface DynamicFormProps {
   onChange: (values: Record<string, any>) => void;
   onSubmit: () => void;
   isLoading: boolean;
-  selectedProviderId?: number;
   selectedModelId?: number;
-  onSelectModel: (providerId: number, modelId: number) => void;
+  onSelectModel: (modelId: number) => void;
 }
 
 export function DynamicForm({
@@ -26,7 +25,6 @@ export function DynamicForm({
   onChange,
   onSubmit,
   isLoading,
-  selectedProviderId,
   selectedModelId,
   onSelectModel,
 }: DynamicFormProps) {
@@ -35,7 +33,7 @@ export function DynamicForm({
   };
 
   const isValid = () => {
-    if (!selectedProviderId || !selectedModelId) return false;
+    if (!selectedModelId) return false;
     for (const field of schema.fields) {
       const value = values[field.name];
       if (field.required && (value === undefined || value === null || value === "")) return false;
@@ -52,12 +50,7 @@ export function DynamicForm({
   return (
     <div className="space-y-6">
       <FormField label="选择模型" required>
-        <ModelSelector
-          selectedProviderId={selectedProviderId}
-          selectedModelId={selectedModelId}
-          onSelectModel={onSelectModel}
-          disabled={isLoading}
-        />
+        <ModelSelector selectedModelId={selectedModelId} onSelectModel={onSelectModel} disabled={isLoading} />
       </FormField>
 
       <div className="space-y-4">

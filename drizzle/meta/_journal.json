@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1767434958692,
-      "tag": "0000_glamorous_yellowjacket",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1767454290167,
-      "tag": "0001_exotic_moira_mactaggert",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1767459690915,
-      "tag": "0002_easy_stryfe",
+      "when": 1767493645033,
+      "tag": "0000_gray_shatterstar",
       "breakpoints": true
     }
   ]

@@ -1,26 +1,41 @@
 import { db } from "@/src/db";
-import { toolHistories } from "@/src/db/schema";
+import { models, toolHistories } from "@/src/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { ToolHistoryItem } from "./tool-types";
 
 export interface ToolExecutionStore {
-  save(item: Omit<ToolHistoryItem, "id">): Promise<void>;
+  save(item: Omit<ToolHistoryItem, "id" | "modelName" | "providerName">): Promise<void>;
   get(toolId: string): Promise<ToolHistoryItem[]>;
   delete(id: number): Promise<boolean>;
   clear(toolId: string): Promise<boolean>;
 }
 
 class DatabaseToolHistoryStore implements ToolExecutionStore {
-  async save(item: Omit<ToolHistoryItem, "id">): Promise<void> {
+  async save(item: Omit<ToolHistoryItem, "id" | "modelName" | "providerName">): Promise<void> {
+    let modelName: string | undefined;
+    let providerName: string | undefined;
+
+    if (item.modelId) {
+      const model = await db.query.models.findFirst({
+        where: eq(models.id, item.modelId),
+        with: {
+          provider: true,
+        },
+      });
+      if (model) {
+        modelName = model.displayName;
+        providerName = model.provider.providerName;
+      }
+    }
+
     await db.insert(toolHistories).values({
       toolId: item.toolId,
       inputs: item.inputs,
       outputs: item.outputs,
       timestamp: item.timestamp,
-      providerId: item.providerId,
       modelId: item.modelId,
-      modelName: item.modelName,
-      providerName: item.providerName,
+      modelName,
+      providerName,
     });
   }
 
