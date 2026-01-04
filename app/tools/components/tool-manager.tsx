@@ -4,7 +4,7 @@ import { AddCard } from "@/app/components/add-card";
 import { ItemCard } from "@/app/components/item-card";
 import { deleteToolConfig, toggleToolStatus } from "@/src/actions/tools";
 import { ToolConfig } from "@/src/lib/tool-types";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import { ToolForm } from "./tool-form";
 import { ToolIcon } from "./tool-icon";
 
@@ -16,11 +16,15 @@ export function ToolManager({ tools }: ToolManagerProps) {
   const [editingTool, setEditingTool] = useState<ToolConfig | null | undefined>(undefined);
 
   const handleEdit = (tool: ToolConfig) => {
-    setEditingTool(tool);
+    startTransition(() => {
+      setEditingTool(tool);
+    });
   };
 
   const handleAdd = () => {
-    setEditingTool(null);
+    startTransition(() => {
+      setEditingTool(null);
+    });
   };
 
   const handleDelete = async (toolId: string) => {
@@ -75,7 +79,7 @@ export function ToolManager({ tools }: ToolManagerProps) {
       </div>
 
       {editingTool !== undefined && (
-        <ToolForm tool={editingTool || undefined} onClose={() => setEditingTool(undefined)} />
+        <ToolForm tool={editingTool || undefined} onClose={() => startTransition(() => setEditingTool(undefined))} />
       )}
     </div>
   );
