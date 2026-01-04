@@ -120,6 +120,8 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
                   }
                   return [chunk.data];
                 });
+              } else if (chunk.type === "error") {
+                setError(chunk.error);
               } else if (chunk.type === "complete") {
                 await loadHistory();
                 const newHistory = await getToolHistory(toolId);

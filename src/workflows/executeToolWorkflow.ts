@@ -1,6 +1,7 @@
 import { getWritable } from "workflow";
 import { StreamStepResult, ToolConfig } from "../lib/tool-types";
 import markStreamComplete from "../steps/markStreamComplete";
+import reportStreamError from "../steps/reportStreamError";
 import saveToolHistoryStep from "../steps/saveToolHistoryStep";
 import streamJsonStep from "../steps/streamJsonStep";
 import streamTextStep from "../steps/streamTextStep";
@@ -20,28 +21,33 @@ export default async function executeToolWorkflow(
   const isText = config.outputSchema.type === "text";
   const writable = getWritable<StreamStepResult<unknown>>();
 
-  let results: unknown;
-  if (isText) {
-    results = await streamTextStep(options.modelId, writable, {
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      callReason: `/tools/${toolId}`,
-    });
-  } else {
-    results = await streamJsonStep(options.modelId, writable, {
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      callReason: `/tools/${toolId}`,
-    });
-  }
+  try {
+    let results: unknown;
+    if (isText) {
+      results = await streamTextStep(options.modelId, writable, {
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        callReason: `/tools/${toolId}`,
+      });
+    } else {
+      results = await streamJsonStep(options.modelId, writable, {
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        callReason: `/tools/${toolId}`,
+      });
+    }
 
-  await saveToolHistoryStep(toolId, inputs, results, options.modelId);
-  await markStreamComplete(writable);
-  return results;
+    await saveToolHistoryStep(toolId, inputs, results, options.modelId);
+    await markStreamComplete(writable);
+    return results;
+  } catch (error) {
+    await reportStreamError(writable, error instanceof Error ? error.message : String(error));
+    throw error;
+  }
 }
 
 function buildUserPrompt(template: string, inputs: Record<string, unknown>): string {

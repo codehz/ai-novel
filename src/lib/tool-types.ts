@@ -34,7 +34,7 @@ export interface OutputSchema {
   categories?: CategoryConfig[];
 }
 
-export type StreamStepResult<T> = { type: "item"; data: T } | { type: "complete" };
+export type StreamStepResult<T> = { type: "item"; data: T } | { type: "error"; error: string } | { type: "complete" };
 
 export interface PromptSet {
   systemTemplate?: string;
