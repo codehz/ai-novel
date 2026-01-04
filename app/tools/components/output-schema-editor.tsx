@@ -57,40 +57,14 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
           onChange={(e) => updateSchema({ type: e.target.value as OutputRenderType })}
           options={[
             { label: "纯文本 (text)", value: "text" },
-            { label: "Markdown (markdown)", value: "markdown" },
             { label: "卡片列表 (card-list)", value: "card-list" },
-            { label: "原始 JSON (json)", value: "json" },
           ]}
         />
       </FormField>
 
       {value.type === "card-list" && (
         <div className="space-y-6 pt-4 border-t border-border">
-          <div className="grid grid-cols-3 gap-4">
-            <FormField label="标题字段">
-              <TextInput
-                value={value.titleField || ""}
-                onChange={(e) => updateSchema({ titleField: e.target.value })}
-                placeholder="输入字段名"
-              />
-            </FormField>
-            <FormField label="描述字段">
-              <TextInput
-                value={value.descriptionField || ""}
-                onChange={(e) => updateSchema({ descriptionField: e.target.value })}
-                placeholder="输入字段名"
-              />
-            </FormField>
-            <FormField label="分类字段">
-              <TextInput
-                value={value.categoryField || ""}
-                onChange={(e) => updateSchema({ categoryField: e.target.value })}
-                placeholder="输入字段名"
-              />
-            </FormField>
-          </div>
-
-          <div className="space-y-4 pt-4 border-t border-border">
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="text-sm font-medium">分类样式配置</div>
               <button

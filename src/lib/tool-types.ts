@@ -19,13 +19,7 @@ export interface InputSchema {
   submitLabel?: string;
 }
 
-export type OutputRenderType = "card-list" | "text" | "markdown" | "json";
-
-export interface OutputField {
-  name: string;
-  label?: string;
-  type: "string" | "number" | "boolean" | "json";
-}
+export type OutputRenderType = "card-list" | "text";
 
 export interface CategoryConfig {
   id: string;
@@ -36,9 +30,6 @@ export interface CategoryConfig {
 
 export interface OutputSchema {
   type: OutputRenderType;
-  titleField?: string; // Which field to use as title in card
-  descriptionField?: string; // Which field to use as description in card
-  categoryField?: string; // Which field to use for categorization/grouping
   categories?: CategoryConfig[];
 }
 

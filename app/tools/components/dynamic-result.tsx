@@ -42,8 +42,10 @@ function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) 
   }
 
   return (
-    <div key="json" className="p-4 rounded-xl border border-border bg-card">
-      <pre className="whitespace-pre-wrap text-sm">{JSON.stringify(results, null, 2)}</pre>
+    <div key="text" className="p-4 rounded-xl border border-border bg-card">
+      <pre className="whitespace-pre-wrap text-sm">
+        {typeof results === "string" ? results : JSON.stringify(results, null, 2)}
+      </pre>
     </div>
   );
 }
@@ -52,9 +54,9 @@ function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
   const [isCopied, setIsCopied] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const title = schema.titleField ? result[schema.titleField] : "Result";
-  const description = schema.descriptionField ? result[schema.descriptionField] : JSON.stringify(result);
-  const category = schema.categoryField ? result[schema.categoryField] : null;
+  const title = result.title || "Result";
+  const description = result.description || (typeof result === "string" ? result : JSON.stringify(result));
+  const category = result.category || null;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(`${title}\n${description}`);
