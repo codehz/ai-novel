@@ -1,5 +1,12 @@
 # 使用官方 Bun 镜像作为基础镜像
-FROM oven/bun:latest AS base
+FROM oven/bun:alpine AS base
+
+# 设置环境变量为生产环境
+ENV NODE_ENV=production
+ENV DB_FILE_NAME=/app/data/novel.db
+ENV WORKFLOW_TARGET_WORLD=@codehz/workflow-bun-sqlite
+ENV WORKFLOW_SQLITE_URL=/app/data/novel.db
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # --- 第一阶段：安装依赖 ---
 FROM base AS deps
@@ -11,16 +18,11 @@ COPY package.json bun.lock ./
 # 安装依赖（使用 --frozen-lockfile 确保版本一致）
 RUN bun install --frozen-lockfile
 
-# 设置环境变量为生产环境
-ENV NODE_ENV=production
-# 设置数据库文件路径（默认存放在 /app/data 目录下，建议运行时挂载此目录以持久化数据）
-ENV DB_FILE_NAME=/app/data/novel.db
-ENV WORKFLOW_TARGET_WORLD=@codehz/workflow-bun-sqlite
-ENV WORKFLOW_SQLITE_URL=/app/data/novel.db
-
 # --- 第二阶段：构建应用 ---
 FROM base AS builder
 WORKDIR /app
+
+RUN apk add --no-cache sqlite
 
 # 从 deps 阶段复制 node_modules
 COPY --from=deps /app/node_modules ./node_modules
@@ -28,7 +30,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # 执行构建
-RUN bun run build
+RUN mkdir -p /app/data && sqlite3 /app/data/novel.db 'PRAGMA journal_mode=WAL;' && bun run build
 
 # --- 第三阶段：运行阶段 ---
 FROM base AS runner
@@ -38,20 +40,18 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 # 复制运行所需的文件
-# 注意：由于不使用 standalone 模式，我们需要复制 .next, node_modules, public 等目录
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/bun.lock ./
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next/standalone ./
+# 复制 static 和 public（standalone 默认不包含，需要单独复制）
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/drizzle ./drizzle
-
-# 创建数据持久化目录
-RUN mkdir -p /app/data
 
 # 暴露应用端口
 EXPOSE 3000
 
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+
+VOLUME [ "/app/data" ]
+
 # 启动应用
-# 使用 bun run start，它会执行 package.json 中的 "bunx --bun next start"
-CMD ["bun", "run", "start"]
+CMD ["bun", "run", "server.js"]

@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
   },
+  output: "standalone",
+  outputFileTracingIncludes: {
+    "*": ["drizzle/**", "node_modules/@codehz/workflow-bun-sqlite/**"],
+  },
 };
 
 const workflowConfig = {};

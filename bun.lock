@@ -8,7 +8,6 @@
         "@ai-sdk/openai-compatible": "^2.0.2",
         "@codehz/auto-transition": "^0.0.3",
         "@codehz/workflow-bun-sqlite": "^0.0.5",
-        "@toolwind/anchors": "^1.0.10",
         "ai": "^6.0.5",
         "drizzle-orm": "^0.45.1",
         "jsonriver": "^1.1.1",
@@ -20,6 +19,7 @@
       },
       "devDependencies": {
         "@tailwindcss/postcss": "^4",
+        "@toolwind/anchors": "^1.0.10",
         "@types/bun": "^1.3.5",
         "@types/react": "^19",
         "@types/react-dom": "^19",
