@@ -1,7 +1,7 @@
 "use client";
 
-import { AddCard } from "@/app/components/add-card";
-import { ItemCard } from "@/app/components/item-card";
+import { AddCard } from "@/components/add-card";
+import { ItemCard } from "@/components/item-card";
 import { deleteProvider, toggleProviderStatus } from "@/src/actions/models";
 import { modelProviders, models } from "@/src/db/schema";
 import { startTransition, useState } from "react";

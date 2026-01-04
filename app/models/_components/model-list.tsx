@@ -1,6 +1,6 @@
 "use client";
 
-import { ItemCard } from "@/app/components/item-card";
+import { ItemCard } from "@/components/item-card";
 import { deleteModel, toggleModelStatus } from "@/src/actions/models";
 import { modelProviders, models } from "@/src/db/schema";
 import { Plus } from "lucide-react";

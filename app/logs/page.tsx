@@ -1,5 +1,5 @@
 import { getCallLogs } from "@/src/actions/models";
-import { ItemCard } from "../components/item-card";
+import { ItemCard } from "../../components/item-card";
 
 export default async function LogsPage() {
   const logs = await getCallLogs({ limit: 50 });

@@ -1,11 +1,11 @@
 "use client";
 
-import { FormField } from "@/app/components/form-field";
-import { NumberInput } from "@/app/components/number-input";
-import { SelectInput } from "@/app/components/select-input";
-import { Switch } from "@/app/components/switch";
-import { TextAreaInput } from "@/app/components/text-area-input";
-import { TextInput } from "@/app/components/text-input";
+import { FormField } from "@/components/form-field";
+import { NumberInput } from "@/components/number-input";
+import { SelectInput } from "@/components/select-input";
+import { Switch } from "@/components/switch";
+import { TextAreaInput } from "@/components/text-area-input";
+import { TextInput } from "@/components/text-input";
 import { InputField, InputType } from "@/src/lib/tool-types";
 import { OptionsListEditor } from "./options-list-editor";
 import { ReorderControls } from "./reorder-controls";

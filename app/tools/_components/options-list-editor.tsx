@@ -1,6 +1,6 @@
 "use client";
 
-import { TextInput } from "@/app/components/text-input";
+import { TextInput } from "@/components/text-input";
 import { Plus } from "lucide-react";
 import { ReorderControls } from "./reorder-controls";
 

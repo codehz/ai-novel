@@ -1,6 +1,6 @@
 import { getProviders } from "@/src/actions/models";
-import { ModelList } from "./components/model-list";
-import { ProviderList } from "./components/provider-list";
+import { ModelList } from "./_components/model-list";
+import { ProviderList } from "./_components/provider-list";
 
 export default async function ModelsPage() {
   const providers = await getProviders();

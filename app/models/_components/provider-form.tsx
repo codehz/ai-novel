@@ -1,11 +1,11 @@
 "use client";
 
-import { FormField } from "@/app/components/form-field";
-import { ModalForm } from "@/app/components/modal-form";
-import { SelectInput } from "@/app/components/select-input";
-import { Switch } from "@/app/components/switch";
-import { TextAreaInput } from "@/app/components/text-area-input";
-import { TextInput } from "@/app/components/text-input";
+import { FormField } from "@/components/form-field";
+import { ModalForm } from "@/components/modal-form";
+import { SelectInput } from "@/components/select-input";
+import { Switch } from "@/components/switch";
+import { TextAreaInput } from "@/components/text-area-input";
+import { TextInput } from "@/components/text-input";
 import { upsertProvider } from "@/src/actions/models";
 import { modelProviders } from "@/src/db/schema";
 import { useState } from "react";

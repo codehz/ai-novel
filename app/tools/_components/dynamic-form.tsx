@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { FormField } from "@/app/components/form-field";
-import { ModelSelector } from "@/app/components/model-selector";
-import { SelectInput } from "@/app/components/select-input";
-import { TextAreaInput } from "@/app/components/text-area-input";
-import { TextInput } from "@/app/components/text-input";
+import { FormField } from "@/components/form-field";
+import { ModelSelector } from "@/components/model-selector";
+import { SelectInput } from "@/components/select-input";
+import { TextAreaInput } from "@/components/text-area-input";
+import { TextInput } from "@/components/text-input";
 import { InputSchema } from "@/src/lib/tool-types";
 import { Loader2, Sparkles } from "lucide-react";
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { FormField } from "@/app/components/form-field";
-import { TextAreaInput } from "@/app/components/text-area-input";
+import { FormField } from "@/components/form-field";
+import { TextAreaInput } from "@/components/text-area-input";
 import { PromptSet } from "@/src/lib/tool-types";
 import { Sparkles } from "lucide-react";
 

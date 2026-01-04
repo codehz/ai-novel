@@ -1,8 +1,8 @@
 "use client";
 
-import { FormField } from "@/app/components/form-field";
-import { SelectInput } from "@/app/components/select-input";
-import { TextInput } from "@/app/components/text-input";
+import { FormField } from "@/components/form-field";
+import { SelectInput } from "@/components/select-input";
+import { TextInput } from "@/components/text-input";
 import { InputField, InputSchema } from "@/src/lib/tool-types";
 import { Plus } from "lucide-react";
 import { FieldEditor } from "./field-editor";

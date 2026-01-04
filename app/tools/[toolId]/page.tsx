@@ -2,8 +2,8 @@ import { getToolConfig } from "@/src/lib/tool-registry";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ToolExecutor } from "../components/tool-executor";
-import { ToolIcon } from "../components/tool-icon";
+import { ToolExecutor } from "../_components/tool-executor";
+import { ToolIcon } from "../_components/tool-icon";
 
 interface PageProps {
   params: Promise<{ toolId: string }>;

@@ -1,7 +1,7 @@
 "use client";
 
-import { AddCard } from "@/app/components/add-card";
-import { ItemCard } from "@/app/components/item-card";
+import { AddCard } from "@/components/add-card";
+import { ItemCard } from "@/components/item-card";
 import { deleteToolConfig, toggleToolStatus } from "@/src/actions/tools";
 import { ToolConfig } from "@/src/lib/tool-types";
 import { startTransition, useState } from "react";

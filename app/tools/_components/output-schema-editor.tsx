@@ -1,10 +1,10 @@
 "use client";
 
-import { FormField } from "@/app/components/form-field";
-import { HueColorPicker } from "@/app/components/hue-color-picker";
-import { IconPicker } from "@/app/components/icon-picker";
-import { SelectInput } from "@/app/components/select-input";
-import { TextInput } from "@/app/components/text-input";
+import { FormField } from "@/components/form-field";
+import { HueColorPicker } from "@/components/hue-color-picker";
+import { IconPicker } from "@/components/icon-picker";
+import { SelectInput } from "@/components/select-input";
+import { TextInput } from "@/components/text-input";
 import { CategoryConfig, OutputRenderType, OutputSchema } from "@/src/lib/tool-types";
 import { Plus } from "lucide-react";
 import { ReorderControls } from "./reorder-controls";

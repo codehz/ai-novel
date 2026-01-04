@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { FormField } from "@/app/components/form-field";
-import { IconPicker } from "@/app/components/icon-picker";
-import { ModalForm } from "@/app/components/modal-form";
-import { Switch } from "@/app/components/switch";
-import { TextAreaInput } from "@/app/components/text-area-input";
-import { TextInput } from "@/app/components/text-input";
+import { FormField } from "@/components/form-field";
+import { IconPicker } from "@/components/icon-picker";
+import { ModalForm } from "@/components/modal-form";
+import { Switch } from "@/components/switch";
+import { TextAreaInput } from "@/components/text-area-input";
+import { TextInput } from "@/components/text-input";
 import { upsertToolConfig } from "@/src/actions/tools";
 import { InputSchema, OutputSchema, PromptSet, ToolConfig } from "@/src/lib/tool-types";
 import { useState } from "react";

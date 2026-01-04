@@ -2,8 +2,8 @@ import { getAllToolConfigs } from "@/src/actions/tools";
 import { getAllTools } from "@/src/lib/tool-registry";
 import { ArrowRight, LayoutGrid, Settings } from "lucide-react";
 import Link from "next/link";
-import { ToolIcon } from "./components/tool-icon";
-import { ToolManager } from "./components/tool-manager";
+import { ToolIcon } from "./_components/tool-icon";
+import { ToolManager } from "./_components/tool-manager";
 
 export default async function ToolsPage({ searchParams }: { searchParams: Promise<{ manage?: string }> }) {
   const isManageMode = (await searchParams).manage === "true";

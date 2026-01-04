@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Icon } from "@/app/components/icon";
+import { Icon } from "@/components/icon";
 import { getCategoryStyle } from "@/src/constants/colors";
 import { OutputSchema } from "@/src/lib/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
