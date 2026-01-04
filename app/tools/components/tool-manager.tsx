@@ -50,7 +50,7 @@ export function ToolManager({ tools }: ToolManagerProps) {
             title={
               <div className="flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-primary/10">
-                  <ToolIcon name={tool.icon} className="w-4 h-4 text-primary" />
+                  <ToolIcon name={tool.icon ?? undefined} className="w-4 h-4 text-primary" />
                 </div>
                 {tool.name}
               </div>
