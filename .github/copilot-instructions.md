@@ -11,70 +11,36 @@
 
 ## 架构与数据流
 
-- Next.js App Router，根布局在 [app/layout.tsx](app/layout.tsx)，提供顶部导航/页脚。
-- 首页为静态展示页 [app/page.tsx](app/page.tsx)，引导到模型管理与写作入口。
-- 模型管理页 [app/models/page.tsx](app/models/page.tsx) 是 Server Component：服务端读取提供商+模型列表后传给客户端列表组件。
-- 调用日志页 [app/logs/page.tsx](app/logs/page.tsx) 是 Server Component：显示模型调用历史、成本统计和配置快照。
-- Server Actions集中在 [src/actions/models.ts](src/actions/models.ts)：CRUD provider/model/call logs，全程走 Drizzle，并在变更后 `revalidatePath("/models")` 保证 UI 刷新。
-- 数据库：bun-sqlite + Drizzle（schema [src/db/schema.ts](src/db/schema.ts)）。`model_providers` 与 `models` 通过 `providerId` 级联删除；`provider_type` 唯一。
-- DB 初始化 [src/db/index.ts](src/db/index.ts)：用 `Bun.env.DB_FILE_NAME` 打开 sqlite，导出 `db` 并立即迁移。
-- AI 模型注册表：`AIRegistry` ([src/lib/ai-registry.ts](src/lib/ai-registry.ts)) 单例类，提供懒加载的模型客户端缓存，根据配置动态创建包装后的模型实例。
-- AI 中间件：自定义 `wrapLanguageModelWithLogging` ([src/lib/ai-middleware.ts](src/lib/ai-middleware.ts))，自动记录调用日志、计算成本并注入默认参数。
-- 提供商工厂：`createProviderClient` ([src/lib/provider-factory.ts](src/lib/provider-factory.ts))，根据提供商类型创建 AI SDK 客户端，目前支持 OpenAI 兼容提供商。
-- AI 工作流引擎：支持自定义 AI 工作流，集成多个 AI 供应商，灵活配置不同模型组合。
-- 工具箱：提供辅助创作工具，如种子想法扩展等。
+- **Next.js App Router**：根布局在 [app/layout.tsx](app/layout.tsx)，提供顶部导航/页脚。
+- **AI 工作流引擎**：基于 `workflow` 库。使用 `"use workflow"` 标记工作流函数，`"use step"` 标记原子步骤函数。
+  - 示例：[src/workflows/executeToolWorkflow.ts](src/workflows/executeToolWorkflow.ts) 编排步骤，[src/steps/generateTextStep.ts](src/steps/generateTextStep.ts) 执行 AI 调用。
+- **AI 模型注册表**：`AIRegistry` ([src/lib/ai-registry.ts](src/lib/ai-registry.ts)) 单例类，提供懒加载的模型客户端缓存。
+  - 获取模型：`await aiRegistry.getModel(modelId)`。
+- **AI 中间件**：`wrapLanguageModelWithLogging` ([src/lib/ai-middleware.ts](src/lib/ai-middleware.ts)) 自动记录日志、计算成本并注入默认参数。
+  - 调用时需传入 `callReason`（如 `"/tools/seed-expander"`）用于日志分类。
+- **数据库**：bun-sqlite + Drizzle（schema [src/db/schema.ts](src/db/schema.ts)）。
+  - 时间戳：使用 `sql`(unixepoch())`作为默认值，更新时手动设置`updatedAt: new Date()`。
+  - JSON 字段：`config` (provider) 和 `parameters` (model) 存储动态配置。
 
 ## 前端约定与模式
 
-- 页面数据读取：Server Component 负责查询（如 `getProviders()`），UI 交互在 `"use client"` 组件内完成（[app/models/components/provider-list.tsx](app/models/components/provider-list.tsx)、[app/models/components/model-list.tsx](app/models/components/model-list.tsx)）。
-- 表单：`ProviderForm`/`ModelForm` 直接调用对应 server action；插入/更新都用 `upsert*`，更新时附带 `updatedAt: new Date()`，保持与 sqlite 时间戳列一致。
-- 状态切换/删除：UI 做 `confirm` 弹窗，action 侧只做 Drizzle 更新/删除并刷新路径。
-- 价格字段为 `real`（浮点），参数字段为 JSON（`parameters`）；客户端默认 `parameters: {}` 避免 `null`。
-- 提供商配置：`config` 字段存储 JSON 配置（如 API 版本、自定义端点等）；模型参数存储在 JSON 字段中，包括 temperature、maxTokens、topP 等。
-- 主题：使用纯 CSS 变量控制主题，Tailwind v4 样式变量集中在 [app/globals.css](app/globals.css)。
-- 组件复用：使用通用组件如 `ItemCard` 和 `AddCard` 统一 UI 模式。
+- **数据流**：Server Component 负责查询（如 `getProviders()`），UI 交互在 `"use client"` 组件内完成。
+- **Server Actions**：集中在 [src/actions/](src/actions/)。变更后必须调用 `revalidatePath` 刷新 UI，并视情况调用 `aiRegistry.invalidate*` 清除缓存.
+- **UI 组件**：
+  - 使用 [app/components/item-card.tsx](app/components/item-card.tsx) 展示列表项，支持开关、编辑、删除。
+  - 使用 [app/components/add-card.tsx](app/components/add-card.tsx) 作为添加按钮。
+  - 状态变更推荐使用 `startTransition` 包裹，以保持 UI 响应。
+- **表单**：`ProviderForm`/`ModelForm` 直接调用 server action；插入/更新都用 `upsert*` 模式。
 
-## 数据库结构
+## 工具箱系统
 
-- `model_providers` 表：存储模型提供商信息（类型、名称、API密钥、端点等）
-  - `config` JSON字段：存储提供商特定配置（如OpenAI兼容的apiVersion、自定义endpoint）
-- `models` 表：存储具体模型信息（名称、参数、价格等），与提供商关联
-  - `parameters` JSON字段：存储模型参数配置（temperature、maxTokens、topP等）
-- `model_call_logs` 表：记录模型调用日志（输入输出、成本、状态等），支持统计分析
-  - `duration_ms` 字段：记录调用耗时
-  - `model_config_snapshot` JSON字段：保存调用时的完整配置快照用于审计
-  - `providerName` 和 `modelName` 字段：保存调用时的名称快照
-- 使用 SQLite 的 unixepoch() 函数处理时间戳
-- 价格字段使用 `real` 类型存储每百万token的价格
-- 参数字段使用 JSON 类型存储模型参数配置
-- `tool_histories` 表：存储工具执行历史记录，包括工具ID、输入输出、时间戳和关联模型信息
-- `tool_configs` 表：存储工具配置信息，支持动态工具注册和版本管理
-
-## AI 工作流与调用日志
-
-- 模型调用日志：`modelCallLogs` 表记录所有模型调用详情，包括输入输出、token数量、成本等
-- 统计功能：提供 `getCallStatistics` 函数计算调用统计信息（总token数、总成本、成功率等）
-- 成本追踪：自动计算模型调用的输入/输出成本
-- 调用状态：记录调用状态（pending、success、error）
-- AI 模型注册表：`AIRegistry` 单例类提供懒加载的模型客户端缓存，自动刷新配置变更
-- 日志中间件：`wrapLanguageModelWithLogging` 自动记录调用日志、计算成本并注入默认参数
-- 提供商工厂：`createProviderClient` 根据提供商类型创建 AI SDK 客户端，支持 OpenAI 兼容提供商
-- 工具历史记录：`toolHistories` 表记录工具执行详情，包括输入输出、时间戳和关联模型，便于工具使用分析和调试
-
-## 工具箱功能
-
-- 工具页面：[app/tools/page.tsx](app/tools/page.tsx) 提供工具列表入口
-- 工具组件：位于 [app/tools/components](app/tools/components) 目录，可扩展更多创作辅助工具
+- **配置驱动**：工具由 `ToolConfig` 定义，包含 `inputSchema`（输入表单）、`outputSchema`（渲染方式）和 `prompts`（提示词模板）。
+- **执行流程**：`executeToolWorkflow` 接收输入，填充模板，调用 AI，解析 JSON 结果，并记录到 `tool_histories`。
+- **历史记录**：使用 `saveToolHistoryStep` 异步保存执行结果，便于后续审计和重用。
 
 ## 开发提示
 
-- Drizzle 配置在 [drizzle.config.ts](drizzle.config.ts)，迁移目录 [drizzle/](drizzle)。需要手工调整 schema 时同步迁移。
-- 统一通过 server actions 访问数据库，保持缓存刷新语义；新增路由时复用此模式。
-- icon 使用 lucide-react；UI 使用简洁容器 + 阴影样式，保持现有视觉语言。
-- 模型调用时注意记录日志，便于后续成本分析和调试。
-- 新增工具时遵循工具箱组件结构，保持一致的UI/UX。
-- 新增工具时，通过 `toolConfigs` 表注册工具配置，确保动态加载和版本控制。
-- AI 模型使用：通过 `aiRegistry.getModel(modelId)` 获取包装后的模型实例，自动应用日志和缓存。
-- 调用日志追踪：在 `providerOptions` 中传入 `logging: { callReason: <reason> }` 参数用于日志分类（如 `"/tools/seed-expander"`）。
-- 提供商扩展：新增提供商类型时，在 `provider-factory.ts` 中添加对应的创建逻辑。
-- 缓存管理：模型配置变更后自动失效缓存，无需手动处理。
+- **新增工具**：在 `toolConfigs` 表中注册，并确保 `inputSchema` 与前端 `DynamicForm` 兼容。
+- **模型调用**：始终通过 `aiRegistry` 获取模型，不要直接实例化提供商客户端。
+- **样式**：Tailwind v4，使用 CSS 变量控制主题。图标统一使用 `lucide-react`。
+- **调试**：查看 [app/logs/page.tsx](app/logs/page.tsx) 获取详细的模型调用日志和成本统计。
