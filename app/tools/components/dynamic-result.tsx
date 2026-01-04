@@ -17,49 +17,30 @@ interface DynamicResultProps {
 
 export const DynamicResult = withAutoTransition(DynamicResultInner, { as: "div", className: "relative" });
 function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) {
-  if (isLoading && (!results || (Array.isArray(results) ? results.length === 0 : !results))) {
-    if (schema.type === "text") {
-      return (
-        <div key="loading-text" className="p-6 rounded-2xl border border-border bg-card animate-pulse space-y-4">
-          <div className="h-4 w-24 bg-muted rounded-full" />
-          <div className="space-y-2">
-            <div className="h-3 w-full bg-muted rounded" />
-            <div className="h-3 w-5/6 bg-muted rounded" />
-            <div className="h-3 w-4/6 bg-muted rounded" />
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div key="loading" className="grid gap-6 md:grid-cols-2">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-48 rounded-2xl border border-border bg-card animate-pulse" />
-        ))}
-      </div>
-    );
-  }
-
-  if (!results || (Array.isArray(results) ? results.length === 0 : !results)) {
-    return null;
-  }
-
   if (schema.type === "card-list") {
-    const resultsArray = Array.isArray(results) ? results : [];
+    return <CardListResult schema={schema} results={results} isLoading={isLoading} />;
+  }
+
+  return <TextResult results={results} isLoading={isLoading} />;
+}
+
+function TextResult({ results, isLoading }: { results: any; isLoading: boolean }) {
+  const text = Array.isArray(results) ? results.join("") : String(results || "");
+
+  if (isLoading && !text) {
     return (
-      <div className="space-y-6">
-        <AutoTransition as="div" key="card-list" className="grid gap-6 md:grid-cols-2">
-          {resultsArray.map((result, index) => (
-            <ResultCard key={result.id || index} result={result} schema={schema} />
-          ))}
-          {isLoading && (
-            <div className="grid gap-6">
-              <div className="h-48 rounded-2xl border border-border bg-card animate-pulse" />
-            </div>
-          )}
-        </AutoTransition>
+      <div key="loading-text" className="p-6 rounded-2xl border border-border bg-card animate-pulse space-y-4">
+        <div className="h-4 w-24 bg-muted rounded-full" />
+        <div className="space-y-2">
+          <div className="h-3 w-full bg-muted rounded" />
+          <div className="h-3 w-5/6 bg-muted rounded" />
+          <div className="h-3 w-4/6 bg-muted rounded" />
+        </div>
       </div>
     );
   }
+
+  if (!text) return null;
 
   return (
     <div className="space-y-4">
@@ -72,15 +53,46 @@ function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) 
             <Icons.FileText className="w-3 h-3" />
             文本结果
           </div>
-          <CopyButton text={Array.isArray(results) ? results.join("") : String(results)} />
+          <CopyButton text={text} />
         </div>
         <pre className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90 font-mono">
-          {Array.isArray(results) ? results.join("") : String(results)}
+          {text}
           {isLoading && (
             <span className="inline-flex ml-1 w-1.5 h-4 bg-primary animate-[pulse_1s_infinite] align-middle" />
           )}
         </pre>
       </div>
+    </div>
+  );
+}
+
+function CardListResult({ schema, results, isLoading }: { schema: OutputSchema; results: any; isLoading: boolean }) {
+  const resultsArray = Array.isArray(results) ? results : [];
+
+  if (isLoading && resultsArray.length === 0) {
+    return (
+      <div key="loading" className="grid gap-6 md:grid-cols-2">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-48 rounded-2xl border border-border bg-card animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  if (resultsArray.length === 0) return null;
+
+  return (
+    <div className="space-y-6">
+      <AutoTransition as="div" key="card-list" className="grid gap-6 md:grid-cols-2">
+        {resultsArray.map((result, index) => (
+          <ResultCard key={result.id || index} result={result} schema={schema} />
+        ))}
+        {isLoading && (
+          <div className="grid gap-6">
+            <div className="h-48 rounded-2xl border border-border bg-card animate-pulse" />
+          </div>
+        )}
+      </AutoTransition>
     </div>
   );
 }
