@@ -154,14 +154,15 @@ function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
     <div className="group relative flex flex-col p-6 rounded-2xl border border-border bg-card hover:shadow-md hover:border-primary/30 transition-all">
       <div className="flex items-start justify-between mb-4">
         {categoryEl || <div />}
-        <div className="flex gap-2">
+        <AutoTransition as="div" className="flex gap-2">
           <button
             onClick={handleCopy}
+            key={isCopied ? "copied" : "copy"}
             className="p-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
           >
             {isCopied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
           </button>
-        </div>
+        </AutoTransition>
       </div>
 
       <div className="space-y-3">
