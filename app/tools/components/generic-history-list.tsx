@@ -64,6 +64,7 @@ function GenericHistoryListInner({
             titleField && item.inputs[titleField] !== undefined && item.inputs[titleField] !== null
               ? String(item.inputs[titleField])
               : Object.values(item.inputs).find((v) => typeof v === "string" && v.length > 0) || "Untitled Execution";
+          const isText = typeof item.outputs === "string";
           const resultCount = Array.isArray(item.outputs) ? item.outputs.length : 1;
 
           return (
@@ -117,7 +118,7 @@ function GenericHistoryListInner({
                   </div>
                 )}
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground inline-flex w-fit">
-                  {resultCount} 个结果
+                  {isText ? `${item.outputs.length} 字` : `${resultCount} 个结果`}
                 </span>
               </div>
             </div>
