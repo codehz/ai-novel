@@ -30,8 +30,8 @@
 - 表单：`ProviderForm`/`ModelForm` 直接调用对应 server action；插入/更新都用 `upsert*`，更新时附带 `updatedAt: new Date()`，保持与 sqlite 时间戳列一致。
 - 状态切换/删除：UI 做 `confirm` 弹窗，action 侧只做 Drizzle 更新/删除并刷新路径。
 - 价格字段为 `real`（浮点），参数字段为 JSON（`parameters`）；客户端默认 `parameters: {}` 避免 `null`。
-- 提供商配置：`config` 字段存储 JSON 配置（如 API 版本、自定义端点等）；模型参数拆分为结构化字段（temperature、maxTokens、topP）+ 其他参数 JSON。
-- 主题：使用纯 CSS 变量控制主题，Tailwind v4 样式变量集中在 [app/globals.css](app/globals.css)。(Note: tailwind v4 is already released)
+- 提供商配置：`config` 字段存储 JSON 配置（如 API 版本、自定义端点等）；模型参数存储在 JSON 字段中，包括 temperature、maxTokens、topP 等。
+- 主题：使用纯 CSS 变量控制主题，Tailwind v4 样式变量集中在 [app/globals.css](app/globals.css)。
 - 组件复用：使用通用组件如 `ItemCard` 和 `AddCard` 统一 UI 模式。
 
 ## 数据库结构
@@ -47,6 +47,8 @@
 - 使用 SQLite 的 unixepoch() 函数处理时间戳
 - 价格字段使用 `real` 类型存储每百万token的价格
 - 参数字段使用 JSON 类型存储模型参数配置
+- `tool_histories` 表：存储工具执行历史记录，包括工具ID、输入输出、时间戳和关联模型信息
+- `tool_configs` 表：存储工具配置信息，支持动态工具注册和版本管理
 
 ## AI 工作流与调用日志
 
@@ -57,11 +59,11 @@
 - AI 模型注册表：`AIRegistry` 单例类提供懒加载的模型客户端缓存，自动刷新配置变更
 - 日志中间件：`wrapLanguageModelWithLogging` 自动记录调用日志、计算成本并注入默认参数
 - 提供商工厂：`createProviderClient` 根据提供商类型创建 AI SDK 客户端，支持 OpenAI 兼容提供商
+- 工具历史记录：`toolHistories` 表记录工具执行详情，包括输入输出、时间戳和关联模型，便于工具使用分析和调试
 
 ## 工具箱功能
 
 - 工具页面：[app/tools/page.tsx](app/tools/page.tsx) 提供工具列表入口
-- 种子想法扩展：[app/tools/seed-expander](app/tools/seed-expander) 工具，可将简短想法扩展为多个情节方向
 - 工具组件：位于 [app/tools/components](app/tools/components) 目录，可扩展更多创作辅助工具
 
 ## 开发提示
@@ -71,6 +73,7 @@
 - icon 使用 lucide-react；UI 使用简洁容器 + 阴影样式，保持现有视觉语言。
 - 模型调用时注意记录日志，便于后续成本分析和调试。
 - 新增工具时遵循工具箱组件结构，保持一致的UI/UX。
+- 新增工具时，通过 `toolConfigs` 表注册工具配置，确保动态加载和版本控制。
 - AI 模型使用：通过 `aiRegistry.getModel(modelId)` 获取包装后的模型实例，自动应用日志和缓存。
 - 调用日志追踪：在 `providerOptions` 中传入 `logging: { callReason: <reason> }` 参数用于日志分类（如 `"/tools/seed-expander"`）。
 - 提供商扩展：新增提供商类型时，在 `provider-factory.ts` 中添加对应的创建逻辑。
