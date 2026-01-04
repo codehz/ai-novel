@@ -1,7 +1,9 @@
 import { getWritable } from "workflow";
-import { ToolConfig } from "../lib/tool-types";
+import { StreamStepResult, ToolConfig } from "../lib/tool-types";
+import markStreamComplete from "../steps/markStreamComplete";
 import saveToolHistoryStep from "../steps/saveToolHistoryStep";
-import streamJsonStep, { markStreamJsonComplete, StreamJsonStepResult } from "../steps/streamJsonStep";
+import streamJsonStep from "../steps/streamJsonStep";
+import streamTextStep from "../steps/streamTextStep";
 
 export default async function executeToolWorkflow(
   inputs: Record<string, unknown>,
@@ -15,16 +17,30 @@ export default async function executeToolWorkflow(
   const systemPrompt = config.prompts?.systemTemplate || "你是一个专业的助手。";
   const userPrompt = buildUserPrompt(config.prompts?.userTemplate || "", inputs);
 
-  const writable = getWritable<StreamJsonStepResult<unknown>>();
-  const results = await streamJsonStep(options.modelId, writable, {
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt },
-    ],
-    callReason: `/tools/${toolId}`,
-  });
+  const isText = config.outputSchema.type === "text";
+  const writable = getWritable<StreamStepResult<unknown>>();
+
+  let results: unknown;
+  if (isText) {
+    results = await streamTextStep(options.modelId, writable, {
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      callReason: `/tools/${toolId}`,
+    });
+  } else {
+    results = await streamJsonStep(options.modelId, writable, {
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      callReason: `/tools/${toolId}`,
+    });
+  }
+
   await saveToolHistoryStep(toolId, inputs, results, options.modelId);
-  await markStreamJsonComplete(writable);
+  await markStreamComplete(writable);
   return results;
 }
 

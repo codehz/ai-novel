@@ -17,7 +17,7 @@ interface ToolExecutorProps {
 export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [inputs, setInputs] = useState<Record<string, any>>({});
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<any>([]);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<ToolHistoryItem[]>([]);
   const [currentHistoryId, setCurrentHistoryId] = useState<number | undefined>(undefined);
@@ -95,7 +95,12 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
             try {
               const chunk = JSON.parse(trimmedLine.substring(6));
               if (chunk.type === "item") {
-                setResults((prev) => [...prev, chunk.data]);
+                setResults((prev: any) => {
+                  if (Array.isArray(prev)) {
+                    return [...prev, chunk.data];
+                  }
+                  return [chunk.data];
+                });
               } else if (chunk.type === "complete") {
                 await loadHistory();
                 const newHistory = await getToolHistory(toolId);
@@ -166,7 +171,11 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
         <div className="space-y-4">
           <AutoTransition as="div" className="flex items-center justify-between relative">
             <h2 className="text-lg font-semibold">生成结果</h2>
-            {results.length > 0 && <span className="text-sm text-muted-foreground">{results.length} 个结果</span>}
+            {results && (Array.isArray(results) ? results.length > 0 : true) && (
+              <span className="text-sm text-muted-foreground">
+                {config.outputSchema.type === "card-list" ? `${results.length} 个结果` : "已生成"}
+              </span>
+            )}
           </AutoTransition>
           <DynamicResult schema={config.outputSchema} results={results} isLoading={isLoading} />
         </div>

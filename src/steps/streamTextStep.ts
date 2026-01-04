@@ -1,11 +1,10 @@
 import { ModelMessage, streamText } from "ai";
-import { parse } from "jsonriver";
 import { aiRegistry } from "../lib/ai-registry";
 import { StreamStepResult } from "../lib/tool-types";
 
-export default async function streamJsonStep<T>(
+export default async function streamTextStep(
   modelId: number,
-  writable: WritableStream<StreamStepResult<T>>,
+  writable: WritableStream<StreamStepResult<string>>,
   {
     messages,
     callReason,
@@ -13,7 +12,7 @@ export default async function streamJsonStep<T>(
     messages: Array<ModelMessage>;
     callReason?: string;
   },
-) {
+): Promise<string> {
   "use step";
 
   const model = await aiRegistry.getModel(modelId);
@@ -27,21 +26,17 @@ export default async function streamJsonStep<T>(
       },
     },
   });
+
   const writer = writable.getWriter();
   try {
-    let results: T[] = [];
-    const iterator = parse(result.textStream, {
-      completeCallback: (value, path) => {
-        const segments = path.segments();
-        if (segments.length === 1 && typeof segments[0] === "number") {
-          writer.write({ type: "item", data: value as T });
-        }
-      },
-    });
-    for await (const value of iterator) {
-      results = value as T[];
+    let fullText = "";
+
+    for await (const chunk of result.textStream) {
+      fullText += chunk;
+      await writer.write({ type: "item", data: chunk });
     }
-    return results;
+
+    return fullText;
   } finally {
     writer.releaseLock();
   }

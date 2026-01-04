@@ -11,13 +11,25 @@ import { useState } from "react";
 
 interface DynamicResultProps {
   schema: OutputSchema;
-  results: any[];
+  results: any[] | string;
   isLoading: boolean;
 }
 
 export const DynamicResult = withAutoTransition(DynamicResultInner, { as: "div", className: "relative" });
 function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) {
-  if (isLoading && (!results || results.length === 0)) {
+  if (isLoading && (!results || (Array.isArray(results) ? results.length === 0 : !results))) {
+    if (schema.type === "text") {
+      return (
+        <div key="loading-text" className="p-6 rounded-2xl border border-border bg-card animate-pulse space-y-4">
+          <div className="h-4 w-24 bg-muted rounded-full" />
+          <div className="space-y-2">
+            <div className="h-3 w-full bg-muted rounded" />
+            <div className="h-3 w-5/6 bg-muted rounded" />
+            <div className="h-3 w-4/6 bg-muted rounded" />
+          </div>
+        </div>
+      );
+    }
     return (
       <div key="loading" className="grid gap-6 md:grid-cols-2">
         {[...Array(4)].map((_, i) => (
@@ -27,15 +39,16 @@ function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) 
     );
   }
 
-  if (!results || results.length === 0) {
+  if (!results || (Array.isArray(results) ? results.length === 0 : !results)) {
     return null;
   }
 
   if (schema.type === "card-list") {
+    const resultsArray = Array.isArray(results) ? results : [];
     return (
       <div className="space-y-6">
         <AutoTransition as="div" key="card-list" className="grid gap-6 md:grid-cols-2">
-          {results.map((result, index) => (
+          {resultsArray.map((result, index) => (
             <ResultCard key={result.id || index} result={result} schema={schema} />
           ))}
           {isLoading && (
@@ -50,13 +63,45 @@ function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) 
 
   return (
     <div className="space-y-4">
-      <div key="text" className="p-4 rounded-xl border border-border bg-card">
-        <pre className="whitespace-pre-wrap text-sm">
-          {typeof results === "string" ? results : JSON.stringify(results, null, 2)}
+      <div
+        key="text"
+        className="group relative p-6 rounded-2xl border border-border bg-card hover:shadow-md transition-all"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+            <Icons.FileText className="w-3 h-3" />
+            文本结果
+          </div>
+          <CopyButton text={Array.isArray(results) ? results.join("") : String(results)} />
+        </div>
+        <pre className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90 font-mono">
+          {Array.isArray(results) ? results.join("") : String(results)}
+          {isLoading && (
+            <span className="inline-flex ml-1 w-1.5 h-4 bg-primary animate-[pulse_1s_infinite] align-middle" />
+          )}
         </pre>
       </div>
-      {isLoading && <div className="h-20 rounded-xl border border-border bg-card animate-pulse" />}
     </div>
+  );
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+      title="复制内容"
+    >
+      {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+    </button>
   );
 }
 
