@@ -4,7 +4,7 @@ import { aiRegistry } from "../ai-registry";
 import { getToolConfig } from "../tool-registry";
 import { ToolExecutionResult } from "../tool-types";
 
-type ToolExecutorFn = (inputs: Record<string, any>, options?: { modelId?: number }) => Promise<ToolExecutionResult>;
+type ToolExecutorFn = (inputs: Record<string, any>, options: { modelId: number }) => Promise<ToolExecutionResult>;
 
 /**
  * 通用工具执行器，根据工具配置调用 AI 模型
@@ -12,15 +12,11 @@ type ToolExecutorFn = (inputs: Record<string, any>, options?: { modelId?: number
 async function executeGenericTool(
   toolId: string,
   inputs: Record<string, any>,
-  options?: { modelId?: number },
+  options: { modelId: number },
 ): Promise<ToolExecutionResult> {
   const config = await getToolConfig(toolId);
   if (!config) {
     return { success: false, error: "找不到工具配置" };
-  }
-
-  if (!options?.modelId) {
-    return { success: false, error: "请选择 AI 模型以执行此工具。" };
   }
 
   try {

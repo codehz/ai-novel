@@ -46,6 +46,11 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
   };
 
   const handleExecute = async () => {
+    if (!selectedModelId) {
+      setError("请先选择一个模型");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     setResults([]);

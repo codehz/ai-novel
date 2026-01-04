@@ -71,7 +71,7 @@ export interface ToolHistoryItem {
   inputs: Record<string, any>;
   outputs: any;
   timestamp: number;
-  modelId?: number;
+  modelId: number;
   modelName?: string;
   providerName?: string;
 }

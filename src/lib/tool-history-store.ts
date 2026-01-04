@@ -15,17 +15,15 @@ class DatabaseToolHistoryStore implements ToolExecutionStore {
     let modelName: string | undefined;
     let providerName: string | undefined;
 
-    if (item.modelId) {
-      const model = await db.query.models.findFirst({
-        where: eq(models.id, item.modelId),
-        with: {
-          provider: true,
-        },
-      });
-      if (model) {
-        modelName = model.displayName;
-        providerName = model.provider.providerName;
-      }
+    const model = await db.query.models.findFirst({
+      where: eq(models.id, item.modelId),
+      with: {
+        provider: true,
+      },
+    });
+    if (model) {
+      modelName = model.displayName;
+      providerName = model.provider.providerName;
     }
 
     await db.insert(toolHistories).values({

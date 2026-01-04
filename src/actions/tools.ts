@@ -14,7 +14,7 @@ import { revalidatePath } from "next/cache";
 export async function executeTool(
   toolId: string,
   inputs: Record<string, any>,
-  modelId?: number,
+  modelId: number,
 ): Promise<ToolExecutionResult> {
   const config = await getToolConfig(toolId);
   if (!config) {
