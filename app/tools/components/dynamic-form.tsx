@@ -55,7 +55,13 @@ export function DynamicForm({
 
       <div className="space-y-4">
         {schema.fields.map((field) => (
-          <FormField key={field.name} label={field.label} required={field.required} className="relative">
+          <FormField
+            key={field.name}
+            label={field.label}
+            required={field.required}
+            description={field.description}
+            className="relative"
+          >
             {field.type === "textarea" ? (
               <div className="relative">
                 <TextAreaInput
@@ -89,7 +95,6 @@ export function DynamicForm({
                 maxLength={field.maxLength}
               />
             )}
-            {field.description && <p className="text-xs text-muted-foreground mt-1">{field.description}</p>}
           </FormField>
         ))}
       </div>

@@ -85,7 +85,7 @@ export function FieldEditor({
         </FormField>
       </div>
 
-      <FormField label="描述说明">
+      <FormField label="描述说明" description="该描述将显示在生成表单的字段下方，用于指导用户填写">
         <TextInput
           value={field.description || ""}
           onChange={(e) => updateField({ description: e.target.value })}

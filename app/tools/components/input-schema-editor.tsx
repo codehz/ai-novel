@@ -91,7 +91,7 @@ export function InputSchemaEditor({ value, onChange }: InputSchemaEditorProps) {
           />
         </FormField>
 
-        <FormField label="提交按钮文字">
+        <FormField label="提交按钮文字" description="自定义表单提交按钮显示的文字">
           <TextInput
             value={value.submitLabel || ""}
             onChange={(e) => onChange({ ...value, submitLabel: e.target.value })}

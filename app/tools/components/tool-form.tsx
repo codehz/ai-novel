@@ -81,7 +81,7 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <FormField label="工具 ID" required>
+        <FormField label="工具 ID" required description="工具的唯一标识符，创建后不可更改">
           <TextInput
             value={formData.toolId}
             onChange={(e) => setFormData({ ...formData, toolId: e.target.value })}
@@ -90,7 +90,7 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
             required
           />
         </FormField>
-        <FormField label="版本" required>
+        <FormField label="版本" required description="遵循语义化版本规范 (如 1.0.0)">
           <TextInput
             value={formData.version}
             onChange={(e) => setFormData({ ...formData, version: e.target.value })}
@@ -101,7 +101,7 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
         </FormField>
       </div>
 
-      <FormField label="名称" required>
+      <FormField label="名称" required description="显示在工具列表和执行界面的名称">
         <TextInput
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -111,7 +111,7 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
         />
       </FormField>
 
-      <FormField label="描述" required>
+      <FormField label="描述" required description="简要说明该工具的功能和用途">
         <TextAreaInput
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}

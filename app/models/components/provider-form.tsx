@@ -71,7 +71,7 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
         />
       </div>
 
-      <FormField label="提供商名称" required>
+      <FormField label="提供商名称" required description="用于识别该提供商的友好名称">
         <TextInput
           variant="primary"
           required
@@ -82,7 +82,7 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
         />
       </FormField>
 
-      <FormField label="提供商类型">
+      <FormField label="提供商类型" description="选择 API 协议类型">
         <SelectInput
           variant="primary"
           value={formData.providerType}

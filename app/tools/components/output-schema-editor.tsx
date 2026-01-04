@@ -51,7 +51,7 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
         <div className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">输出渲染配置</div>
       </div>
 
-      <FormField label="渲染方式" required>
+      <FormField label="渲染方式" required description="选择生成结果的展示形式">
         <SelectInput
           value={value.type}
           onChange={(e) => updateSchema({ type: e.target.value as OutputRenderType })}

@@ -105,7 +105,7 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
         />
       </FormField>
 
-      <FormField label="模型标识符 (API Name)" required>
+      <FormField label="模型标识符 (API Name)" required description="API 调用时使用的模型名称">
         <TextInput
           variant="primary"
           required
@@ -129,7 +129,7 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
       </FormField>
 
       <div className="grid grid-cols-2 gap-4">
-        <FormField label="输入价格 ($/1M)">
+        <FormField label="输入价格 ($/1M)" description="每百万 Token 的输入成本">
           <NumberInput
             variant="primary"
             step="0.001"
@@ -138,7 +138,7 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
             disabled={loading}
           />
         </FormField>
-        <FormField label="输出价格 ($/1M)">
+        <FormField label="输出价格 ($/1M)" description="每百万 Token 的输出成本">
           <NumberInput
             variant="primary"
             step="0.001"
