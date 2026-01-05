@@ -4,7 +4,7 @@ import { AddCard } from "@/components/add-card";
 import { ItemCard } from "@/components/item-card";
 import { deleteProvider, toggleProviderStatus } from "@/src/actions/models";
 import { modelProviders, models } from "@/src/db/schema";
-import { startTransition, useState } from "react";
+import { useState } from "react";
 import { ProviderForm } from "./provider-form";
 
 type ProviderWithModels = typeof modelProviders.$inferSelect & {
@@ -20,17 +20,13 @@ export function ProviderList({ initialProviders }: ProviderListProps) {
   const [editingProvider, setEditingProvider] = useState<ProviderWithModels | null>(null);
 
   const handleEdit = (provider: ProviderWithModels) => {
-    startTransition(() => {
-      setEditingProvider(provider);
-      setIsFormOpen(true);
-    });
+    setEditingProvider(provider);
+    setIsFormOpen(true);
   };
 
   const handleAdd = () => {
-    startTransition(() => {
-      setEditingProvider(null);
-      setIsFormOpen(true);
-    });
+    setEditingProvider(null);
+    setIsFormOpen(true);
   };
 
   return (
@@ -64,9 +60,7 @@ export function ProviderList({ initialProviders }: ProviderListProps) {
 
       <AddCard onClick={handleAdd} label="添加提供商" />
 
-      {isFormOpen && (
-        <ProviderForm provider={editingProvider} onClose={() => startTransition(() => setIsFormOpen(false))} />
-      )}
+      <ProviderForm open={isFormOpen} provider={editingProvider} onClose={() => setIsFormOpen(false)} />
     </div>
   );
 }

@@ -132,3 +132,52 @@ body {
     @slot;
   }
 }
+
+/* Dialog element styling with animations */
+dialog {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  max-width: none;
+  border-radius: 1rem;
+  overflow: visible;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: opacity 0.2s ease-out;
+}
+
+dialog[open]::backdrop {
+  animation: backdrop-fade-in 0.2s ease-out;
+}
+
+dialog:not([open])::backdrop {
+  opacity: 0;
+}
+
+@keyframes backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+@keyframes dialog-fade-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@custom-variant dialog-open {
+  &[open] {
+    @slot;
+  }
+}

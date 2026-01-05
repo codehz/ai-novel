@@ -11,11 +11,12 @@ import { modelProviders } from "@/src/db/schema";
 import { useState } from "react";
 
 interface ProviderFormProps {
+  open: boolean;
   provider?: typeof modelProviders.$inferSelect | null;
   onClose: () => void;
 }
 
-export function ProviderForm({ provider, onClose }: ProviderFormProps) {
+export function ProviderForm({ open, provider, onClose }: ProviderFormProps) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     id: provider?.id,
@@ -54,6 +55,7 @@ export function ProviderForm({ provider, onClose }: ProviderFormProps) {
 
   return (
     <ModalForm
+      open={open}
       title={provider ? "编辑提供商" : "添加提供商"}
       onClose={onClose}
       onSubmit={handleSubmit}

@@ -15,11 +15,12 @@ import { OutputSchemaEditor } from "./output-schema-editor";
 import { PromptSetEditor } from "./prompt-set-editor";
 
 interface ToolFormProps {
+  open: boolean;
   tool?: ToolConfig;
   onClose: () => void;
 }
 
-export function ToolForm({ tool, onClose }: ToolFormProps) {
+export function ToolForm({ open, tool, onClose }: ToolFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,6 +60,7 @@ export function ToolForm({ tool, onClose }: ToolFormProps) {
 
   return (
     <ModalForm
+      open={open}
       title={tool ? "编辑工具" : "新建工具"}
       onClose={onClose}
       onSubmit={handleSubmit}

@@ -11,12 +11,13 @@ import { models } from "@/src/db/schema";
 import { useState } from "react";
 
 interface ModelFormProps {
+  open: boolean;
   model?: typeof models.$inferSelect | null;
   providerId: number;
   onClose: () => void;
 }
 
-export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
+export function ModelForm({ open, model, providerId, onClose }: ModelFormProps) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     id: model?.id,
@@ -76,6 +77,7 @@ export function ModelForm({ model, providerId, onClose }: ModelFormProps) {
 
   return (
     <ModalForm
+      open={open}
       title={model ? "编辑模型" : "添加模型"}
       onClose={onClose}
       onSubmit={handleSubmit}

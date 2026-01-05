@@ -5,7 +5,7 @@ import { ItemCard } from "@/components/item-card";
 import { deleteToolConfig, toggleToolStatus } from "@/src/actions/tools";
 import { ToolConfig } from "@/src/lib/tool-types";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { startTransition, useState } from "react";
+import { useState } from "react";
 import { ToolForm } from "./tool-form";
 import { ToolIcon } from "./tool-icon";
 
@@ -21,15 +21,11 @@ export function ToolManager({ tools }: ToolManagerProps) {
   const disabledTools = tools.filter((t) => !t.isEnabled);
 
   const handleEdit = (tool: ToolConfig) => {
-    startTransition(() => {
-      setEditingTool(tool);
-    });
+    setEditingTool(tool);
   };
 
   const handleAdd = () => {
-    startTransition(() => {
-      setEditingTool(null);
-    });
+    setEditingTool(null);
   };
 
   const handleDelete = async (toolId: string) => {
@@ -102,7 +98,11 @@ export function ToolManager({ tools }: ToolManagerProps) {
       )}
 
       {editingTool !== undefined && (
-        <ToolForm tool={editingTool || undefined} onClose={() => startTransition(() => setEditingTool(undefined))} />
+        <ToolForm
+          open={editingTool !== undefined}
+          tool={editingTool || undefined}
+          onClose={() => setEditingTool(undefined)}
+        />
       )}
     </div>
   );
