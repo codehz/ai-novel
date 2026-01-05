@@ -29,16 +29,16 @@ export function ModalForm({
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 p-4">
       <div
-        className={`bg-card rounded-2xl shadow-2xl w-full ${maxWidth} overflow-hidden animate-in fade-in zoom-in duration-200`}
+        className={`bg-card rounded-2xl shadow-2xl w-full ${maxWidth} max-h-full flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200`}
       >
-        <div className="flex items-center justify-between p-6 border-b border-border">
-          <h3 className="text-xl font-bold">{title}</h3>
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border flex-none">
+          <h3 className="text-lg sm:text-xl font-bold">{title}</h3>
           <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors">
             <X size={20} />
           </button>
         </div>
 
-        <form onSubmit={onSubmit} className={`p-6 space-y-4 ${className}`}>
+        <form onSubmit={onSubmit} className={`p-4 sm:p-6 space-y-4 ${className} overflow-y-auto flex-1`}>
           {children}
 
           <div className="flex gap-3 pt-4">
