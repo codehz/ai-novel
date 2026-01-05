@@ -1,4 +1,5 @@
 import { Edit2, Power, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { ReactNode } from "react";
 
 interface ItemCardProps {
@@ -10,6 +11,7 @@ interface ItemCardProps {
   onDelete?: () => void;
   deleteConfirmMessage?: string;
   children?: ReactNode;
+  href?: string;
 }
 
 export function ItemCard({
@@ -21,13 +23,10 @@ export function ItemCard({
   onDelete,
   deleteConfirmMessage = "确定要删除吗？",
   children,
+  href,
 }: ItemCardProps) {
-  return (
-    <div
-      className={`p-4 min-w-0 rounded-xl border bg-card border-border shadow-sm transition-all ${
-        !isEnabled ? "opacity-60 grayscale-[0.5]" : ""
-      }`}
-    >
+  const content = (
+    <>
       <div className="flex justify-between items-start mb-3">
         <div className="min-w-0 flex-1 space-y-2">
           <h3 className="font-bold text-foreground truncate">{title}</h3>
@@ -37,7 +36,13 @@ export function ItemCard({
             </p>
           )}
         </div>
-        <div className="flex gap-1 ml-2 shrink-0">
+        <div
+          className="flex gap-1 ml-2 shrink-0"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
           {onToggle && (
             <button
               onClick={onToggle}
@@ -74,6 +79,20 @@ export function ItemCard({
         </div>
       </div>
       {children && <div className="text-xs space-y-1 text-muted-foreground">{children}</div>}
-    </div>
+    </>
   );
+
+  const className = `p-4 min-w-0 rounded-xl border bg-card border-border shadow-sm transition-all ${
+    !isEnabled ? "opacity-60 grayscale-[0.5]" : ""
+  } ${href ? "hover:border-primary/50 cursor-pointer block" : ""}`;
+
+  if (href) {
+    return (
+      <Link href={href} className={className}>
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={className}>{content}</div>;
 }
