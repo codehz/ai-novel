@@ -1,4 +1,6 @@
-import { createContext, useContext } from "react";
+"use client";
+
+import { createContext, ReactNode, use } from "react";
 
 /**
  * Reference object for overlay components to control their lifecycle
@@ -10,12 +12,22 @@ export interface OverlayRef {
   close: () => void;
 }
 
+export const OverlayRef = createContext<OverlayRef | null>(null);
+
+export const useOverlayRef = () => {
+  const context = use(OverlayRef);
+  if (!context) {
+    throw new Error("useOverlayRef must be used within an overlay item");
+  }
+  return context;
+};
+
 /**
  * Represents an item in the overlay queue
  */
 export interface OverlayQueueItem {
   id: string;
-  component: React.ReactNode;
+  component: ReactNode;
   ref: OverlayRef;
 }
 
@@ -23,12 +35,7 @@ export interface OverlayQueueItem {
  * Context type defining the overlay queue API
  */
 export interface OverlayQueueContextType {
-  /**
-   * Pushes an overlay component to the queue
-   * @param component The overlay component to render
-   * @returns A ref object with a close method to remove the overlay
-   */
-  (component: React.ReactNode): OverlayRef;
+  show(component: ReactNode): OverlayRef;
 }
 
 export const OverlayQueueContext = createContext<OverlayQueueContextType | null>(null);
@@ -39,7 +46,7 @@ export const OverlayQueueContext = createContext<OverlayQueueContextType | null>
  * @throws Error if used outside of an OverlayQueueProvider
  */
 export const useOverlayQueue = () => {
-  const context = useContext(OverlayQueueContext);
+  const context = use(OverlayQueueContext);
   if (!context) {
     throw new Error("useOverlayQueue must be used within an OverlayQueueProvider");
   }

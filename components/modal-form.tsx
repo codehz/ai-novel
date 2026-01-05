@@ -1,12 +1,11 @@
 "use client";
 
 import { X } from "lucide-react";
-import React, { ReactNode, useEffect, useRef } from "react";
+import React, { ReactNode, useCallback, useEffect, useRef } from "react";
+import { useOverlayRef } from "./overlay/overlay-context";
 
 interface ModalFormProps {
-  open: boolean;
   title: string;
-  onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
   loading?: boolean;
   children: ReactNode;
@@ -14,12 +13,11 @@ interface ModalFormProps {
   loadingLabel?: string;
   className?: string;
   maxWidth?: string;
+  onClose?: () => void;
 }
 
 export function ModalForm({
-  open,
   title,
-  onClose,
   onSubmit,
   loading = false,
   children,
@@ -27,39 +25,43 @@ export function ModalForm({
   loadingLabel = "保存中...",
   className = "",
   maxWidth = "max-w-md",
+  onClose,
 }: ModalFormProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const overlayRef = useOverlayRef();
 
-  // 监听 open prop 变化，控制 dialog 的显示/隐藏
-  useEffect(() => {
-    if (open) {
-      dialogRef.current?.showModal();
-    } else {
-      dialogRef.current?.close();
+  const performClose = useCallback(async () => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    dialog.close();
+    // 执行后置回调
+    if (onClose) {
+      onClose();
     }
-  }, [open]);
+    // 等待动画完成
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-  // 监听 dialog 的 cancel 和 close 事件，触发 onClose 回调
+    // 关闭 overlay
+    overlayRef.close();
+  }, [onClose, overlayRef]);
+
+  // 监听 dialog 的 cancel 事件，触发关闭流程
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
+    dialog.showModal();
 
-    const handleCancel = () => {
-      onClose();
-    };
-
-    const handleClose = () => {
-      onClose();
+    const handleCancel = (e: Event) => {
+      e.preventDefault();
+      performClose();
     };
 
     dialog.addEventListener("cancel", handleCancel);
-    dialog.addEventListener("close", handleClose);
 
     return () => {
       dialog.removeEventListener("cancel", handleCancel);
-      dialog.removeEventListener("close", handleClose);
     };
-  }, [onClose]);
+  }, [performClose]);
 
   return (
     <dialog
@@ -69,7 +71,7 @@ export function ModalForm({
       <div className={`bg-card rounded-2xl shadow-2xl w-full ${maxWidth} max-h-full flex flex-col overflow-hidden`}>
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border flex-none">
           <h3 className="text-lg sm:text-xl font-bold">{title}</h3>
-          <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors">
+          <button onClick={performClose} className="p-2 hover:bg-muted rounded-full transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -80,7 +82,7 @@ export function ModalForm({
           <div className="flex gap-3 pt-4">
             <button
               type="button"
-              onClick={onClose}
+              onClick={performClose}
               className="flex-1 px-4 py-2 border border-border rounded-lg font-medium hover:bg-muted transition-colors"
             >
               取消

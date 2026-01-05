@@ -2,6 +2,7 @@
 
 import { AddCard } from "@/components/add-card";
 import { ItemCard } from "@/components/item-card";
+import { useOverlayQueue } from "@/components/overlay";
 import { deleteToolConfig, toggleToolStatus } from "@/src/actions/tools";
 import { ToolConfig } from "@/src/lib/tool-types";
 import { ChevronDown, ChevronRight } from "lucide-react";
@@ -14,18 +15,18 @@ interface ToolManagerProps {
 }
 
 export function ToolManager({ tools }: ToolManagerProps) {
-  const [editingTool, setEditingTool] = useState<ToolConfig | null | undefined>(undefined);
+  const queue = useOverlayQueue();
   const [showDisabled, setShowDisabled] = useState(false);
 
   const enabledTools = tools.filter((t) => t.isEnabled);
   const disabledTools = tools.filter((t) => !t.isEnabled);
 
   const handleEdit = (tool: ToolConfig) => {
-    setEditingTool(tool);
+    queue.show(<ToolForm tool={tool} />);
   };
 
   const handleAdd = () => {
-    setEditingTool(null);
+    queue.show(<ToolForm />);
   };
 
   const handleDelete = async (toolId: string) => {
@@ -95,14 +96,6 @@ export function ToolManager({ tools }: ToolManagerProps) {
             </div>
           )}
         </div>
-      )}
-
-      {editingTool !== undefined && (
-        <ToolForm
-          open={editingTool !== undefined}
-          tool={editingTool || undefined}
-          onClose={() => setEditingTool(undefined)}
-        />
       )}
     </div>
   );

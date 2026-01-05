@@ -4,6 +4,7 @@
 import { FormField } from "@/components/form-field";
 import { IconPicker } from "@/components/icon-picker";
 import { ModalForm } from "@/components/modal-form";
+import { useOverlayRef } from "@/components/overlay/overlay-context";
 import { Switch } from "@/components/switch";
 import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
@@ -15,12 +16,12 @@ import { OutputSchemaEditor } from "./output-schema-editor";
 import { PromptSetEditor } from "./prompt-set-editor";
 
 interface ToolFormProps {
-  open: boolean;
   tool?: ToolConfig;
-  onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function ToolForm({ open, tool, onClose }: ToolFormProps) {
+export function ToolForm({ tool, onSuccess }: ToolFormProps) {
+  const overlayRef = useOverlayRef();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,7 +51,8 @@ export function ToolForm({ open, tool, onClose }: ToolFormProps) {
         prompts,
       });
 
-      onClose();
+      overlayRef.close();
+      onSuccess?.();
     } catch (err: any) {
       setError(err.message || "保存失败");
     } finally {
@@ -60,9 +62,7 @@ export function ToolForm({ open, tool, onClose }: ToolFormProps) {
 
   return (
     <ModalForm
-      open={open}
       title={tool ? "编辑工具" : "新建工具"}
-      onClose={onClose}
       onSubmit={handleSubmit}
       loading={loading}
       maxWidth="max-w-2xl"

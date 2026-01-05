@@ -1,10 +1,10 @@
 "use client";
 
 import { ItemCard } from "@/components/item-card";
+import { useOverlayQueue } from "@/components/overlay";
 import { deleteModel, toggleModelStatus } from "@/src/actions/models";
 import { modelProviders, models } from "@/src/db/schema";
 import { Plus } from "lucide-react";
-import { useState } from "react";
 import { ModelForm } from "./model-form";
 
 type ProviderWithModels = typeof modelProviders.$inferSelect & {
@@ -16,20 +16,14 @@ interface ModelListProps {
 }
 
 export function ModelList({ initialProviders }: ModelListProps) {
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingModel, setEditingModel] = useState<typeof models.$inferSelect | null>(null);
-  const [selectedProviderId, setSelectedProviderId] = useState<number | null>(null);
+  const queue = useOverlayQueue();
 
   const handleEdit = (model: typeof models.$inferSelect) => {
-    setEditingModel(model);
-    setSelectedProviderId(model.providerId);
-    setIsFormOpen(true);
+    queue.show(<ModelForm model={model} providerId={model.providerId} />);
   };
 
   const handleAdd = (providerId: number) => {
-    setEditingModel(null);
-    setSelectedProviderId(providerId);
-    setIsFormOpen(true);
+    queue.show(<ModelForm providerId={providerId} />);
   };
 
   if (initialProviders.length === 0) {
@@ -89,13 +83,6 @@ export function ModelList({ initialProviders }: ModelListProps) {
           </div>
         </div>
       ))}
-
-      <ModelForm
-        open={isFormOpen}
-        model={editingModel}
-        providerId={selectedProviderId!}
-        onClose={() => setIsFormOpen(false)}
-      />
     </div>
   );
 }

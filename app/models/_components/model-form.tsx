@@ -3,6 +3,7 @@
 import { FormField } from "@/components/form-field";
 import { ModalForm } from "@/components/modal-form";
 import { NumberInput } from "@/components/number-input";
+import { useOverlayRef } from "@/components/overlay/overlay-context";
 import { Switch } from "@/components/switch";
 import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
@@ -11,13 +12,13 @@ import { models } from "@/src/db/schema";
 import { useState } from "react";
 
 interface ModelFormProps {
-  open: boolean;
   model?: typeof models.$inferSelect | null;
   providerId: number;
-  onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function ModelForm({ open, model, providerId, onClose }: ModelFormProps) {
+export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
+  const overlayRef = useOverlayRef();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     id: model?.id,
@@ -66,7 +67,8 @@ export function ModelForm({ open, model, providerId, onClose }: ModelFormProps) 
         ...formData,
         parameters: finalParameters,
       });
-      onClose();
+      overlayRef.close();
+      onSuccess?.();
     } catch (error) {
       console.error("Failed to save model:", error);
       alert("保存失败，请重试。");
@@ -77,9 +79,7 @@ export function ModelForm({ open, model, providerId, onClose }: ModelFormProps) 
 
   return (
     <ModalForm
-      open={open}
       title={model ? "编辑模型" : "添加模型"}
-      onClose={onClose}
       onSubmit={handleSubmit}
       loading={loading}
       className="max-h-[80vh] overflow-y-auto"

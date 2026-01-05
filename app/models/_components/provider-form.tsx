@@ -2,6 +2,7 @@
 
 import { FormField } from "@/components/form-field";
 import { ModalForm } from "@/components/modal-form";
+import { useOverlayRef } from "@/components/overlay/overlay-context";
 import { SelectInput } from "@/components/select-input";
 import { Switch } from "@/components/switch";
 import { TextAreaInput } from "@/components/text-area-input";
@@ -11,12 +12,12 @@ import { modelProviders } from "@/src/db/schema";
 import { useState } from "react";
 
 interface ProviderFormProps {
-  open: boolean;
   provider?: typeof modelProviders.$inferSelect | null;
-  onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function ProviderForm({ open, provider, onClose }: ProviderFormProps) {
+export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
+  const overlayRef = useOverlayRef();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     id: provider?.id,
@@ -44,7 +45,10 @@ export function ProviderForm({ open, provider, onClose }: ProviderFormProps) {
         ...formData,
         config: configObj,
       } as typeof modelProviders.$inferInsert);
-      onClose();
+
+      // 成功后关闭表单并执行回调
+      overlayRef.close();
+      onSuccess?.();
     } catch (error) {
       console.error("Failed to save provider:", error);
       alert("保存失败，请重试。");
@@ -54,13 +58,7 @@ export function ProviderForm({ open, provider, onClose }: ProviderFormProps) {
   };
 
   return (
-    <ModalForm
-      open={open}
-      title={provider ? "编辑提供商" : "添加提供商"}
-      onClose={onClose}
-      onSubmit={handleSubmit}
-      loading={loading}
-    >
+    <ModalForm title={provider ? "编辑提供商" : "添加提供商"} onSubmit={handleSubmit} loading={loading}>
       <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border/50 mb-2">
         <div className="space-y-0.5">
           <div className="text-sm font-medium">启用状态</div>

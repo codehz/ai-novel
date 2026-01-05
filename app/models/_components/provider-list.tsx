@@ -2,9 +2,9 @@
 
 import { AddCard } from "@/components/add-card";
 import { ItemCard } from "@/components/item-card";
+import { useOverlayQueue } from "@/components/overlay";
 import { deleteProvider, toggleProviderStatus } from "@/src/actions/models";
 import { modelProviders, models } from "@/src/db/schema";
-import { useState } from "react";
 import { ProviderForm } from "./provider-form";
 
 type ProviderWithModels = typeof modelProviders.$inferSelect & {
@@ -16,17 +16,13 @@ interface ProviderListProps {
 }
 
 export function ProviderList({ initialProviders }: ProviderListProps) {
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingProvider, setEditingProvider] = useState<ProviderWithModels | null>(null);
-
+  const queue = useOverlayQueue();
   const handleEdit = (provider: ProviderWithModels) => {
-    setEditingProvider(provider);
-    setIsFormOpen(true);
+    queue.show(<ProviderForm provider={provider} />);
   };
 
   const handleAdd = () => {
-    setEditingProvider(null);
-    setIsFormOpen(true);
+    queue.show(<ProviderForm />);
   };
 
   return (
@@ -59,8 +55,6 @@ export function ProviderList({ initialProviders }: ProviderListProps) {
       ))}
 
       <AddCard onClick={handleAdd} label="添加提供商" />
-
-      <ProviderForm open={isFormOpen} provider={editingProvider} onClose={() => setIsFormOpen(false)} />
     </div>
   );
 }
