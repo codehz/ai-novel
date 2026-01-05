@@ -24,11 +24,15 @@
 
 ## 前端约定与模式
 
+- **目录结构约定（Next.js App Router）**：
+  - 公共组件放入顶层 `components/` 目录。
+  - 页面特定组件放入相应页面的 `_components/` 子目录中，避免在 `app/` 下创建 `components/` 目录。
+  - 示例：公共组件如 `item-card.tsx` 在 [components/item-card.tsx](components/item-card.tsx)，页面组件如模型表单在 [app/models/\_components/model-form.tsx](app/models/_components/model-form.tsx)。
 - **数据流**：Server Component 负责查询（如 `getProviders()`），UI 交互在 `"use client"` 组件内完成。
 - **Server Actions**：集中在 [src/actions/](src/actions/)。变更后必须调用 `revalidatePath` 刷新 UI，并视情况调用 `aiRegistry.invalidate*` 清除缓存.
 - **UI 组件**：
-  - 使用 [app/components/item-card.tsx](app/components/item-card.tsx) 展示列表项，支持开关、编辑、删除。
-  - 使用 [app/components/add-card.tsx](app/components/add-card.tsx) 作为添加按钮。
+  - 使用 [components/item-card.tsx](components/item-card.tsx) 展示列表项，支持开关、编辑、删除。
+  - 使用 [components/add-card.tsx](components/add-card.tsx) 作为添加按钮。
   - 状态变更推荐使用 `startTransition` 包裹，以保持 UI 响应。
 - **表单**：`ProviderForm`/`ModelForm` 直接调用 server action；插入/更新都用 `upsert*` 模式。
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ViewTransition } from "react";
-import { ResponsiveNav } from "./components/responsive-nav";
+import { ResponsiveNav } from "../components/responsive-nav";
 import "./globals.css";
 
 export const metadata: Metadata = {
