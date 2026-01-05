@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ViewTransition } from "react";
+import { ResponsiveNav } from "./components/responsive-nav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,20 +22,32 @@ export default function RootLayout({
             <Link href="/" className="text-xl font-bold bg-gradient-secondary bg-clip-text text-transparent">
               AI Novel
             </Link>
-            <nav className="flex items-center gap-6">
-              <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
+            <ResponsiveNav>
+              <Link
+                href="/"
+                className="text-sm font-medium hover:text-primary transition-colors px-2 py-1 rounded-md hover:bg-muted md:hover:bg-transparent"
+              >
                 首页
               </Link>
-              <Link href="/models" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link
+                href="/models"
+                className="text-sm font-medium hover:text-primary transition-colors px-2 py-1 rounded-md hover:bg-muted md:hover:bg-transparent"
+              >
                 模型配置
               </Link>
-              <Link href="/logs" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link
+                href="/logs"
+                className="text-sm font-medium hover:text-primary transition-colors px-2 py-1 rounded-md hover:bg-muted md:hover:bg-transparent"
+              >
                 调用日志
               </Link>
-              <Link href="/tools" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link
+                href="/tools"
+                className="text-sm font-medium hover:text-primary transition-colors px-2 py-1 rounded-md hover:bg-muted md:hover:bg-transparent"
+              >
                 工具箱
               </Link>
-            </nav>
+            </ResponsiveNav>
           </div>
         </header>
         <main className="flex-1 container mx-auto px-4 py-8">

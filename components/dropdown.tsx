@@ -17,6 +17,13 @@ interface DropdownProps {
   content: ReactNode | ((props: { close: () => void }) => ReactNode);
   className?: string;
   id?: string;
+  span?: "left" | "right";
+  /**
+   * 是否让弹出框宽度等于锚点（触发按钮）的宽度
+   * - true: 应用 w-anchor 类，弹出框宽度等于锚点宽度（默认，保持向后兼容）
+   * - false: 弹出框宽度由内容决定，不受锚点宽度限制
+   */
+  matchAnchorWidth?: boolean;
 }
 
 /**
@@ -27,7 +34,7 @@ interface DropdownProps {
  *   <button>点击展开</button>
  * </Dropdown>
  */
-export function Dropdown({ children, content, className, id }: DropdownProps) {
+export function Dropdown({ children, content, className, id, span = "left", matchAnchorWidth = true }: DropdownProps) {
   const internalId = useId();
   const popoverId = id || internalId;
 
@@ -43,6 +50,14 @@ export function Dropdown({ children, content, className, id }: DropdownProps) {
     popoverTarget: popoverId,
   } as React.HTMLAttributes<HTMLElement>);
 
+  // 根据 span 选择对应的 Tailwind 类
+  const positionAreaClass = {
+    left: "anchored-bottom-span-left",
+    right: "anchored-bottom-span-right",
+  }[span];
+  // 根据 matchAnchorWidth 决定是否应用 w-anchor 类
+  const widthClass = matchAnchorWidth ? "w-anchor" : "";
+
   return (
     <DropdownContext.Provider value={{ close }}>
       {trigger}
@@ -50,7 +65,7 @@ export function Dropdown({ children, content, className, id }: DropdownProps) {
         id={popoverId}
         popover="auto"
         className={`
-          anchored-bottom-span-left my-2 w-anchor try-flip-y
+          ${positionAreaClass} my-2 ${widthClass} try-flip-y
           max-h-2/3 overflow-y-auto
           bg-card border border-border rounded-lg shadow-lg
           starting:opacity-0 starting:scale-95 starting:duration-100
