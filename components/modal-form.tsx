@@ -66,7 +66,17 @@ export function ModalForm({
   return (
     <dialog
       ref={dialogRef}
-      className="p-0 rounded-2xl shadow-2xl backdrop:bg-black/50 dialog-open:animate-in dialog-open:fade-in dialog-open:zoom-in dialog-open:duration-200 backdrop:dialog-open:animate-in backdrop:dialog-open:fade-in"
+      className="
+        max-h-full max-w-full grid items-center justify-center w-full h-full p-0 
+        starting:opacity-0 starting:scale-95 starting:duration-100
+        not-dialog-open:opacity-0 not-dialog-open:scale-95
+        transition-all duration-200 ease-out
+        transition-discrete bg-transparent
+        backdrop:transition-all backdrop:transition-discrete
+        starting:backdrop:opacity-0 starting:backdrop:duration-100
+        not-dialog-open:backdrop:opacity-0
+        backdrop:bg-black/30
+      "
     >
       <div className={`bg-card rounded-2xl shadow-2xl w-full ${maxWidth} max-h-full flex flex-col overflow-hidden`}>
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border flex-none">
