@@ -1,3 +1,5 @@
+"use client";
+
 import { Edit2, Power, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
