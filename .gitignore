@@ -44,3 +44,5 @@ next-env.d.ts
 *.db-wal
 *.db-shm
 *.db-journal
+
+/.workflow_data
