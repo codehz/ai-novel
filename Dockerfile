@@ -4,8 +4,7 @@ FROM oven/bun:alpine AS base
 # 设置环境变量为生产环境
 ENV NODE_ENV=production
 ENV DB_FILE_NAME=/app/data/novel.db
-ENV WORKFLOW_TARGET_WORLD=@codehz/workflow-bun-sqlite
-ENV WORKFLOW_SQLITE_URL=/app/data/novel.db
+ENV WORKFLOW_LOCAL_DATA_DIR=/app/data/workflow-data
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # --- 第一阶段：安装依赖 ---

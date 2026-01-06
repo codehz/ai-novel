@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   },
   output: "standalone",
   outputFileTracingIncludes: {
-    "*": ["drizzle/**", "node_modules/@codehz/workflow-bun-sqlite/**"],
+    "*": ["drizzle/**", "node_modules/@workflow/world-local/**"],
   },
 };
 
