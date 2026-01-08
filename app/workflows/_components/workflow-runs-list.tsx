@@ -2,6 +2,7 @@
 
 import { FormField } from "@/components/form-field";
 import { ItemCard } from "@/components/item-card";
+import { LoadMoreButton } from "@/components/load-more-button";
 import { SelectInput } from "@/components/select-input";
 import { usePagination } from "@/hooks/usePagination";
 import { loadMoreWorkflowRuns } from "@/src/actions/workflows";
@@ -162,17 +163,7 @@ export function WorkflowRunsList({ runs, selectedStatus, hasMore, cursor }: Work
         )}
       </AutoTransition>
 
-      {hasMore && (
-        <div className="flex justify-center mt-6">
-          <button
-            onClick={loadMore}
-            disabled={isPending}
-            className="px-6 py-2.5 border border-border bg-card text-foreground rounded-lg font-medium hover:bg-muted hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isPending ? "加载中..." : "加载更多"}
-          </button>
-        </div>
-      )}
+      <LoadMoreButton onClick={loadMore} isLoading={isPending} hasMore={hasMore} />
     </div>
   );
 }
