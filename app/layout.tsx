@@ -1,8 +1,8 @@
 import { OverlayQueue } from "@/components/overlay";
 import { ResponsiveNav, type NavItem } from "@/components/responsive-nav";
+import { AutoTransition } from "@codehz/auto-transition";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ViewTransition } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -41,7 +41,9 @@ export default function RootLayout({
             </div>
           </header>
           <main className="flex-1 container mx-auto px-4 py-8">
-            <ViewTransition>{children}</ViewTransition>
+            <AutoTransition as="div" className="relative">
+              {children}
+            </AutoTransition>
           </main>
           <footer className="border-t border-border py-6 text-center text-sm text-muted-foreground transition-colors">
             &copy; {new Date().getFullYear()} AI Novel. All rights reserved.
