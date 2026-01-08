@@ -5,15 +5,12 @@ import { CopyButton } from "@/components/copy-button";
 import { DetailsCard } from "@/components/details-card";
 import { formatJson } from "@/src/lib/format";
 import { Step } from "@workflow/world";
-import { useState } from "react";
 
 interface StepDetailProps {
   step: Step;
 }
 
 export function StepDetail({ step }: StepDetailProps) {
-  const [expanded, setExpanded] = useState(false);
-
   const hasDetails = step.input || step.output || step.error;
 
   if (!hasDetails) {
@@ -21,14 +18,7 @@ export function StepDetail({ step }: StepDetailProps) {
   }
 
   return (
-    <DetailsCard
-      label="详细信息"
-      variant="default"
-      isControlled={true}
-      open={expanded}
-      onToggle={(open) => setExpanded(open)}
-      className="space-y-3 text-xs"
-    >
+    <DetailsCard label="详细信息" variant="default" className="space-y-3 text-xs">
       {/* 输入参数 */}
       {step.input && step.input.length > 0 && (
         <div>

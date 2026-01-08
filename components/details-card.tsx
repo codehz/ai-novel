@@ -1,46 +1,15 @@
-"use client";
-
 import clsx from "clsx";
 import { ChevronDown } from "lucide-react";
-import { useEffect, useRef } from "react";
 
 interface DetailsCardProps {
   label: string;
   children: React.ReactNode;
   variant?: "default" | "destructive" | "minimal" | "card";
   open?: boolean;
-  onToggle?: (open: boolean) => void;
-  isControlled?: boolean;
   className?: string;
 }
 
-export function DetailsCard({
-  label,
-  children,
-  variant = "default",
-  open: externalOpen = false,
-  onToggle,
-  isControlled = false,
-  className,
-}: DetailsCardProps) {
-  const detailsRef = useRef<HTMLDetailsElement>(null);
-
-  // 对于受控组件，同步外部状态到原生 details 元素
-  useEffect(() => {
-    if (isControlled && detailsRef.current) {
-      if (detailsRef.current.open !== externalOpen) {
-        detailsRef.current.open = externalOpen;
-      }
-    }
-  }, [externalOpen, isControlled]);
-
-  // 处理原生 details 的 toggle 事件
-  const handleToggle = (event: React.SyntheticEvent<HTMLDetailsElement>) => {
-    const target = event.target as HTMLDetailsElement;
-    const isOpen = target.open;
-    onToggle?.(isOpen);
-  };
-
+export function DetailsCard({ label, children, variant = "default", open = false, className }: DetailsCardProps) {
   // 根据 variant 生成样式类名
   const getDetailsClasses = () => {
     switch (variant) {
@@ -73,12 +42,7 @@ export function DetailsCard({
   };
 
   return (
-    <details
-      ref={detailsRef}
-      className={clsx("group", getDetailsClasses())}
-      open={isControlled ? externalOpen : undefined}
-      onToggle={handleToggle}
-    >
+    <details className={clsx("group", getDetailsClasses())} open={open}>
       <summary className={clsx("flex items-center justify-between text-sm", getSummaryClasses())}>
         <span>{label}</span>
         <div className="flex items-center">
