@@ -1,15 +1,13 @@
 import { getButtonClasses, type ButtonSize, type ButtonVariant } from "@/src/lib/button-styles";
 import clsx from "clsx";
 import { Loader2 } from "lucide-react";
-import React from "react";
+import { ComponentProps } from "react";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ComponentProps<"button"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
   loadingText?: string;
-  className?: string;
-  children: React.ReactNode;
 }
 
 /**
@@ -21,27 +19,30 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
  * <Button variant="destructive" size="sm">删除</Button>
  * <Button loading loadingText="加载中...">提交</Button>
  */
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    { variant = "primary", size = "md", loading = false, loadingText, className = "", disabled, children, ...props },
-    ref,
-  ) => {
-    const baseClasses = getButtonClasses(variant, size);
-    const finalClasses = clsx(baseClasses, className);
+export function Button({
+  variant = "primary",
+  size = "md",
+  loading = false,
+  loadingText,
+  className = "",
+  disabled,
+  children,
+  ref,
+  ...props
+}: ButtonProps) {
+  const baseClasses = getButtonClasses(variant, size);
+  const finalClasses = clsx(baseClasses, className);
 
-    return (
-      <button ref={ref} disabled={loading || disabled} className={finalClasses} type="button" {...props}>
-        {loading ? (
-          <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            {loadingText || children}
-          </>
-        ) : (
-          children
-        )}
-      </button>
-    );
-  },
-);
-
-Button.displayName = "Button";
+  return (
+    <button ref={ref} disabled={loading || disabled} className={finalClasses} type="button" {...props}>
+      {loading ? (
+        <>
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          {loadingText || children}
+        </>
+      ) : (
+        children
+      )}
+    </button>
+  );
+}

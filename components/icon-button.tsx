@@ -1,12 +1,10 @@
 import { getIconButtonClasses, type ButtonColor, type IconButtonShape } from "@/src/lib/button-styles";
 import clsx from "clsx";
-import React from "react";
+import { ComponentProps } from "react";
 
-interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface IconButtonProps extends ComponentProps<"button"> {
   color?: ButtonColor;
   shape?: IconButtonShape;
-  className?: string;
-  children: React.ReactNode;
 }
 
 /**
@@ -21,17 +19,20 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
  *   <Trash2 size={16} />
  * </IconButton>
  */
-export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ color = "default", shape = "round", className = "", children, ...props }, ref) => {
-    const baseClasses = getIconButtonClasses(color, shape);
-    const finalClasses = clsx(baseClasses, className);
+export function IconButton({
+  color = "default",
+  shape = "round",
+  className = "",
+  children,
+  ref,
+  ...props
+}: IconButtonProps) {
+  const baseClasses = getIconButtonClasses(color, shape);
+  const finalClasses = clsx(baseClasses, className);
 
-    return (
-      <button ref={ref} className={finalClasses} type="button" {...props}>
-        {children}
-      </button>
-    );
-  },
-);
-
-IconButton.displayName = "IconButton";
+  return (
+    <button ref={ref} className={finalClasses} type="button" {...props}>
+      {children}
+    </button>
+  );
+}
