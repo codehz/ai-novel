@@ -3,6 +3,7 @@
 import { FormField } from "@/components/form-field";
 import { ItemCard } from "@/components/item-card";
 import { SelectInput } from "@/components/select-input";
+import { AutoTransition } from "@codehz/auto-transition";
 import { WorkflowRun, WorkflowRunStatus } from "@workflow/world";
 import { AlertCircle, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -129,17 +130,15 @@ export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
         />
       </FormField>
 
-      {filteredAndSorted.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">暂无工作流运行</p>
-        </div>
-      ) : (
-        <div className="grid gap-4">
-          {filteredAndSorted.map((run) => (
-            <WorkflowRunItem key={run.runId} run={run} />
-          ))}
-        </div>
-      )}
+      <AutoTransition as="div" className="grid relative gap-4">
+        {filteredAndSorted.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">暂无工作流运行</p>
+          </div>
+        ) : (
+          filteredAndSorted.map((run) => <WorkflowRunItem key={run.runId} run={run} />)
+        )}
+      </AutoTransition>
     </div>
   );
 }
