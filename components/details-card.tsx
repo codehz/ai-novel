@@ -3,13 +3,14 @@ import { ChevronDown } from "lucide-react";
 
 interface DetailsCardProps {
   label: string;
+  name?: string;
   children: React.ReactNode;
   variant?: "default" | "destructive" | "minimal" | "card";
   open?: boolean;
   className?: string;
 }
 
-export function DetailsCard({ label, children, variant = "default", open = false, className }: DetailsCardProps) {
+export function DetailsCard({ label, name, children, variant = "default", open = false, className }: DetailsCardProps) {
   // 根据 variant 生成样式类名
   const getDetailsClasses = () => {
     switch (variant) {
@@ -42,7 +43,7 @@ export function DetailsCard({ label, children, variant = "default", open = false
   };
 
   return (
-    <details className={clsx("group", getDetailsClasses())} open={open}>
+    <details className={clsx("group", getDetailsClasses())} name={name} open={open}>
       <summary className={clsx("flex items-center justify-between text-sm", getSummaryClasses())}>
         <span>{label}</span>
         <div className="flex items-center">

@@ -59,12 +59,18 @@ export function StreamViewer({ streamData }: StreamViewerProps) {
   }
 
   return (
-    <div className="space-y-4">
-      {streamData.map(({ name, content }) => {
+    <form className="space-y-4">
+      {streamData.map(({ name, content }, index) => {
         const { isJson, formatted } = formatContent(content);
 
         return (
-          <DetailsCard key={name} label={`${name}${isJson ? " (JSON)" : ""}`} variant="card">
+          <DetailsCard
+            key={name}
+            name="stream"
+            label={`${name}${isJson ? " (JSON)" : ""}`}
+            open={index === 0}
+            variant="card"
+          >
             <div className="flex justify-end gap-2 mb-3 mr-3 -mt-3">
               <Button
                 variant="primary"
@@ -82,6 +88,6 @@ export function StreamViewer({ streamData }: StreamViewerProps) {
           </DetailsCard>
         );
       })}
-    </div>
+    </form>
   );
 }
