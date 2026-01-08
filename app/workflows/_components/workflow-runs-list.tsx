@@ -206,7 +206,7 @@ export function WorkflowRunsList({ runs, selectedStatus, hasMore, cursor }: Work
           <button
             onClick={handleLoadMore}
             disabled={isPending}
-            className="px-4 py-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-6 py-2.5 border border-border bg-card text-foreground rounded-lg font-medium hover:bg-muted hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isPending ? "加载中..." : "加载更多"}
           </button>
