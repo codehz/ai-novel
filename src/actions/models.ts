@@ -3,7 +3,7 @@
 import { db } from "@/src/db";
 import { modelCallLogs, modelProviders, models } from "@/src/db/schema";
 import { aiRegistry } from "@/src/lib/ai-registry";
-import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, desc, eq, gte, lt, lte, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 // --- Provider Actions ---
@@ -142,6 +142,26 @@ export async function updateCallLog(id: number, data: Partial<typeof modelCallLo
   revalidatePath("/models");
 }
 
+// Cursor helper functions
+function encodeCursor(id: number): string {
+  return Buffer.from(JSON.stringify({ id })).toString("base64");
+}
+
+function decodeCursor(cursor: string): number | null {
+  try {
+    const decoded = JSON.parse(Buffer.from(cursor, "base64").toString("utf-8"));
+    return decoded.id;
+  } catch {
+    return null;
+  }
+}
+
+export interface CallLogsResult {
+  data: Awaited<ReturnType<typeof db.query.modelCallLogs.findMany>>;
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
 export async function getCallLogs(filters?: {
   status?: string;
   startDate?: Date;
@@ -149,8 +169,8 @@ export async function getCallLogs(filters?: {
   workflowRunId?: string;
   callReason?: string;
   limit?: number;
-  offset?: number;
-}) {
+  cursor?: string;
+}): Promise<CallLogsResult> {
   const where = [];
   if (filters?.status) where.push(eq(modelCallLogs.status, filters.status));
   if (filters?.startDate) where.push(gte(modelCallLogs.createdAt, filters.startDate));
@@ -158,12 +178,33 @@ export async function getCallLogs(filters?: {
   if (filters?.workflowRunId) where.push(eq(modelCallLogs.workflowRunId, filters.workflowRunId));
   if (filters?.callReason) where.push(eq(modelCallLogs.callReason, filters.callReason));
 
-  return await db.query.modelCallLogs.findMany({
+  const limit = filters?.limit ?? 50;
+
+  // 如果有cursor，解析并添加条件以获取游标之后的记录
+  if (filters?.cursor) {
+    const cursorId = decodeCursor(filters.cursor);
+    if (cursorId !== null) {
+      where.push(lt(modelCallLogs.id, cursorId));
+    }
+  }
+
+  // 查询limit + 1条以判断是否有更多数据
+  const results = await db.query.modelCallLogs.findMany({
     where: where.length > 0 ? and(...where) : undefined,
     orderBy: [desc(modelCallLogs.createdAt)],
-    limit: filters?.limit ?? 50,
-    offset: filters?.offset ?? 0,
+    limit: limit + 1,
   });
+
+  const hasMore = results.length > limit;
+  const data = hasMore ? results.slice(0, limit) : results;
+
+  const nextCursor = hasMore && data.length > 0 ? encodeCursor(data[data.length - 1].id) : null;
+
+  return {
+    data,
+    nextCursor,
+    hasMore,
+  };
 }
 
 export async function getCallStatistics(filters?: { startDate?: Date; endDate?: Date; callReason?: string }) {

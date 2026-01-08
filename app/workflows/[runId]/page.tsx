@@ -66,10 +66,11 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
   }
 
   // 获取该工作流的日志
-  const callLogs = await getCallLogs({
+  const callLogsResult = await getCallLogs({
     workflowRunId: runId,
     limit: 20,
   });
+  const callLogs = callLogsResult.data;
 
   // 获取流数据
   const streams: Array<{ name: string; content: string }> = [];
