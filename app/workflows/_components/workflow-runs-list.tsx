@@ -7,10 +7,12 @@ import { formatDateToLocaleString } from "@/src/lib/format";
 import { AutoTransition } from "@codehz/auto-transition";
 import { WorkflowRun, WorkflowRunStatus } from "@workflow/world";
 import { AlertCircle, CheckCircle2, Clock, Pause, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback } from "react";
 
 interface WorkflowRunsListProps {
   runs: WorkflowRun[];
+  selectedStatus: WorkflowRunStatus | "all";
 }
 
 const statusConfigs: Record<WorkflowRunStatus, { label: string; bg: string; text: string; icon: React.ReactNode }> = {
@@ -100,26 +102,29 @@ function WorkflowRunItem({ run }: { run: WorkflowRun }) {
   );
 }
 
-export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
-  const [selectedStatus, setSelectedStatus] = useState<WorkflowRunStatus | "all">("all");
+export function WorkflowRunsList({ runs, selectedStatus }: WorkflowRunsListProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const filteredAndSorted = useMemo(() => {
-    let filtered = runs;
-
-    if (selectedStatus !== "all") {
-      filtered = filtered.filter((run) => run.status === selectedStatus);
-    }
-
-    // 按创建时间倒序排序
-    return filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }, [runs, selectedStatus]);
+  const handleStatusChange = useCallback(
+    (value: string) => {
+      const params = new URLSearchParams(searchParams);
+      if (value === "all") {
+        params.delete("status");
+      } else {
+        params.set("status", value);
+      }
+      router.push(`/workflows?${params.toString()}`);
+    },
+    [router, searchParams],
+  );
 
   return (
     <div className="space-y-6">
       <FormField label="按状态筛选：">
         <SelectInput
           value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value as WorkflowRunStatus | "all")}
+          onChange={(e) => handleStatusChange(e.target.value)}
           options={statusOptions}
           placeholder="全部状态"
           className="px-3 py-2 rounded-lg border border-border bg-card text-foreground hover:border-primary/50 transition-colors"
@@ -127,12 +132,12 @@ export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
       </FormField>
 
       <AutoTransition as="div" className="grid relative gap-4">
-        {filteredAndSorted.length === 0 ? (
+        {runs.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">暂无工作流运行</p>
           </div>
         ) : (
-          filteredAndSorted.map((run) => <WorkflowRunItem key={run.runId} run={run} />)
+          runs.map((run) => <WorkflowRunItem key={run.runId} run={run} />)
         )}
       </AutoTransition>
     </div>
