@@ -3,13 +3,14 @@
 import { FormField } from "@/components/form-field";
 import { ItemCard } from "@/components/item-card";
 import { SelectInput } from "@/components/select-input";
+import { usePagination } from "@/hooks/usePagination";
 import { loadMoreWorkflowRuns } from "@/src/actions/workflows";
 import { formatDateToLocaleString } from "@/src/lib/format";
 import { AutoTransition } from "@codehz/auto-transition";
 import { WorkflowRun, WorkflowRunStatus } from "@workflow/world";
 import { AlertCircle, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useReducer, useTransition } from "react";
+import { useCallback } from "react";
 
 interface WorkflowRunsListProps {
   runs: WorkflowRun[];
@@ -62,35 +63,6 @@ const statusOptions = [
   ...Object.entries(statusConfigs).map(([status, config]) => ({ value: status, label: config.label })),
 ];
 
-interface PaginationState {
-  allRuns: WorkflowRun[];
-  cursor: string | null;
-  hasMore: boolean;
-}
-
-type PaginationAction =
-  | { type: "RESET"; payload: { runs: WorkflowRun[]; cursor: string | null; hasMore: boolean } }
-  | { type: "LOAD_MORE"; payload: { runs: WorkflowRun[]; cursor: string | null; hasMore: boolean } };
-
-function paginationReducer(state: PaginationState, action: PaginationAction): PaginationState {
-  switch (action.type) {
-    case "RESET":
-      return {
-        allRuns: action.payload.runs,
-        cursor: action.payload.cursor,
-        hasMore: action.payload.hasMore,
-      };
-    case "LOAD_MORE":
-      return {
-        allRuns: [...state.allRuns, ...action.payload.runs],
-        cursor: action.payload.cursor,
-        hasMore: action.payload.hasMore,
-      };
-    default:
-      return state;
-  }
-}
-
 function WorkflowRunItem({ run }: { run: WorkflowRun }) {
   const formatDuration = (startedAt: Date | undefined, completedAt: Date | undefined) => {
     if (!startedAt || !completedAt) return "-";
@@ -137,25 +109,23 @@ function WorkflowRunItem({ run }: { run: WorkflowRun }) {
 export function WorkflowRunsList({ runs, selectedStatus, hasMore, cursor }: WorkflowRunsListProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
 
-  const [state, dispatch] = useReducer(paginationReducer, {
-    allRuns: runs,
-    cursor: cursor,
-    hasMore: hasMore,
-  });
-
-  // 监听外部props变化，重置列表状态
-  useEffect(() => {
-    dispatch({
-      type: "RESET",
-      payload: {
-        runs,
-        cursor,
-        hasMore,
+  const {
+    items: allRuns,
+    isPending,
+    loadMore,
+  } = usePagination({
+    initialItems: runs,
+    initialCursor: cursor,
+    initialHasMore: hasMore,
+    onLoadMore: useCallback(
+      async (loadCursor) => {
+        const result = await loadMoreWorkflowRuns(loadCursor, selectedStatus);
+        return result;
       },
-    });
-  }, [runs, cursor, hasMore]);
+      [selectedStatus],
+    ),
+  });
 
   const handleStatusChange = useCallback(
     (value: string) => {
@@ -170,27 +140,6 @@ export function WorkflowRunsList({ runs, selectedStatus, hasMore, cursor }: Work
     [router, searchParams],
   );
 
-  const handleLoadMore = useCallback(() => {
-    if (!state.cursor || !state.hasMore) return;
-
-    startTransition(async () => {
-      try {
-        const result = await loadMoreWorkflowRuns(state.cursor!, selectedStatus);
-        dispatch({
-          type: "LOAD_MORE",
-          payload: {
-            runs: result.data,
-            cursor: result.cursor,
-            hasMore: result.hasMore,
-          },
-        });
-      } catch (error) {
-        console.error("加载更多失败:", error);
-        // 加载失败时保留现有数据，不清空
-      }
-    });
-  }, [state.cursor, state.hasMore, selectedStatus, startTransition]);
-
   return (
     <div className="space-y-6">
       <FormField label="按状态筛选：">
@@ -204,19 +153,19 @@ export function WorkflowRunsList({ runs, selectedStatus, hasMore, cursor }: Work
       </FormField>
 
       <AutoTransition as="div" className="grid relative gap-4">
-        {state.allRuns.length === 0 ? (
+        {allRuns.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">暂无工作流运行</p>
           </div>
         ) : (
-          state.allRuns.map((run) => <WorkflowRunItem key={run.runId} run={run} />)
+          allRuns.map((run) => <WorkflowRunItem key={run.runId} run={run} />)
         )}
       </AutoTransition>
 
-      {state.hasMore && (
+      {hasMore && (
         <div className="flex justify-center mt-6">
           <button
-            onClick={handleLoadMore}
+            onClick={loadMore}
             disabled={isPending}
             className="px-6 py-2.5 border border-border bg-card text-foreground rounded-lg font-medium hover:bg-muted hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
