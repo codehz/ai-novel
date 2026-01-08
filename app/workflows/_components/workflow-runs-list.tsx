@@ -11,31 +11,49 @@ interface WorkflowRunsListProps {
   runs: WorkflowRun[];
 }
 
-const statusColors: Record<WorkflowRunStatus, { bg: string; text: string; icon: React.ReactNode }> = {
-  pending: { bg: "bg-amber-500/10", text: "text-amber-700 dark:text-amber-400", icon: <Clock className="w-4 h-4" /> },
+const statusConfigs: Record<WorkflowRunStatus, { label: string; bg: string; text: string; icon: React.ReactNode }> = {
+  pending: {
+    label: "等待中",
+    bg: "bg-amber-500/10",
+    text: "text-amber-700 dark:text-amber-400",
+    icon: <Clock className="w-4 h-4" />,
+  },
   running: {
+    label: "运行中",
     bg: "bg-blue-500/10",
     text: "text-blue-700 dark:text-blue-400",
     icon: <Clock className="w-4 h-4 animate-spin" />,
   },
   completed: {
+    label: "已完成",
     bg: "bg-green-500/10",
     text: "text-green-700 dark:text-green-400",
     icon: <CheckCircle2 className="w-4 h-4" />,
   },
-  failed: { bg: "bg-red-500/10", text: "text-red-700 dark:text-red-400", icon: <AlertCircle className="w-4 h-4" /> },
-  paused: { bg: "bg-gray-500/10", text: "text-gray-700 dark:text-gray-400", icon: <Pause className="w-4 h-4" /> },
-  cancelled: { bg: "bg-gray-500/10", text: "text-gray-700 dark:text-gray-400", icon: <X className="w-4 h-4" /> },
+  failed: {
+    label: "失败",
+    bg: "bg-red-500/10",
+    text: "text-red-700 dark:text-red-400",
+    icon: <AlertCircle className="w-4 h-4" />,
+  },
+  paused: {
+    label: "已暂停",
+    bg: "bg-gray-500/10",
+    text: "text-gray-700 dark:text-gray-400",
+    icon: <Pause className="w-4 h-4" />,
+  },
+  cancelled: {
+    label: "已取消",
+    bg: "bg-gray-500/10",
+    text: "text-gray-700 dark:text-gray-400",
+    icon: <X className="w-4 h-4" />,
+  },
 };
 
-const statusLabels: Record<WorkflowRunStatus, string> = {
-  pending: "等待中",
-  running: "运行中",
-  completed: "已完成",
-  failed: "失败",
-  paused: "已暂停",
-  cancelled: "已取消",
-};
+const statusOptions = [
+  { value: "all", label: "全部状态" },
+  ...Object.entries(statusConfigs).map(([status, config]) => ({ value: status, label: config.label })),
+];
 
 export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
   const [selectedStatus, setSelectedStatus] = useState<WorkflowRunStatus | "all">("all");
@@ -68,15 +86,7 @@ export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
         <SelectInput
           value={selectedStatus}
           onChange={(e) => setSelectedStatus(e.target.value as WorkflowRunStatus | "all")}
-          options={[
-            { value: "all", label: "全部状态" },
-            { value: "pending", label: "等待中" },
-            { value: "running", label: "运行中" },
-            { value: "completed", label: "已完成" },
-            { value: "failed", label: "失败" },
-            { value: "paused", label: "已暂停" },
-            { value: "cancelled", label: "已取消" },
-          ]}
+          options={statusOptions}
           placeholder="全部状态"
           className="px-3 py-2 rounded-lg border border-border bg-card text-foreground hover:border-primary/50 transition-colors"
         />
@@ -89,18 +99,17 @@ export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
       ) : (
         <div className="grid gap-4">
           {filteredAndSorted.map((run) => {
-            const color = statusColors[run.status];
-            const label = statusLabels[run.status];
+            const config = statusConfigs[run.status];
 
             return (
               <ItemCard title={run.runId} key={run.runId} href={`/workflows/${run.runId}`} subtitle={run.runId}>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium ${color.bg} ${color.text}`}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium ${config.bg} ${config.text}`}
                     >
-                      {color.icon}
-                      {label}
+                      {config.icon}
+                      {config.label}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-3 text-xs">
