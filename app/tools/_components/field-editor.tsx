@@ -34,9 +34,9 @@ export function FieldEditor({
   };
 
   return (
-    <div className="p-4 rounded-xl border border-border bg-muted/10 space-y-4 relative group">
+    <div className="p-3 sm:p-4 rounded-xl border border-border bg-muted/10 space-y-4 relative group">
       <div className="flex items-start justify-between gap-4">
-        <div className="grid grid-cols-2 gap-4 flex-1">
+        <div className="grid sm:grid-cols-2 gap-4 flex-1">
           <FormField label="字段 ID (name)" required>
             <TextInput
               value={field.name}
@@ -63,7 +63,7 @@ export function FieldEditor({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid sm:grid-cols-2 gap-4">
         <FormField label="类型" required>
           <SelectInput
             value={field.type}
@@ -122,7 +122,7 @@ export function FieldEditor({
         )}
       </FormField>
 
-      <div className="flex items-center gap-8">
+      <div className="flex items-center flex-wrap gap-8">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">必填</span>
           <Switch checked={!!field.required} onChange={(checked) => updateField({ required: checked })} />

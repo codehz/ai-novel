@@ -79,9 +79,9 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
 
             <div className="space-y-3">
               {(value.categories || []).map((cat, index) => (
-                <div key={index} className="p-4 rounded-xl border border-border bg-muted/10 space-y-3">
+                <div key={index} className="p-3 sm:p-4 rounded-xl border border-border bg-muted/10 space-y-3">
                   <div className="flex items-center justify-between gap-4">
-                    <div className="flex-1 grid grid-cols-2 gap-3">
+                    <div className="flex-1 grid sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">分类 ID</label>
                         <TextInput
@@ -108,7 +108,7 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
                       className="mt-4"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
                       <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">图标</label>
                       <IconPicker value={cat.icon || "Tag"} onChange={(icon) => updateCategory(index, { icon })} />

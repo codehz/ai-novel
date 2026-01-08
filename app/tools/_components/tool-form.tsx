@@ -129,15 +129,15 @@ export function ToolForm({ tool, onSuccess }: ToolFormProps) {
       </FormField>
 
       <div className="space-y-8 pt-6 mt-6 border-t border-border">
-        <div className="p-4 rounded-2xl border border-border bg-muted/5 space-y-6">
+        <div className="p-3 sm:p-4 rounded-2xl border border-border bg-muted/5 space-y-6">
           <InputSchemaEditor value={inputSchema} onChange={setInputSchema} />
         </div>
 
-        <div className="p-4 rounded-2xl border border-border bg-muted/5 space-y-6">
+        <div className="p-3 sm:p-4 rounded-2xl border border-border bg-muted/5 space-y-6">
           <OutputSchemaEditor value={outputSchema} onChange={setOutputSchema} />
         </div>
 
-        <div className="p-4 rounded-2xl border border-border bg-muted/5 space-y-6">
+        <div className="p-3 sm:p-4 rounded-2xl border border-border bg-muted/5 space-y-6">
           <PromptSetEditor
             value={prompts}
             onChange={setPrompts}
