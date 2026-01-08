@@ -1,6 +1,7 @@
 import { CodeBlock } from "@/components/code-block";
 import { CopyButton } from "@/components/copy-button";
 import { DetailsCard } from "@/components/details-card";
+import { Tabs } from "@/components/tabs";
 import { getCallLogs } from "@/src/actions/models";
 import { formatJson } from "@/src/lib/format";
 import { getWorld } from "@workflow/core/runtime";
@@ -224,22 +225,35 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* 流数据查看器 */}
-      {streams.length > 0 && (
-        <section className="space-y-6">
-          <h2 className="text-2xl font-semibold">流输出数据</h2>
-          <StreamViewer streamData={streams} />
-        </section>
-      )}
-
-      {/* 步骤时间线 */}
+      {/* 工作流执行信息 */}
       <section className="space-y-6">
-        <h2 className="text-2xl font-semibold">执行步骤</h2>
-        <StepsTimeline runId={run.runId} />
+        <h2 className="text-2xl font-semibold">工作流执行信息</h2>
+        <Tabs
+          defaultTab="model-logs"
+          tabs={[
+            {
+              id: "model-logs",
+              label: "模型调用日志",
+              content: <ModelCallLogs callLogs={callLogs} showSection={false} />,
+            },
+            {
+              id: "steps",
+              label: "执行步骤",
+              content: <StepsTimeline runId={run.runId} />,
+            },
+            {
+              id: "streams",
+              label: "流输出数据",
+              content:
+                streams.length > 0 ? (
+                  <StreamViewer streamData={streams} />
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">暂无流数据</div>
+                ),
+            },
+          ]}
+        />
       </section>
-
-      {/* 模型调用日志 */}
-      <ModelCallLogs callLogs={callLogs} />
     </div>
   );
 }

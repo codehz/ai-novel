@@ -21,24 +21,27 @@ interface ModelCallLog {
 
 interface ModelCallLogsProps {
   callLogs: ModelCallLog[];
+  showSection?: boolean;
 }
 
-export function ModelCallLogs({ callLogs }: ModelCallLogsProps) {
+export function ModelCallLogs({ callLogs, showSection = true }: ModelCallLogsProps) {
   if (callLogs.length === 0) {
-    return null;
+    return <div className="text-center py-12 text-muted-foreground">暂无模型调用日志</div>;
   }
 
-  return (
-    <section className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">模型调用日志</h2>
-        <Link href="/logs" className="text-sm font-medium text-primary hover:underline">
-          查看全部 →
-        </Link>
-      </div>
+  const content = (
+    <>
+      {showSection && (
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-semibold">模型调用日志</h2>
+          <Link href="/logs" className="text-sm font-medium text-primary hover:underline">
+            查看全部 →
+          </Link>
+        </div>
+      )}
 
       {/* 日志统计卡片 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="p-4 rounded-lg border border-border bg-card">
           <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">调用次数</p>
           <p className="text-2xl font-bold">{callLogs.length}</p>
@@ -117,6 +120,12 @@ export function ModelCallLogs({ callLogs }: ModelCallLogsProps) {
           </ItemCard>
         ))}
       </div>
-    </section>
+    </>
   );
+
+  if (showSection) {
+    return <section className="space-y-6">{content}</section>;
+  }
+
+  return content;
 }
