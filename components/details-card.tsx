@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 interface DetailsCardProps {
   label: string;
   children: React.ReactNode;
-  variant?: "default" | "destructive" | "minimal";
+  variant?: "default" | "destructive" | "minimal" | "card";
   open?: boolean;
   onToggle?: (open: boolean) => void;
   isControlled?: boolean;
@@ -45,12 +45,14 @@ export function DetailsCard({
   const getDetailsClasses = () => {
     switch (variant) {
       case "destructive":
-        return "border-t border-border pt-6";
+        return "border-t border-border";
       case "minimal":
         return "mt-2";
+      case "card":
+        return "rounded-lg border border-border bg-card overflow-hidden";
       case "default":
       default:
-        return "border-t border-border pt-6";
+        return "border-t border-border";
     }
   };
 
@@ -59,12 +61,14 @@ export function DetailsCard({
 
     switch (variant) {
       case "destructive":
-        return clsx(baseClasses, "font-semibold text-destructive hover:text-destructive/80");
+        return clsx(baseClasses, "font-semibold text-destructive hover:text-destructive/80 pt-6");
       case "minimal":
         return clsx(baseClasses, "hover:text-foreground");
+      case "card":
+        return clsx(baseClasses, "font-semibold hover:text-primary px-4 py-3");
       case "default":
       default:
-        return clsx(baseClasses, "font-semibold hover:text-primary");
+        return clsx(baseClasses, "font-semibold hover:text-primary pt-6");
     }
   };
 
