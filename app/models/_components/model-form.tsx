@@ -151,7 +151,7 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
         </FormField>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <FormField label="Temperature">
           <NumberInput
             variant="primary"
