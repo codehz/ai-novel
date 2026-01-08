@@ -1,6 +1,7 @@
 "use client";
 
 import { CATEGORY_HUES } from "@/src/constants/colors";
+import { clsx } from "clsx";
 import { Dropdown } from "./dropdown";
 
 interface HueColorPickerProps {
@@ -104,7 +105,10 @@ export function HueColorPicker({ value, onChange, disabled = false, className = 
       <button
         type="button"
         disabled={disabled}
-        className={`rounded-xl border border-border shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/20 ${className}`}
+        className={clsx(
+          "rounded-xl border border-border shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/20",
+          className,
+        )}
         style={{
           backgroundColor: hasValue ? `hsl(${hue}, 70%, 50%)` : "transparent",
           boxShadow: hasValue ? `0 0 10px hsl(${hue}, 70%, 50%, 0.2)` : "none",

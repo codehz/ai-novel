@@ -1,5 +1,6 @@
 import { formatDateToLocaleString } from "@/src/lib/format";
 import { getWorld } from "@workflow/core/runtime";
+import { clsx } from "clsx";
 import { BarChart3, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
@@ -163,7 +164,7 @@ export default async function StatsPage() {
                 .filter((item) => item.value > 0)
                 .map((item) => (
                   <div key={item.label} className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${item.color}`}></div>
+                    <div className={clsx("w-3 h-3 rounded-full", item.color)}></div>
                     <span className="text-sm text-muted-foreground flex-1">{item.label}</span>
                     <span className="font-mono font-medium">{item.value}</span>
                     <span className="text-xs text-muted-foreground">
@@ -194,7 +195,7 @@ export default async function StatsPage() {
                     <span className="text-xs text-muted-foreground w-16">{item.label}</span>
                     <div className="flex-1 bg-muted rounded-full h-5 overflow-hidden">
                       <div
-                        className={`${item.color} h-full transition-all`}
+                        className={clsx(item.color, "h-full transition-all")}
                         style={{
                           width: `${totalRuns > 0 ? (item.value / totalRuns) * 100 : 0}%`,
                         }}

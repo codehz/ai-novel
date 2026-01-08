@@ -8,6 +8,7 @@ import { loadMoreWorkflowRuns } from "@/src/actions/workflows";
 import { formatDateToLocaleString } from "@/src/lib/format";
 import { AutoTransition } from "@codehz/auto-transition";
 import { WorkflowRun, WorkflowRunStatus } from "@workflow/world";
+import { clsx } from "clsx";
 import { AlertCircle, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
@@ -80,7 +81,11 @@ function WorkflowRunItem({ run }: { run: WorkflowRun }) {
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium ${config.bg} ${config.text}`}
+            className={clsx(
+              "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium",
+              config.bg,
+              config.text,
+            )}
           >
             {config.icon}
             {config.label}

@@ -1,6 +1,7 @@
 "use client";
 
 import { cancelWorkflowRun, pauseWorkflowRun, resumeWorkflowRun } from "@/src/actions/workflows";
+import { clsx } from "clsx";
 import { Pause, Play, X } from "lucide-react";
 import { useState, useTransition } from "react";
 
@@ -142,11 +143,12 @@ export function WorkflowControls({ runId, status }: WorkflowControlsProps) {
 
       {message && (
         <div
-          className={`p-3 rounded-lg text-sm font-medium ${
+          className={clsx(
+            "p-3 rounded-lg text-sm font-medium",
             message.type === "success"
               ? "bg-green-500/10 text-green-700 dark:text-green-400"
-              : "bg-red-500/10 text-red-700 dark:text-red-400"
-          }`}
+              : "bg-red-500/10 text-red-700 dark:text-red-400",
+          )}
         >
           {message.text}
         </div>

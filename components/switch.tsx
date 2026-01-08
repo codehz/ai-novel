@@ -1,5 +1,7 @@
 "use client";
 
+import { clsx } from "clsx";
+
 interface SwitchProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -9,7 +11,7 @@ interface SwitchProps {
 
 export function Switch({ checked, onChange, disabled, label }: SwitchProps) {
   return (
-    <label className={`flex items-center gap-3 ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}>
+    <label className={clsx("flex items-center gap-3", disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer")}>
       <div className="relative inline-flex items-center">
         <input
           type="checkbox"

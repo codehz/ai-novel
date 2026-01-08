@@ -3,6 +3,7 @@
 import { formatDateToShortLocaleString } from "@/src/lib/format";
 import { ToolHistoryItem } from "@/src/lib/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
+import { clsx } from "clsx";
 import { ChevronRight, Clock, History, Trash2 } from "lucide-react";
 
 interface GenericHistoryListProps {
@@ -71,11 +72,12 @@ function GenericHistoryListInner({
           return (
             <div
               key={item.id}
-              className={`group relative flex flex-col gap-2 p-3 rounded-xl border transition-all cursor-pointer min-w-0 ${
+              className={clsx(
+                "group relative flex flex-col gap-2 p-3 rounded-xl border transition-all cursor-pointer min-w-0",
                 currentId === item.id
                   ? "bg-primary/5 border-primary/30 ring-1 ring-primary/30"
-                  : "bg-card border-border hover:border-primary/20 hover:bg-muted/50"
-              }`}
+                  : "bg-card border-border hover:border-primary/20 hover:bg-muted/50",
+              )}
               onClick={() => onSelect(item)}
             >
               <div className="flex items-center gap-2 min-w-0">
@@ -96,7 +98,10 @@ function GenericHistoryListInner({
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                   <ChevronRight
-                    className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${currentId === item.id ? "translate-x-0.5 text-primary" : "group-hover:translate-x-0.5"}`}
+                    className={clsx(
+                      "w-4 h-4 text-muted-foreground shrink-0 transition-transform",
+                      currentId === item.id ? "translate-x-0.5 text-primary" : "group-hover:translate-x-0.5",
+                    )}
                   />
                 </div>
               </div>

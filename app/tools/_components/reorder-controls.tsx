@@ -1,5 +1,5 @@
 "use client";
-
+import { clsx } from "clsx";
 import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 
 interface ReorderControlsProps {
@@ -20,7 +20,7 @@ export function ReorderControls({
   className = "",
 }: ReorderControlsProps) {
   return (
-    <div className={`flex items-center gap-1 ${className}`}>
+    <div className={clsx("flex items-center gap-1", className)}>
       {onMoveUp && (
         <button
           type="button"

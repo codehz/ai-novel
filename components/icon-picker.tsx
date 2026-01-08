@@ -1,5 +1,6 @@
 "use client";
 
+import { clsx } from "clsx";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { Dropdown } from "./dropdown";
@@ -127,9 +128,10 @@ export function IconPicker({ value, onChange, disabled = false }: IconPickerProp
                     setSearchQuery("");
                     close();
                   }}
-                  className={`p-3 rounded-lg border-2 transition-all hover:bg-primary/10 ${
-                    value === iconName ? "border-primary bg-primary/10" : "border-transparent"
-                  }`}
+                  className={clsx(
+                    "p-3 rounded-lg border-2 transition-all hover:bg-primary/10",
+                    value === iconName ? "border-primary bg-primary/10" : "border-transparent",
+                  )}
                   title={iconName}
                   type="button"
                 >

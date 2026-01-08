@@ -2,6 +2,7 @@ import { DetailsCard } from "@/components/details-card";
 import { formatDateToLocaleString } from "@/src/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { Event } from "@workflow/world";
+import { clsx } from "clsx";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Zap } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -153,7 +154,11 @@ export default async function EventsPage({ params }: PageProps) {
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${color.bg} ${color.text}`}
+                          className={clsx(
+                            "inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
+                            color.bg,
+                            color.text,
+                          )}
                         >
                           {color.icon}
                           {label}

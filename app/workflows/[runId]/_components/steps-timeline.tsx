@@ -1,6 +1,7 @@
 import { formatDateToLocaleString } from "@/src/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { Step } from "@workflow/world";
+import { clsx } from "clsx";
 import { AlertCircle, CheckCircle2, Circle, Loader2 } from "lucide-react";
 import { StepDetail } from "./step-detail";
 
@@ -54,7 +55,7 @@ function StepItem({
   return (
     <div className="flex gap-4 mb-4">
       <div className="flex flex-col items-center">
-        <div className={`p-1.5 rounded-full border-2 ${borderColor} bg-card`}>{icon}</div>
+        <div className={clsx("p-1.5 rounded-full border-2 bg-card", borderColor)}>{icon}</div>
         {!isLast && <div className="w-0.5 flex-1 bg-border" />}
       </div>
 

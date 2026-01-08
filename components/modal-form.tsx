@@ -1,5 +1,6 @@
 "use client";
 
+import { clsx } from "clsx";
 import { X } from "lucide-react";
 import React, { ReactNode, useCallback, useEffect, useRef } from "react";
 import { useOverlayRef } from "./overlay/overlay-context";
@@ -78,7 +79,7 @@ export function ModalForm({
         backdrop:bg-black/30
       "
     >
-      <div className={`bg-card rounded-2xl shadow-2xl w-screen ${maxWidth} max-h-full flex flex-col overflow-hidden`}>
+      <div className={clsx("bg-card rounded-2xl shadow-2xl w-screen flex-1 flex flex-col overflow-hidden", maxWidth)}>
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border flex-none">
           <h3 className="text-lg sm:text-xl font-bold">{title}</h3>
           <button onClick={performClose} className="p-2 hover:bg-muted rounded-full transition-colors">
@@ -86,7 +87,7 @@ export function ModalForm({
           </button>
         </div>
 
-        <form onSubmit={onSubmit} className={`p-4 sm:p-6 space-y-4 ${className} overflow-y-auto flex-1`}>
+        <form onSubmit={onSubmit} className={clsx("p-4 sm:p-6 space-y-4 overflow-y-auto flex-1", className)}>
           {children}
 
           <div className="flex gap-3 pt-4">

@@ -1,5 +1,6 @@
 "use client";
 
+import { clsx } from "clsx";
 import { ChevronDown } from "lucide-react";
 import { ButtonHTMLAttributes, SelectHTMLAttributes } from "react";
 import { Dropdown } from "./dropdown";
@@ -26,7 +27,12 @@ export function SelectInput({
   const baseStyles =
     "px-4 py-2 rounded-lg border border-input-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-primary";
 
-  const combinedClassName = `flex items-center justify-between w-full outline-none transition-all text-left ${baseStyles} ${className} ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`;
+  const combinedClassName = clsx(
+    "flex items-center justify-between w-full outline-none transition-all text-left",
+    baseStyles,
+    className,
+    disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
+  );
 
   return (
     <Dropdown
@@ -37,9 +43,10 @@ export function SelectInput({
             <button
               key={opt.value}
               type="button"
-              className={`w-full text-left px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors ${
-                opt.value === value ? "bg-accent/50 font-medium" : ""
-              }`}
+              className={clsx(
+                "w-full text-left px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors",
+                opt.value === value ? "bg-accent/50 font-medium" : "",
+              )}
               onClick={() => {
                 if (onChange) {
                   onChange({ target: { value: String(opt.value) } });

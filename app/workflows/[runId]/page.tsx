@@ -5,6 +5,7 @@ import { Tabs } from "@/components/tabs";
 import { getCallLogs } from "@/src/actions/models";
 import { formatDateToLocaleString, formatJson } from "@/src/lib/format";
 import { getWorld } from "@workflow/core/runtime";
+import { clsx } from "clsx";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -143,7 +144,11 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
                 <h2 className="text-2xl font-semibold mb-4">运行信息</h2>
               </div>
               <div
-                className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${color.bg} ${color.text}`}
+                className={clsx(
+                  "inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
+                  color.bg,
+                  color.text,
+                )}
               >
                 {color.icon}
                 {label}

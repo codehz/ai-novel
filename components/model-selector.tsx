@@ -1,7 +1,7 @@
 "use client";
-
 import { getAvailableModels, type ProviderWithModels } from "@/src/actions/models";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
+import { clsx } from "clsx";
 import { ChevronDown, Package } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Dropdown } from "./dropdown";
@@ -80,11 +80,12 @@ function ModelSelectorInner({ selectedModelId, onSelectModel, onClear, disabled 
                     onSelectModel(model.modelId);
                     close();
                   }}
-                  className={`cursor-pointer w-full text-left px-4 py-3 text-sm transition-colors border-b border-border/50 last:border-b-0 ${
+                  className={clsx(
+                    "cursor-pointer w-full text-left px-4 py-3 text-sm transition-colors border-b border-border/50 last:border-b-0",
                     selectedModelId === model.modelId
                       ? "bg-primary/10 text-primary font-medium"
-                      : "hover:bg-muted/50 text-foreground"
-                  }`}
+                      : "hover:bg-muted/50 text-foreground",
+                  )}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">

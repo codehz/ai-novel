@@ -1,5 +1,6 @@
 "use client";
 
+import { clsx } from "clsx";
 import React from "react";
 
 export type ChipOption = {
@@ -26,7 +27,7 @@ export function ChipList({
   className?: string;
 }) {
   return (
-    <div className={`flex flex-wrap gap-2 ${className}`}>
+    <div className={clsx("flex flex-wrap gap-2", className)}>
       {showAll ? (
         <button
           aria-pressed={value === undefined || value === "all"}
