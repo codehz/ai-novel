@@ -2,6 +2,7 @@
 
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
+import { Button } from "./button";
 
 interface CopyButtonProps {
   text: string;
@@ -27,14 +28,12 @@ export function CopyButton({
   };
 
   const iconSize = size === "sm" ? "w-3 h-3" : "w-4 h-4";
-  const baseClasses =
-    "flex items-center gap-1 px-2 py-1 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground";
-  const classes = [baseClasses, className].filter(Boolean).join(" ");
+  const buttonSize = size === "sm" ? "sm" : "md";
 
   return (
-    <button onClick={handleCopy} className={classes} title="复制到剪贴板">
+    <Button variant="ghost" size={buttonSize} onClick={handleCopy} className={className} title="复制到剪贴板">
       {isCopied ? <Check className={iconSize} /> : <Copy className={iconSize} />}
-      {label && <span className="text-xs">{isCopied ? "已复制" : label}</span>}
-    </button>
+      {label && <span className="ml-1">{isCopied ? "已复制" : label}</span>}
+    </Button>
   );
 }

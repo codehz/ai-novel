@@ -3,6 +3,8 @@
 import { clsx } from "clsx";
 import { X } from "lucide-react";
 import React, { ReactNode, useCallback, useEffect, useRef } from "react";
+import { Button } from "./button";
+import { IconButton } from "./icon-button";
 import { useOverlayRef } from "./overlay/overlay-context";
 
 interface ModalFormProps {
@@ -82,29 +84,29 @@ export function ModalForm({
       <div className={clsx("bg-card rounded-2xl shadow-2xl w-screen flex-1 flex flex-col overflow-hidden", maxWidth)}>
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border flex-none">
           <h3 className="text-lg sm:text-xl font-bold">{title}</h3>
-          <button onClick={performClose} className="p-2 hover:bg-muted rounded-full transition-colors">
+          <IconButton onClick={performClose} color="default" shape="round" title="关闭">
             <X size={20} />
-          </button>
+          </IconButton>
         </div>
 
         <form onSubmit={onSubmit} className={clsx("p-4 sm:p-6 space-y-4 overflow-y-auto flex-1", className)}>
           {children}
 
           <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={performClose}
-              className="flex-1 px-4 py-2 border border-border rounded-lg font-medium hover:bg-muted transition-colors"
-            >
+            <Button variant="outline" size="md" onClick={performClose} className="flex-1">
               取消
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground rounded-lg font-medium disabled:opacity-50 transition-colors"
+              loading={loading}
+              loadingText={loadingLabel}
+              className="flex-1"
             >
-              {loading ? loadingLabel : submitLabel}
-            </button>
+              {submitLabel}
+            </Button>
           </div>
         </form>
       </div>

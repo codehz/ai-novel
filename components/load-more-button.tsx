@@ -1,6 +1,7 @@
 "use client";
 
 import { withAutoTransition } from "@codehz/auto-transition";
+import { Button } from "./button";
 
 interface LoadMoreButtonProps {
   onClick: () => void;
@@ -28,16 +29,17 @@ function LoadMoreButtonInner({
   }
   return (
     <div key={isLoading ? "loading" : "loaded"} className="flex justify-center mt-6">
-      <button
+      <Button
+        variant="outline"
+        size="md"
         onClick={onClick}
         disabled={disabled || isLoading}
-        className={clsx(
-          "px-6 py-2.5 border border-border bg-card text-foreground rounded-lg font-medium hover:bg-muted hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors",
-          className,
-        )}
+        loadingText={loadingText}
+        loading={isLoading}
+        className={className}
       >
-        {isLoading ? loadingText : text}
-      </button>
+        {text}
+      </Button>
     </div>
   );
 }
