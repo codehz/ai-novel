@@ -3,7 +3,6 @@
 import { ItemCard } from "@/components/item-card";
 import { WorkflowRun, WorkflowRunStatus } from "@workflow/world";
 import { AlertCircle, CheckCircle2, Clock, Pause, X } from "lucide-react";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 
 interface WorkflowRunsListProps {
@@ -91,38 +90,36 @@ export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
             const label = statusLabels[run.status];
 
             return (
-              <Link key={run.runId} href={`/workflows/${run.runId}`}>
-                <ItemCard title={run.runId} subtitle={run.runId}>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium ${color.bg} ${color.text}`}
-                      >
-                        {color.icon}
-                        {label}
-                      </span>
+              <ItemCard title={run.runId} key={run.runId} href={`/workflows/${run.runId}`} subtitle={run.runId}>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium ${color.bg} ${color.text}`}
+                    >
+                      {color.icon}
+                      {label}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <p className="text-muted-foreground">启动时间</p>
+                      <p className="font-mono">{formatDate(run.startedAt)}</p>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 text-xs">
-                      <div>
-                        <p className="text-muted-foreground">启动时间</p>
-                        <p className="font-mono">{formatDate(run.startedAt)}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">完成时间</p>
-                        <p className="font-mono">{formatDate(run.completedAt)}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">创建时间</p>
-                        <p className="font-mono">{formatDate(run.createdAt)}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">执行耗时</p>
-                        <p className="font-mono">{formatDuration(run.startedAt, run.completedAt)}</p>
-                      </div>
+                    <div>
+                      <p className="text-muted-foreground">完成时间</p>
+                      <p className="font-mono">{formatDate(run.completedAt)}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">创建时间</p>
+                      <p className="font-mono">{formatDate(run.createdAt)}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">执行耗时</p>
+                      <p className="font-mono">{formatDuration(run.startedAt, run.completedAt)}</p>
                     </div>
                   </div>
-                </ItemCard>
-              </Link>
+                </div>
+              </ItemCard>
             );
           })}
         </div>
