@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/button";
 import { FormField } from "@/components/form-field";
 import { SelectInput } from "@/components/select-input";
 import { TextInput } from "@/components/text-input";
@@ -48,14 +49,10 @@ export function InputSchemaEditor({ value, onChange }: InputSchemaEditorProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">输入字段配置</div>
-        <button
-          type="button"
-          onClick={addField}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors text-sm font-medium"
-        >
+        <Button type="button" onClick={addField} variant="ghost" size="sm" className="gap-1.5">
           <Plus className="w-4 h-4" />
           添加字段
-        </button>
+        </Button>
       </div>
 
       <div className="space-y-4">

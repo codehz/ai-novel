@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/button";
 import { TextInput } from "@/components/text-input";
 import { Plus } from "lucide-react";
 import { ReorderControls } from "./reorder-controls";
@@ -68,14 +69,10 @@ export function OptionsListEditor({
           />
         </div>
       ))}
-      <button
-        type="button"
-        onClick={addOption}
-        className="flex items-center gap-1 text-xs text-primary hover:underline py-1"
-      >
+      <Button variant="ghost" size="sm" onClick={addOption} className="flex items-center gap-1 mt-1">
         <Plus className="w-3 h-3" />
         添加选项
-      </button>
+      </Button>
     </div>
   );
 }

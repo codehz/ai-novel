@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/button";
 import { ItemCard } from "@/components/item-card";
 import { useOverlayQueue } from "@/components/overlay";
 import { deleteModel, toggleModelStatus } from "@/src/actions/models";
@@ -45,12 +46,14 @@ export function ModelList({ initialProviders }: ModelListProps) {
                 {provider.providerType}
               </span>
             </h3>
-            <button
+            <Button
               onClick={() => handleAdd(provider.id)}
-              className="text-sm flex items-center gap-1 text-primary hover:opacity-80 font-medium"
+              variant="ghost"
+              size="sm"
+              className="text-primary hover:text-primary hover:bg-primary/10 font-medium"
             >
-              <Plus size={16} /> 添加模型
-            </button>
+              <Plus size={16} className="mr-1" /> 添加模型
+            </Button>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

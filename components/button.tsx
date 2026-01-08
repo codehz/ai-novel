@@ -30,7 +30,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const finalClasses = clsx(baseClasses, className);
 
     return (
-      <button ref={ref} disabled={loading || disabled} className={finalClasses} {...props}>
+      <button ref={ref} disabled={loading || disabled} className={finalClasses} type="button" {...props}>
         {loading ? (
           <>
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />

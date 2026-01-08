@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/button";
 import { FormField } from "@/components/form-field";
 import { HueColorPicker } from "@/components/hue-color-picker";
 import { IconPicker } from "@/components/icon-picker";
@@ -67,14 +68,10 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="text-sm font-medium">分类样式配置</div>
-              <button
-                type="button"
-                onClick={addCategory}
-                className="text-xs text-primary hover:underline flex items-center gap-1"
-              >
+              <Button variant="ghost" size="sm" onClick={addCategory} className="flex items-center gap-1">
                 <Plus className="w-3 h-3" />
                 添加分类
-              </button>
+              </Button>
             </div>
 
             <div className="space-y-3">

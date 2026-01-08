@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/button";
 import { DetailsCard } from "@/components/details-card";
 import { Download } from "lucide-react";
 
@@ -65,13 +66,15 @@ export function StreamViewer({ streamData }: StreamViewerProps) {
         return (
           <DetailsCard key={name} label={`${name}${isJson ? " (JSON)" : ""}`} variant="card">
             <div className="flex justify-end gap-2 mb-3 mr-3 -mt-3">
-              <button
+              <Button
+                variant="primary"
+                size="sm"
                 onClick={() => downloadStream(name, content, isJson)}
-                className="flex items-center gap-1 px-3 py-1 rounded text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                className="flex items-center gap-1"
               >
                 <Download className="w-4 h-4" />
                 下载
-              </button>
+              </Button>
             </div>
             <pre className="p-4 bg-slate-950 dark:bg-slate-900 text-slate-50 overflow-x-auto text-xs font-mono max-h-96">
               {formatted}

@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/button";
+import { IconButton } from "@/components/icon-button";
 import { formatDateToShortLocaleString } from "@/src/lib/format";
 import { ToolHistoryItem } from "@/src/lib/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
@@ -44,16 +46,18 @@ function GenericHistoryListInner({
           <History className="w-4 h-4" />
           历史记录
         </h3>
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => {
             if (confirm("确定要清空所有历史记录吗？")) {
               onClear();
             }
           }}
-          className="text-xs text-muted-foreground hover:text-destructive transition-colors"
+          className="h-7 text-xs text-muted-foreground hover:text-destructive"
         >
           清空
-        </button>
+        </Button>
       </div>
 
       <AutoTransition
@@ -87,16 +91,17 @@ function GenericHistoryListInner({
                   </p>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  <button
+                  <IconButton
                     onClick={(e) => {
                       e.stopPropagation();
                       onDelete(item.id);
                     }}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-all"
+                    color="destructive"
                     title="删除"
+                    className="opacity-0 group-hover:opacity-100 h-auto w-auto"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  </IconButton>
                   <ChevronRight
                     className={clsx(
                       "w-4 h-4 text-muted-foreground shrink-0 transition-transform",

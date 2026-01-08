@@ -1,4 +1,4 @@
-"use client";
+import { IconButton } from "@/components/icon-button";
 import { clsx } from "clsx";
 import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 
@@ -22,36 +22,25 @@ export function ReorderControls({
   return (
     <div className={clsx("flex items-center gap-1", className)}>
       {onMoveUp && (
-        <button
-          type="button"
-          onClick={onMoveUp}
-          disabled={!canMoveUp}
-          className="p-1 rounded hover:bg-muted disabled:opacity-30 transition-colors"
-          title="上移"
-        >
+        <IconButton onClick={onMoveUp} disabled={!canMoveUp} color="default" title="上移" className="p-1 h-auto w-auto">
           <ChevronUp className="w-4 h-4" />
-        </button>
+        </IconButton>
       )}
       {onMoveDown && (
-        <button
-          type="button"
+        <IconButton
           onClick={onMoveDown}
           disabled={!canMoveDown}
-          className="p-1 rounded hover:bg-muted disabled:opacity-30 transition-colors"
+          color="default"
           title="下移"
+          className="p-1 h-auto w-auto"
         >
           <ChevronDown className="w-4 h-4" />
-        </button>
+        </IconButton>
       )}
       {onDelete && (
-        <button
-          type="button"
-          onClick={onDelete}
-          className="p-1 rounded hover:bg-destructive/10 text-destructive transition-colors ml-1"
-          title="删除"
-        >
+        <IconButton onClick={onDelete} color="destructive" title="删除" className="p-1 h-auto w-auto ml-1">
           <Trash2 className="w-4 h-4" />
-        </button>
+        </IconButton>
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { Dropdown } from "@/components/dropdown";
+import { IconButton } from "@/components/icon-button";
 import { ChevronDown, Menu } from "lucide-react";
 import Link from "next/link";
 import { DetailsCard } from "./details-card";
@@ -42,9 +43,9 @@ export function ResponsiveNav({ items }: ResponsiveNavProps) {
             </div>
           )}
         >
-          <button className="p-2 hover:bg-muted rounded-md transition-colors">
+          <IconButton color="default" shape="round">
             <Menu size={20} className="text-foreground" />
-          </button>
+          </IconButton>
         </Dropdown>
       </div>
     </>

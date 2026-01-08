@@ -2,6 +2,7 @@
 
 import { CATEGORY_HUES } from "@/src/constants/colors";
 import { clsx } from "clsx";
+import { Button } from "./button";
 import { Dropdown } from "./dropdown";
 
 interface HueColorPickerProps {
@@ -33,13 +34,9 @@ export function HueColorPicker({ value, onChange, disabled = false, className = 
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase text-muted-foreground">调整颜色</span>
             {hasValue && (
-              <button
-                type="button"
-                onClick={() => onChange(undefined)}
-                className="text-[10px] text-destructive hover:underline"
-              >
+              <Button type="button" variant="destructive-link" size="xs" onClick={() => onChange(undefined)}>
                 清除选择
-              </button>
+              </Button>
             )}
           </div>
 

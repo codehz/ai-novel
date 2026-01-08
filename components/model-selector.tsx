@@ -1,8 +1,10 @@
 "use client";
+import { Button } from "@/components/button";
+import { IconButton } from "@/components/icon-button";
 import { getAvailableModels, type ProviderWithModels } from "@/src/actions/models";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import { clsx } from "clsx";
-import { ChevronDown, Package } from "lucide-react";
+import { ChevronDown, Package, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Dropdown } from "./dropdown";
 
@@ -102,11 +104,11 @@ function ModelSelectorInner({ selectedModelId, onSelectModel, onClear, disabled 
           ))
         }
       >
-        <AutoTransition
-          as="button"
+        <Button
           type="button"
+          variant="outline"
           disabled={disabled}
-          className="w-full flex items-center justify-between h-10 px-4 rounded-lg border border-input bg-background text-foreground text-sm hover:bg-muted/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full flex items-center justify-between h-10 px-4 rounded-lg text-foreground text-sm font-normal"
         >
           <span key={selectedModel ? selectedModel.modelId : "none"} className="flex items-center gap-2 truncate">
             <Package className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -126,20 +128,21 @@ function ModelSelectorInner({ selectedModelId, onSelectModel, onClear, disabled 
             </span>
           </span>
           <ChevronDown className="w-4 h-4 text-muted-foreground ml-2 shrink-0" />
-        </AutoTransition>
+        </Button>
       </Dropdown>
       {selectedModel && onClear && (
-        <button
+        <IconButton
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             onClear();
           }}
-          className="absolute right-10 p-1 hover:bg-destructive/10 rounded text-muted-foreground hover:text-destructive transition-colors"
+          color="default"
           title="清除选择"
+          className="absolute right-10 h-auto w-auto p-1"
         >
-          ✕
-        </button>
+          <X className="w-3.5 h-3.5" />
+        </IconButton>
       )}
     </AutoTransition>
   );

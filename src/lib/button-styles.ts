@@ -3,8 +3,8 @@
  * 支持多种 variant 和 size 组合
  */
 
-export type ButtonVariant = "primary" | "secondary" | "destructive" | "ghost" | "outline";
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonVariant = "primary" | "secondary" | "destructive" | "ghost" | "outline" | "link" | "destructive-link";
+export type ButtonSize = "sm" | "md" | "lg" | "xs";
 export type ButtonColor = "default" | "primary" | "success" | "destructive" | "warning";
 export type IconButtonShape = "round" | "square";
 
@@ -23,12 +23,15 @@ export const buttonVariantStyles: Record<ButtonVariant, string> = {
   destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive",
   ghost: "hover:bg-muted text-foreground focus-visible:ring-primary",
   outline: "border border-border bg-background text-foreground hover:bg-muted focus-visible:ring-primary",
+  link: "text-primary hover:underline bg-transparent !p-0 !h-auto focus-visible:ring-primary",
+  "destructive-link": "text-destructive hover:underline bg-transparent !p-0 !h-auto focus-visible:ring-destructive",
 };
 
 /**
  * 按钮尺寸样式映射
  */
 export const buttonSizeStyles: Record<ButtonSize, string> = {
+  xs: "h-7 px-2 rounded-md text-[10px]",
   sm: "h-8 px-3 rounded-md text-xs",
   md: "h-10 px-4 rounded-lg text-sm",
   lg: "h-12 px-6 rounded-lg text-base",

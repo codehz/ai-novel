@@ -1,5 +1,6 @@
 "use client";
 
+import { IconButton } from "@/components/icon-button";
 import { Edit2, Power, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
@@ -46,37 +47,31 @@ export function ItemCard({
           }}
         >
           {onToggle && (
-            <button
+            <IconButton
               onClick={onToggle}
-              className={`p-1.5 rounded-lg transition-colors ${
-                isEnabled ? "text-success hover:bg-success/10" : "text-muted-foreground hover:bg-muted"
-              }`}
+              color={isEnabled ? "success" : "default"}
               title={isEnabled ? "禁用" : "启用"}
             >
               <Power size={14} />
-            </button>
+            </IconButton>
           )}
           {onEdit && (
-            <button
-              onClick={onEdit}
-              className="p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors"
-              title="编辑"
-            >
+            <IconButton onClick={onEdit} color="primary" title="编辑">
               <Edit2 size={14} />
-            </button>
+            </IconButton>
           )}
           {onDelete && (
-            <button
+            <IconButton
               onClick={() => {
                 if (confirm(deleteConfirmMessage)) {
                   onDelete();
                 }
               }}
-              className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+              color="destructive"
               title="删除"
             >
               <Trash2 size={14} />
-            </button>
+            </IconButton>
           )}
         </div>
       </div>

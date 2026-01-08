@@ -27,7 +27,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
     const finalClasses = clsx(baseClasses, className);
 
     return (
-      <button ref={ref} className={finalClasses} {...props}>
+      <button ref={ref} className={finalClasses} type="button" {...props}>
         {children}
       </button>
     );

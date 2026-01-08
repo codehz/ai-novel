@@ -1,12 +1,12 @@
 "use client";
 
 import { AddCard } from "@/components/add-card";
+import { DetailsCard } from "@/components/details-card";
 import { ItemCard } from "@/components/item-card";
 import { useOverlayQueue } from "@/components/overlay";
 import { deleteToolConfig, toggleToolStatus } from "@/src/actions/tools";
 import { ToolConfig } from "@/src/lib/tool-types";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { AutoTransition } from "@codehz/auto-transition";
 import { ToolForm } from "./tool-form";
 import { ToolIcon } from "./tool-icon";
 
@@ -16,7 +16,6 @@ interface ToolManagerProps {
 
 export function ToolManager({ tools }: ToolManagerProps) {
   const queue = useOverlayQueue();
-  const [showDisabled, setShowDisabled] = useState(false);
 
   const enabledTools = tools.filter((t) => t.isEnabled);
   const disabledTools = tools.filter((t) => !t.isEnabled);
@@ -74,29 +73,19 @@ export function ToolManager({ tools }: ToolManagerProps) {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <AutoTransition as="div" className="space-y-6 relative">
+      <AutoTransition as="div" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 relative">
         <AddCard onClick={handleAdd} label="新建工具" />
         {enabledTools.map((tool) => renderToolCard(tool, true))}
-      </div>
+      </AutoTransition>
 
       {disabledTools.length > 0 && (
-        <div className="pt-4 border-t border-border">
-          <button
-            onClick={() => setShowDisabled(!showDisabled)}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-          >
-            {showDisabled ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-            已停用的工具 ({disabledTools.length})
-          </button>
-
-          {showDisabled && (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {disabledTools.map((tool) => renderToolCard(tool, false))}
-            </div>
-          )}
-        </div>
+        <DetailsCard label={`已停用的工具 (${disabledTools.length})`}>
+          <AutoTransition as="div" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 relative">
+            {disabledTools.map((tool) => renderToolCard(tool, false))}
+          </AutoTransition>
+        </DetailsCard>
       )}
-    </div>
+    </AutoTransition>
   );
 }

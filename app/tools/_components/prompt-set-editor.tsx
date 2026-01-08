@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/button";
 import { FormField } from "@/components/form-field";
 import { TextAreaInput } from "@/components/text-area-input";
 import { PromptSet } from "@/src/lib/tool-types";
@@ -57,15 +58,15 @@ export function PromptSetEditor({ value, onChange, availableFields }: PromptSetE
           <label className="text-sm font-medium">用户指令模板 (User Template)</label>
           <div className="flex flex-wrap gap-1">
             {availableFields.map((field) => (
-              <button
+              <Button
                 key={field}
-                type="button"
                 onClick={() => insertPlaceholder(field)}
-                className="px-2 py-0.5 text-[10px] bg-primary/5 text-primary border border-primary/20 rounded hover:bg-primary/10 transition-colors"
+                variant="ghost"
+                size="sm"
                 title={`插入 {{${field}}}`}
               >
-                {field}
-              </button>
+                {`{{${field}}}`}
+              </Button>
             ))}
           </div>
         </div>

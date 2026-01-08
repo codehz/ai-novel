@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { CopyButton } from "@/components/copy-button";
 import { Icon } from "@/components/icon";
 import { getCategoryStyle } from "@/src/constants/colors";
 import { OutputSchema } from "@/src/lib/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import * as Icons from "lucide-react";
-import { Check, Copy } from "lucide-react";
-import { useState } from "react";
 
 interface DynamicResultProps {
   schema: OutputSchema;
@@ -53,7 +52,7 @@ function TextResult({ results, isLoading }: { results: any; isLoading: boolean }
             <Icons.FileText className="w-3 h-3" />
             文本结果
           </div>
-          <CopyButton text={text} />
+          <CopyButton text={text} label="" size="md" />
         </div>
         <pre className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90 font-mono">
           {text}
@@ -97,38 +96,10 @@ function CardListResult({ schema, results, isLoading }: { schema: OutputSchema; 
   );
 }
 
-function CopyButton({ text }: { text: string }) {
-  const [isCopied, setIsCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(text);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
-  };
-
-  return (
-    <button
-      onClick={handleCopy}
-      className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-      title="复制内容"
-    >
-      {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-    </button>
-  );
-}
-
 function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
-  const [isCopied, setIsCopied] = useState(false);
-
   const title = result.title || "Result";
   const description = result.description || (typeof result === "string" ? result : JSON.stringify(result));
   const category = result.category || null;
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(`${title}\n${description}`);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
-  };
 
   let categoryEl = null;
   if (category) {
@@ -155,13 +126,7 @@ function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
       <div className="flex items-start justify-between mb-4">
         {categoryEl || <div />}
         <AutoTransition as="div" className="flex gap-2">
-          <button
-            onClick={handleCopy}
-            key={isCopied ? "copied" : "copy"}
-            className="p-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors"
-          >
-            {isCopied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
-          </button>
+          <CopyButton text={`${title}\n${description}`} label="" size="md" />
         </AutoTransition>
       </div>
 
