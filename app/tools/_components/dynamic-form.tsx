@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { Button } from "@/components/button";
 import { FormField } from "@/components/form-field";
 import { ModelSelector } from "@/components/model-selector";
 import { SelectInput } from "@/components/select-input";
 import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
 import { InputSchema } from "@/src/lib/tool-types";
-import { Loader2, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 interface DynamicFormProps {
   schema: InputSchema;
@@ -99,23 +100,10 @@ export function DynamicForm({
         ))}
       </div>
 
-      <button
-        onClick={onSubmit}
-        disabled={isLoading || !isValid()}
-        className="w-full flex items-center justify-center gap-2 p-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-      >
-        {isLoading ? (
-          <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            正在生成...
-          </>
-        ) : (
-          <>
-            <Sparkles className="w-4 h-4" />
-            {schema.submitLabel || "开始生成"}
-          </>
-        )}
-      </button>
+      <Button onClick={onSubmit} disabled={!isValid()} loading={isLoading} loadingText="正在生成..." className="w-full">
+        <Sparkles className="w-4 h-4" />
+        {schema.submitLabel || "开始生成"}
+      </Button>
     </div>
   );
 }
