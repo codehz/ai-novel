@@ -3,6 +3,7 @@
 import { AutoTransition } from "@codehz/auto-transition";
 import clsx from "clsx";
 import { Fragment, useState } from "react";
+import { AutoHeight } from "./auto-height";
 
 interface Tab {
   id: string;
@@ -23,7 +24,7 @@ export function Tabs({ tabs, defaultTab, className }: TabsProps) {
   const activeTabContent = tabs.find((tab) => tab.id === activeTab)?.content;
 
   return (
-    <div className={className}>
+    <AutoHeight as="div" className={className}>
       {/* Tab 标签栏 */}
       <div className="flex gap-2 mb-4">
         {tabs.map((tab) => (
@@ -46,6 +47,6 @@ export function Tabs({ tabs, defaultTab, className }: TabsProps) {
       <AutoTransition as="div" className="relative">
         <Fragment key={activeTab}>{activeTabContent}</Fragment>
       </AutoTransition>
-    </div>
+    </AutoHeight>
   );
 }
