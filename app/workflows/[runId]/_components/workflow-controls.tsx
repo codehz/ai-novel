@@ -3,7 +3,38 @@
 import { cancelWorkflowRun, pauseWorkflowRun, resumeWorkflowRun } from "@/src/actions/workflows";
 import { clsx } from "clsx";
 import { Pause, Play, X } from "lucide-react";
-import { useState, useTransition } from "react";
+import { ReactNode, useState, useTransition } from "react";
+
+type ActionButtonProps = {
+  onClick: () => void;
+  disabled: boolean;
+  pending?: boolean;
+  colorClasses: string;
+  icon?: ReactNode;
+  children: ReactNode;
+};
+
+function ActionButton({ onClick, disabled, pending, colorClasses, icon, children }: ActionButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg ${colorClasses} disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm`}
+    >
+      {pending ? (
+        <>
+          <span className="animate-spin inline-block">⏳</span>
+          处理中...
+        </>
+      ) : (
+        <>
+          {icon}
+          {children}
+        </>
+      )}
+    </button>
+  );
+}
 
 interface WorkflowControlsProps {
   runId: string;
@@ -64,79 +95,47 @@ export function WorkflowControls({ runId, status }: WorkflowControlsProps) {
       <div className="flex gap-2">
         {status === "running" && (
           <>
-            <button
+            <ActionButton
               onClick={handlePause}
               disabled={isPending}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+              pending={isPending}
+              colorClasses="bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400"
+              icon={<Pause className="w-4 h-4" />}
             >
-              {isPending ? (
-                <>
-                  <span className="animate-spin inline-block">⏳</span>
-                  处理中...
-                </>
-              ) : (
-                <>
-                  <Pause className="w-4 h-4" />
-                  暂停
-                </>
-              )}
-            </button>
-            <button
+              暂停
+            </ActionButton>
+            <ActionButton
               onClick={handleCancel}
               disabled={isPending}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+              pending={isPending}
+              colorClasses="bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-400"
+              icon={<X className="w-4 h-4" />}
             >
-              {isPending ? (
-                <>
-                  <span className="animate-spin inline-block">⏳</span>
-                  处理中...
-                </>
-              ) : (
-                <>
-                  <X className="w-4 h-4" />
-                  取消
-                </>
-              )}
-            </button>
+              取消
+            </ActionButton>
           </>
         )}
 
         {status === "paused" && (
           <>
-            <button
+            <ActionButton
               onClick={handleResume}
               disabled={isPending}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+              pending={isPending}
+              colorClasses="bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400"
+              icon={<Play className="w-4 h-4" />}
             >
-              {isPending ? (
-                <>
-                  <span className="animate-spin inline-block">⏳</span>
-                  处理中...
-                </>
-              ) : (
-                <>
-                  <Play className="w-4 h-4" />
-                  恢复
-                </>
-              )}
-            </button>
-            <button
+              恢复
+            </ActionButton>
+            <ActionButton
               onClick={handleCancel}
               disabled={isPending}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-sm"
+              pending={isPending}
+              colorClasses="bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-400"
+              icon={<X className="w-4 h-4" />}
             >
-              {isPending ? (
-                <>
-                  <span className="animate-spin inline-block">⏳</span>
-                  处理中...
-                </>
-              ) : (
-                <>
-                  <X className="w-4 h-4" />
-                  取消
-                </>
-              )}
-            </button>
+              取消
+            </ActionButton>
           </>
         )}
       </div>
