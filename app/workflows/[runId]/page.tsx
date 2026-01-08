@@ -153,11 +153,11 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">运行 ID</p>
-                <p className="font-mono text-sm">{run.runId}</p>
+                <p className="font-mono text-sm break-all">{run.runId}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">工作流名称</p>
-                <p className="text-sm">{run.workflowName}</p>
+                <p className="text-sm break-all">{run.workflowName}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">创建时间</p>
@@ -214,12 +214,12 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
               <DetailsCard label="错误信息" variant="destructive" className="space-y-2">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">错误信息</p>
-                  <p className="text-sm text-destructive">{run.error.message}</p>
+                  <p className="text-sm text-destructive break-all">{run.error.message}</p>
                 </div>
                 {run.error.code && (
                   <div>
                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">错误代码</p>
-                    <p className="text-sm font-mono">{run.error.code}</p>
+                    <p className="text-sm font-mono break-all">{run.error.code}</p>
                   </div>
                 )}
                 {run.error.stack && (
