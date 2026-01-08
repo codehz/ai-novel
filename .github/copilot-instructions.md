@@ -61,19 +61,44 @@
 2. **执行**：前端调用 `/api/tools/execute` 触发工作流 → `executeToolWorkflow` 填充提示词 → AI 调用 → 结果流式返回。
 3. **历史记录**：`saveToolHistoryStep` 异步保存到 `toolHistories` 表，前端可查看和复用历史。
 
-## 开发模式
+### 常用公共组件
 
-- **样式**：Tailwind v4 + CSS 变量主题（见 [app/globals.css](app/globals.css)）；图标使用 `lucide-react`。
-- **调试**：[app/logs/page.tsx](app/logs/page.tsx) 展示完整模型调用日志、token 统计和成本。
+#### CodeBlock 组件
 
-## 关键文件参考
+- **文件**：[components/code-block.tsx](components/code-block.tsx)
+- **用途**：以格式化代码块形式展示内容，支持自定义高度和样式。
+- **Props**：
+  - `content: string` — 待显示的内容
+  - `maxHeight?: string` — 最大高度，默认 `"max-h-48"`
+  - `language?: string` — 代码语言标记（保留作未来扩展）
+  - `className?: string` — 额外 CSS 类名
+- **使用示例**：
+  ```tsx
+  <CodeBlock content={formatJson(data)} maxHeight="max-h-96" />
+  ```
 
-| 用途               | 文件                                                                                                                                                           |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 工作流编排         | [src/workflows/executeToolWorkflow.ts](src/workflows/executeToolWorkflow.ts)                                                                                   |
-| 流式 JSON/文本步骤 | [src/steps/streamJsonStep.ts](src/steps/streamJsonStep.ts)、[src/steps/streamTextStep.ts](src/steps/streamTextStep.ts)                                         |
-| 模型访问和日志     | [src/lib/ai-registry.ts](src/lib/ai-registry.ts)、[src/lib/ai-middleware.ts](src/lib/ai-middleware.ts)                                                         |
-| 数据库交互         | [src/db/schema.ts](src/db/schema.ts)、[src/db/index.ts](src/db/index.ts)                                                                                       |
-| Server Actions     | [src/actions/tools.ts](src/actions/tools.ts)、[src/actions/models.ts](src/actions/models.ts)                                                                   |
-| 工具 UI 编辑       | [app/tools/\_components/tool-form.tsx](app/tools/_components/tool-form.tsx)、[app/tools/\_components/dynamic-form.tsx](app/tools/_components/dynamic-form.tsx) |
-| 工具执行 UI        | [app/tools/[toolId]/page.tsx](app/tools/[toolId]/page.tsx)                                                                                                     |
+#### CopyButton 组件
+
+- **文件**：[components/copy-button.tsx](components/copy-button.tsx)
+- **用途**：提供一键复制功能，点击时复制文本到剪贴板，并显示反馈状态（Copy → Check 图标）。
+- **Props**：
+  - `text: string` — 待复制的内容
+  - `label?: string` — 按钮显示文本，默认 `"复制"`
+  - `feedbackDuration?: number` — 成功反馈时长（ms），默认 `2000`
+  - `size?: "sm" | "md"` — 图标大小，默认 `"sm"`（sm: w-3 h-3，md: w-4 h-4）
+  - `className?: string` — 额外 CSS 类名
+- **使用示例**：
+  ```tsx
+  <CopyButton text={JSON.stringify(data)} label="复制" />
+  ```
+
+#### formatJson 工具函数
+
+- **文件**：[src/lib/format.ts](src/lib/format.ts)
+- **用途**：安全地将数据对象序列化为格式化 JSON 字符串，异常时返回 `"[Unserializable Object]"`。
+- **签名**：`formatJson(data: unknown): string`
+- **使用示例**：
+  ```tsx
+  import { formatJson } from "@/src/lib/format";
+  const jsonString = formatJson(data);
+  ```

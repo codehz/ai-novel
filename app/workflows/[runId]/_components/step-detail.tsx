@@ -1,8 +1,10 @@
 "use client";
 
+import { CodeBlock } from "@/components/code-block";
+import { CopyButton } from "@/components/copy-button";
 import { DetailsCard } from "@/components/details-card";
+import { formatJson } from "@/src/lib/format";
 import { Step } from "@workflow/world";
-import { Copy } from "lucide-react";
 import { useState } from "react";
 
 interface StepDetailProps {
@@ -11,17 +13,6 @@ interface StepDetailProps {
 
 export function StepDetail({ step }: StepDetailProps) {
   const [expanded, setExpanded] = useState(false);
-  const [copied, setCopied] = useState<string | null>(null);
-
-  const copyToClipboard = (text: string, key: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(key);
-    setTimeout(() => setCopied(null), 2000);
-  };
-
-  const formatJson = (data: unknown) => {
-    return JSON.stringify(data, null, 2);
-  };
 
   const hasDetails = step.input || step.output || step.error;
 
@@ -43,18 +34,9 @@ export function StepDetail({ step }: StepDetailProps) {
         <div>
           <div className="flex items-center justify-between mb-2">
             <p className="text-muted-foreground uppercase tracking-wider font-mono font-semibold">输入参数</p>
-            <button
-              onClick={() => copyToClipboard(formatJson(step.input), "input")}
-              className="flex items-center gap-1 px-2 py-1 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-              title="复制到剪贴板"
-            >
-              <Copy className="w-3 h-3" />
-              {copied === "input" ? "已复制" : "复制"}
-            </button>
+            <CopyButton text={formatJson(step.input)} />
           </div>
-          <pre className="p-3 bg-muted rounded overflow-auto max-h-48 font-mono text-foreground text-xs whitespace-pre-wrap word-break-break-word">
-            {formatJson(step.input)}
-          </pre>
+          <CodeBlock content={formatJson(step.input)} />
         </div>
       )}
 
@@ -63,18 +45,9 @@ export function StepDetail({ step }: StepDetailProps) {
         <div>
           <div className="flex items-center justify-between mb-2">
             <p className="text-muted-foreground uppercase tracking-wider font-mono font-semibold">输出结果</p>
-            <button
-              onClick={() => copyToClipboard(formatJson(step.output), "output")}
-              className="flex items-center gap-1 px-2 py-1 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-              title="复制到剪贴板"
-            >
-              <Copy className="w-3 h-3" />
-              {copied === "output" ? "已复制" : "复制"}
-            </button>
+            <CopyButton text={formatJson(step.output)} />
           </div>
-          <pre className="p-3 bg-muted rounded overflow-auto max-h-48 font-mono text-foreground text-xs whitespace-pre-wrap word-break-break-word">
-            {formatJson(step.output)}
-          </pre>
+          <CodeBlock content={formatJson(step.output)} />
         </div>
       )}
 
@@ -97,18 +70,9 @@ export function StepDetail({ step }: StepDetailProps) {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-muted-foreground">堆栈跟踪：</p>
-                  <button
-                    onClick={() => copyToClipboard(step.error!.stack || "", "stack")}
-                    className="flex items-center gap-1 px-2 py-1 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-                    title="复制到剪贴板"
-                  >
-                    <Copy className="w-3 h-3" />
-                    {copied === "stack" ? "已复制" : "复制"}
-                  </button>
+                  <CopyButton text={step.error.stack} />
                 </div>
-                <pre className="p-3 bg-muted rounded overflow-auto max-h-48 font-mono text-foreground text-xs whitespace-pre-wrap word-break-break-word">
-                  {step.error.stack}
-                </pre>
+                <CodeBlock content={step.error.stack} />
               </div>
             )}
           </div>

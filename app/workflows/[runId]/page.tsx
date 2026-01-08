@@ -1,4 +1,7 @@
+import { CodeBlock } from "@/components/code-block";
+import { CopyButton } from "@/components/copy-button";
 import { DetailsCard } from "@/components/details-card";
+import { formatJson } from "@/src/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import Link from "next/link";
@@ -163,17 +166,25 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
 
             {/* 输入参数 */}
             <DetailsCard label="输入参数" variant="default">
-              <pre className="p-3 bg-muted rounded overflow-auto max-h-48 font-mono text-foreground text-xs whitespace-pre-wrap word-break-break-word">
-                {JSON.stringify(run.input, null, 2)}
-              </pre>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-muted-foreground uppercase tracking-wider font-mono font-semibold text-xs">
+                  参数内容
+                </p>
+                <CopyButton text={formatJson(run.input)} />
+              </div>
+              <CodeBlock content={formatJson(run.input)} />
             </DetailsCard>
 
             {/* 输出结果 */}
             {run.status === "completed" && run.output && (
               <DetailsCard label="输出结果" variant="default">
-                <pre className="p-3 bg-muted rounded overflow-auto max-h-48 font-mono text-foreground text-xs whitespace-pre-wrap word-break-break-word">
-                  {JSON.stringify(run.output, null, 2)}
-                </pre>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-muted-foreground uppercase tracking-wider font-mono font-semibold text-xs">
+                    结果内容
+                  </p>
+                  <CopyButton text={formatJson(run.output)} />
+                </div>
+                <CodeBlock content={formatJson(run.output)} />
               </DetailsCard>
             )}
 
@@ -192,10 +203,11 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
                 )}
                 {run.error.stack && (
                   <div>
-                    <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">堆栈跟踪</p>
-                    <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-64">
-                      {run.error.stack}
-                    </pre>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono">堆栈跟踪</p>
+                      <CopyButton text={run.error.stack} />
+                    </div>
+                    <CodeBlock content={run.error.stack} maxHeight="max-h-64" />
                   </div>
                 )}
               </DetailsCard>
