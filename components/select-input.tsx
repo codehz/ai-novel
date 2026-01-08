@@ -5,14 +5,12 @@ import { ButtonHTMLAttributes, SelectHTMLAttributes } from "react";
 import { Dropdown } from "./dropdown";
 
 interface SelectInputProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, "onChange"> {
-  variant?: "default";
   options?: { label: string; value: string | number }[];
   onChange?: (e: { target: { value: string } }) => void;
   placeholder?: string;
 }
 
 export function SelectInput({
-  variant = "default",
   className = "",
   options = [],
   children,
@@ -25,12 +23,10 @@ export function SelectInput({
   const selectedOption = options.find((opt) => opt.value === value);
   const label = selectedOption ? selectedOption.label : placeholder;
 
-  const variants = {
-    default:
-      "px-4 py-2 rounded-lg border border-input-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-primary",
-  };
+  const baseStyles =
+    "px-4 py-2 rounded-lg border border-input-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-primary";
 
-  const combinedClassName = `flex items-center justify-between w-full outline-none transition-all text-left ${variants[variant]} ${className} ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`;
+  const combinedClassName = `flex items-center justify-between w-full outline-none transition-all text-left ${baseStyles} ${className} ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`;
 
   return (
     <Dropdown
