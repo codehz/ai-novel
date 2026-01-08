@@ -1,6 +1,7 @@
 "use server";
 
 import { getWorld } from "@workflow/core/runtime";
+import { WorkflowRunStatus } from "@workflow/world";
 import { revalidatePath } from "next/cache";
 
 export interface WorkflowActionResult {
@@ -45,4 +46,17 @@ export async function cancelWorkflowRun(runId: string): Promise<WorkflowActionRe
     const message = error instanceof Error ? error.message : "取消工作流失败";
     return { success: false, message };
   }
+}
+
+export async function loadMoreWorkflowRuns(cursor: string, status?: WorkflowRunStatus) {
+  const world = getWorld();
+  const result = await world.runs.list({
+    status,
+    pagination: {
+      cursor,
+      limit: 20,
+      sortOrder: "desc",
+    },
+  });
+  return result;
 }

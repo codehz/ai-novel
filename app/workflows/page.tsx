@@ -5,19 +5,23 @@ import { WorkflowRunsList } from "./_components/workflow-runs-list";
 export default async function WorkflowsPage({
   searchParams,
 }: {
-  searchParams: Promise<{
-    status?: WorkflowRunStatus;
-  }>;
+  searchParams: Promise<{ status?: WorkflowRunStatus }>;
 }) {
   const params = await searchParams;
   const selectedStatus = params.status as WorkflowRunStatus | undefined;
 
   const world = getWorld();
-  const runsResponse = await world.runs.list({ status: selectedStatus });
-  let runs = runsResponse.data || [];
-
-  // 按创建时间倒序排序
-  runs = runs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const {
+    data: runs,
+    hasMore,
+    cursor: nextCursor,
+  } = await world.runs.list({
+    status: selectedStatus,
+    pagination: {
+      limit: 20,
+      sortOrder: "desc",
+    },
+  });
 
   return (
     <div className="space-y-8">
@@ -31,7 +35,7 @@ export default async function WorkflowsPage({
       </section>
 
       <section className="space-y-6">
-        <WorkflowRunsList runs={runs} selectedStatus={selectedStatus || "all"} />
+        <WorkflowRunsList runs={runs} selectedStatus={selectedStatus || "all"} hasMore={hasMore} cursor={nextCursor} />
       </section>
     </div>
   );
