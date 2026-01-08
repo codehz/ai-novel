@@ -13,7 +13,7 @@ import { useCallback, useReducer, useTransition } from "react";
 
 interface WorkflowRunsListProps {
   runs: WorkflowRun[];
-  selectedStatus: WorkflowRunStatus | "all";
+  selectedStatus?: WorkflowRunStatus;
   hasMore: boolean;
   cursor: string | null;
 }
@@ -163,7 +163,7 @@ export function WorkflowRunsList({ runs, selectedStatus, hasMore, cursor }: Work
 
     startTransition(async () => {
       try {
-        const result = await loadMoreWorkflowRuns(state.cursor!, selectedStatus === "all" ? undefined : selectedStatus);
+        const result = await loadMoreWorkflowRuns(state.cursor!, selectedStatus);
         dispatch({
           type: "LOAD_MORE",
           payload: {

@@ -35,7 +35,7 @@ export default async function WorkflowsPage({
       </section>
 
       <section className="space-y-6">
-        <WorkflowRunsList runs={runs} selectedStatus={selectedStatus || "all"} hasMore={hasMore} cursor={nextCursor} />
+        <WorkflowRunsList runs={runs} selectedStatus={selectedStatus} hasMore={hasMore} cursor={nextCursor} />
       </section>
     </div>
   );
