@@ -1,7 +1,8 @@
 "use client";
 
+import { AutoTransition } from "@codehz/auto-transition";
 import clsx from "clsx";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 interface Tab {
   id: string;
@@ -42,7 +43,9 @@ export function Tabs({ tabs, defaultTab, className }: TabsProps) {
       </div>
 
       {/* Tab 内容区 */}
-      <div>{activeTabContent}</div>
+      <AutoTransition as="div" className="relative">
+        <Fragment key={activeTab}>{activeTabContent}</Fragment>
+      </AutoTransition>
     </div>
   );
 }
