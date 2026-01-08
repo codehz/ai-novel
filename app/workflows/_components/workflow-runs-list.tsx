@@ -71,7 +71,7 @@ function WorkflowRunItem({ run }: { run: WorkflowRun }) {
   const config = statusConfigs[run.status];
 
   return (
-    <ItemCard title={run.runId} href={`/workflows/${run.runId}`} subtitle={run.runId}>
+    <ItemCard title={run.workflowName} href={`/workflows/${run.runId}`} subtitle={run.runId}>
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <span
