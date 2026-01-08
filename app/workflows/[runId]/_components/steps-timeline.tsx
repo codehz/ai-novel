@@ -56,7 +56,7 @@ export async function StepsTimeline({ runId }: StepsTimelineProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div>
       {steps.map((step: Step, index: number) => {
         const isLast = index === steps.length - 1;
         const icon = statusIcons[step.status] || statusIcons.pending;
@@ -64,15 +64,15 @@ export async function StepsTimeline({ runId }: StepsTimelineProps) {
         const borderColor = statusColors[step.status] || statusColors.pending;
 
         return (
-          <div key={step.stepId} className="flex gap-4">
+          <div key={step.stepId} className="flex gap-4 mb-4">
             {/* 时间线左侧 */}
             <div className="flex flex-col items-center">
               <div className={`p-1.5 rounded-full border-2 ${borderColor} bg-card`}>{icon}</div>
-              {!isLast && <div className="w-0.5 h-16 bg-border mt-2" />}
+              {!isLast && <div className="w-0.5 flex-1 bg-border" />}
             </div>
 
             {/* 步骤卡片 */}
-            <div className="flex-1 pb-4">
+            <div className="flex-1">
               <div className="p-4 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors">
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
