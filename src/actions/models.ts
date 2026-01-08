@@ -147,6 +147,7 @@ export async function getCallLogs(filters?: {
   startDate?: Date;
   endDate?: Date;
   workflowRunId?: string;
+  callReason?: string;
   limit?: number;
   offset?: number;
 }) {
@@ -155,6 +156,7 @@ export async function getCallLogs(filters?: {
   if (filters?.startDate) where.push(gte(modelCallLogs.createdAt, filters.startDate));
   if (filters?.endDate) where.push(lte(modelCallLogs.createdAt, filters.endDate));
   if (filters?.workflowRunId) where.push(eq(modelCallLogs.workflowRunId, filters.workflowRunId));
+  if (filters?.callReason) where.push(eq(modelCallLogs.callReason, filters.callReason));
 
   return await db.query.modelCallLogs.findMany({
     where: where.length > 0 ? and(...where) : undefined,
@@ -164,10 +166,11 @@ export async function getCallLogs(filters?: {
   });
 }
 
-export async function getCallStatistics(filters?: { startDate?: Date; endDate?: Date }) {
+export async function getCallStatistics(filters?: { startDate?: Date; endDate?: Date; callReason?: string }) {
   const where = [];
   if (filters?.startDate) where.push(gte(modelCallLogs.createdAt, filters.startDate));
   if (filters?.endDate) where.push(lte(modelCallLogs.createdAt, filters.endDate));
+  if (filters?.callReason) where.push(eq(modelCallLogs.callReason, filters.callReason));
 
   const condition = where.length > 0 ? and(...where) : undefined;
 
@@ -183,4 +186,13 @@ export async function getCallStatistics(filters?: { startDate?: Date; endDate?: 
     .where(condition);
 
   return stats[0];
+}
+
+export async function getDistinctCallReasons() {
+  const reasons = await db
+    .selectDistinct({ callReason: modelCallLogs.callReason })
+    .from(modelCallLogs)
+    .orderBy(modelCallLogs.callReason);
+
+  return reasons.map((r) => r.callReason);
 }

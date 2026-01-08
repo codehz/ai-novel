@@ -1,40 +1,26 @@
 import { DetailsCard } from "@/components/details-card";
 import { getCallLogs, getCallStatistics } from "@/src/actions/models";
-import { getWorld } from "@workflow/core/runtime";
 import { ItemCard } from "../../components/item-card";
 import { LogsFilter } from "./_components/logs-filter";
 
 interface PageProps {
   searchParams: Promise<{
-    workflowRunId?: string;
+    callReason?: string;
   }>;
 }
 
 export default async function LogsPage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const workflowRunId = params.workflowRunId;
+  const callReason = params.callReason;
 
-  // 获取所有工作流运行
-  const world = getWorld();
-  const runsResponse = await world.runs.list({});
-  const runs = runsResponse.data || [];
-
-  // 获取日志，如果选择了工作流运行则过滤
+  // 获取日志，如果选择了 callReason 则过滤
   const logs = await getCallLogs({
     limit: 50,
-    ...(workflowRunId && { workflowRunId }),
+    ...(callReason && { callReason }),
   });
 
   // 计算成本统计
-  const stats = await getCallStatistics();
-
-  // 计算特定工作流运行的成本
-  const workflowStats = { totalTokens: 0, totalCost: 0, avgCostPerStep: 0 };
-  if (workflowRunId) {
-    workflowStats.totalTokens = logs.reduce((sum, log) => sum + (log.inputTokens || 0) + (log.outputTokens || 0), 0);
-    workflowStats.totalCost = logs.reduce((sum, log) => sum + (log.totalCost || 0), 0);
-    workflowStats.avgCostPerStep = logs.length > 0 ? workflowStats.totalCost / logs.length : 0;
-  }
+  const stats = await getCallStatistics(callReason ? { callReason } : undefined);
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -63,36 +49,13 @@ export default async function LogsPage({ searchParams }: PageProps) {
           </div>
         </div>
 
-        {/* 工作流筛选 */}
-        <LogsFilter runs={runs} selectedWorkflowRunId={workflowRunId} />
-
-        {/* 工作流成本统计 */}
-        {workflowRunId && (
-          <div className="p-4 rounded-lg border border-border bg-card">
-            <h3 className="font-semibold mb-3">工作流运行成本统计</h3>
-            <div className="grid grid-cols-3 gap-4 text-sm">
-              <div>
-                <p className="text-muted-foreground">运行 Token 数</p>
-                <p className="font-mono text-lg font-bold">{workflowStats.totalTokens}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">运行总成本</p>
-                <p className="font-mono text-lg font-bold text-primary">${workflowStats.totalCost.toFixed(6)}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">平均单步成本</p>
-                <p className="font-mono text-lg font-bold">${workflowStats.avgCostPerStep.toFixed(6)}</p>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* callReason 筛选 */}
+        <LogsFilter selectedCallReason={callReason} />
 
         {/* 日志列表 */}
         <div className="grid gap-4">
           {logs.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              {workflowRunId ? "该工作流运行暂无调用日志" : "暂无调用日志"}
-            </div>
+            <div className="text-center py-12 text-muted-foreground">暂无调用日志</div>
           ) : (
             logs.map((log) => (
               <ItemCard
