@@ -9,7 +9,7 @@ import { AutoTransition } from "@codehz/auto-transition";
 import { WorkflowRun, WorkflowRunStatus } from "@workflow/world";
 import { AlertCircle, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useReducer, useTransition } from "react";
+import { useCallback, useEffect, useReducer, useTransition } from "react";
 
 interface WorkflowRunsListProps {
   runs: WorkflowRun[];
@@ -144,6 +144,18 @@ export function WorkflowRunsList({ runs, selectedStatus, hasMore, cursor }: Work
     cursor: cursor,
     hasMore: hasMore,
   });
+
+  // 监听外部props变化，重置列表状态
+  useEffect(() => {
+    dispatch({
+      type: "RESET",
+      payload: {
+        runs,
+        cursor,
+        hasMore,
+      },
+    });
+  }, [runs, cursor, hasMore]);
 
   const handleStatusChange = useCallback(
     (value: string) => {
