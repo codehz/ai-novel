@@ -1,8 +1,8 @@
 "use client";
 
 import clsx from "clsx";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface DetailsCardProps {
   label: string;
@@ -24,15 +24,12 @@ export function DetailsCard({
   className,
 }: DetailsCardProps) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
-  const [currentOpen, setCurrentOpen] = useState(externalOpen);
 
   // 对于受控组件，同步外部状态到原生 details 元素
   useEffect(() => {
     if (isControlled && detailsRef.current) {
       if (detailsRef.current.open !== externalOpen) {
         detailsRef.current.open = externalOpen;
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setCurrentOpen(externalOpen);
       }
     }
   }, [externalOpen, isControlled]);
@@ -41,7 +38,6 @@ export function DetailsCard({
   const handleToggle = (event: React.SyntheticEvent<HTMLDetailsElement>) => {
     const target = event.target as HTMLDetailsElement;
     const isOpen = target.open;
-    setCurrentOpen(isOpen);
     onToggle?.(isOpen);
   };
 
@@ -75,14 +71,14 @@ export function DetailsCard({
   return (
     <details
       ref={detailsRef}
-      className={getDetailsClasses()}
+      className={clsx("group", getDetailsClasses())}
       open={isControlled ? externalOpen : undefined}
       onToggle={handleToggle}
     >
       <summary className={clsx("flex items-center justify-between text-sm", getSummaryClasses())}>
         <span>{label}</span>
         <div className="flex items-center">
-          {currentOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
         </div>
       </summary>
       <div className={clsx("pt-3", className)}>{children}</div>
