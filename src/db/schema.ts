@@ -68,6 +68,7 @@ export const modelCallLogs = sqliteTable(
     callReason: text("call_reason").notNull(), // URL format
     modelConfigSnapshot: text("model_config_snapshot", { mode: "json" }).$type<Record<string, unknown>>().notNull(),
     metadata: text("metadata", { mode: "json" }),
+    workflowRunId: text("workflow_run_id"),
     createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .default(sql`(unixepoch())`),

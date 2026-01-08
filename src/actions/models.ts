@@ -146,6 +146,7 @@ export async function getCallLogs(filters?: {
   status?: string;
   startDate?: Date;
   endDate?: Date;
+  workflowRunId?: string;
   limit?: number;
   offset?: number;
 }) {
@@ -153,6 +154,7 @@ export async function getCallLogs(filters?: {
   if (filters?.status) where.push(eq(modelCallLogs.status, filters.status));
   if (filters?.startDate) where.push(gte(modelCallLogs.createdAt, filters.startDate));
   if (filters?.endDate) where.push(lte(modelCallLogs.createdAt, filters.endDate));
+  if (filters?.workflowRunId) where.push(eq(modelCallLogs.workflowRunId, filters.workflowRunId));
 
   return await db.query.modelCallLogs.findMany({
     where: where.length > 0 ? and(...where) : undefined,

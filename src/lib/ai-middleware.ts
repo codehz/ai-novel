@@ -8,6 +8,7 @@ export interface LoggingContext {
   outputPrice: number;
   configSnapshot: Record<string, unknown>;
   defaultParameters?: Record<string, unknown>;
+  workflowRunId?: string;
 }
 
 export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: LoggingContext): LanguageModelV3 {
@@ -16,7 +17,7 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
     async doGenerate(options: LanguageModelV3CallOptions) {
       const startTime = Date.now();
       const providerOptions = options.providerOptions || {};
-      const { logging: { callReason = "unknown" } = {}, ...restProviderOptions } = providerOptions;
+      const { logging: { callReason = "unknown", workflowRunId } = {}, ...restProviderOptions } = providerOptions;
 
       const sanitizedOptions: LanguageModelV3CallOptions = {
         ...options,
@@ -50,6 +51,7 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
           durationMs,
           callReason: callReason as string,
           modelConfigSnapshot: context.configSnapshot,
+          workflowRunId: typeof workflowRunId === "string" ? workflowRunId : context.workflowRunId,
         }).catch(console.error);
 
         return result;
@@ -64,6 +66,7 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
           durationMs,
           callReason: callReason as string,
           modelConfigSnapshot: context.configSnapshot,
+          workflowRunId: typeof workflowRunId === "string" ? workflowRunId : context.workflowRunId,
         }).catch(console.error);
         throw error;
       }
@@ -72,7 +75,7 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
     async doStream(options: LanguageModelV3CallOptions) {
       const startTime = Date.now();
       const providerOptions = options.providerOptions || {};
-      const { logging: { callReason = "unknown" } = {}, ...restProviderOptions } = providerOptions;
+      const { logging: { callReason = "unknown", workflowRunId } = {}, ...restProviderOptions } = providerOptions;
 
       const sanitizedOptions: LanguageModelV3CallOptions = {
         ...options,
@@ -109,6 +112,7 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
               durationMs,
               callReason: callReason as string,
               modelConfigSnapshot: context.configSnapshot,
+              workflowRunId: typeof workflowRunId === "string" ? workflowRunId : context.workflowRunId,
             }).catch(console.error);
           }
           if (chunk.type === "error") {
@@ -122,6 +126,7 @@ export function wrapLanguageModelWithLogging(model: LanguageModelV3, context: Lo
               durationMs,
               callReason: callReason as string,
               modelConfigSnapshot: context.configSnapshot,
+              workflowRunId: typeof workflowRunId === "string" ? workflowRunId : context.workflowRunId,
             }).catch(console.error);
           }
           controller.enqueue(chunk);

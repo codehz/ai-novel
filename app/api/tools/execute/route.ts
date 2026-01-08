@@ -12,7 +12,11 @@ export async function POST(req: NextRequest) {
   }
 
   const run = await start(executeToolWorkflow, [inputs, { modelId }, config]);
+  const runId = run.runId;
   const readable = run.getReadable();
+
+  // Log workflow run ID for audit and tracing purposes
+  console.debug(`[Tool Execution] toolId=${toolId}, runId=${runId}`);
 
   const encoder = new TextEncoder();
 

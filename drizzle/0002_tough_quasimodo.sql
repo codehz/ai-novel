@@ -1,0 +1,1 @@
+ALTER TABLE `model_call_logs` ADD `workflow_run_id` text;

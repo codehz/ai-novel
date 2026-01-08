@@ -29,7 +29,12 @@ export async function executeTool(
   }
   try {
     const run = await start(executeToolWorkflow, [inputs, { modelId }, config]);
+    const runId = run.runId;
     const data = await run.returnValue;
+
+    // Log workflow run ID for audit and tracing purposes
+    console.debug(`[Tool Execution] toolId=${toolId}, runId=${runId}`);
+
     return {
       success: true,
       data,
