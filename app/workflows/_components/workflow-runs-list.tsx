@@ -1,9 +1,8 @@
 "use client";
 
-import { FormField } from "@/components/form-field";
+import { ChipList } from "@/components/chip-list";
 import { ItemCard } from "@/components/item-card";
 import { LoadMoreButton } from "@/components/load-more-button";
-import { SelectInput } from "@/components/select-input";
 import { usePagination } from "@/hooks/usePagination";
 import { loadMoreWorkflowRuns } from "@/src/actions/workflows";
 import { formatDateToLocaleString } from "@/src/lib/format";
@@ -59,10 +58,13 @@ const statusConfigs: Record<WorkflowRunStatus, { label: string; bg: string; text
   },
 };
 
-const statusOptions = [
-  { value: "all", label: "全部状态" },
-  ...Object.entries(statusConfigs).map(([status, config]) => ({ value: status, label: config.label })),
-];
+const chipOptions = Object.entries(statusConfigs).map(([status, config]) => ({
+  value: status,
+  label: config.label,
+  icon: config.icon,
+  activeBg: config.bg,
+  activeText: config.text,
+}));
 
 function WorkflowRunItem({ run }: { run: WorkflowRun }) {
   const formatDuration = (startedAt: Date | undefined, completedAt: Date | undefined) => {
@@ -143,15 +145,10 @@ export function WorkflowRunsList({ runs, selectedStatus, hasMore, cursor }: Work
 
   return (
     <div className="space-y-6">
-      <FormField label="按状态筛选：">
-        <SelectInput
-          value={selectedStatus}
-          onChange={(e) => handleStatusChange(e.target.value)}
-          options={statusOptions}
-          placeholder="全部状态"
-          className="px-3 py-2 rounded-lg border border-border bg-card text-foreground hover:border-primary/50 transition-colors"
-        />
-      </FormField>
+      <div className="space-y-2">
+        <p className="text-sm font-medium">按状态筛选：</p>
+        <ChipList options={chipOptions} value={selectedStatus} onChange={handleStatusChange} showAll />
+      </div>
 
       <AutoTransition as="div" className="grid relative gap-4">
         {allRuns.length === 0 ? (
