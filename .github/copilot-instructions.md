@@ -102,3 +102,52 @@
   import { formatJson } from "@/src/lib/format";
   const jsonString = formatJson(data);
   ```
+
+#### Button 组件
+
+- **文件**：[components/button.tsx](components/button.tsx)
+- **用途**：通用按钮组件，支持多种样式变体和大小，包含加载状态
+- **Props**：
+  - `variant?: ButtonVariant` — 按钮样式变体（如 "primary", "destructive", "outline" 等），默认 "primary"
+  - `size?: ButtonSize` — 按钮大小（如 "sm", "md", "lg"），默认 "md"
+  - `loading?: boolean` — 是否显示加载状态
+  - `loadingText?: string` — 加载时显示的文本
+  - `disabled?: boolean` — 是否禁用按钮
+  - 其他原生 button 属性
+- **使用示例**：
+  ```tsx
+  <Button variant="primary" size="md">保存</Button>
+  <Button variant="destructive" size="sm">删除</Button>
+  <Button loading loadingText="加载中...">提交</Button>
+  ```
+
+#### IconButton 组件
+
+- **文件**：[components/icon-button.tsx](components/icon-button.tsx)
+- **用途**：图标按钮组件，用于展示仅包含图标的小按钮
+- **Props**：
+  - `color?: ButtonColor` — 按钮颜色（如 "primary", "destructive", "default"），默认 "default"
+  - `shape?: IconButtonShape` — 按钮形状（如 "round", "square"），默认 "round"
+  - 其他原生 button 属性
+- **使用示例**：
+  ```tsx
+  <IconButton color="primary" shape="round">
+    <Edit2 size={14} />
+  </IconButton>
+  <IconButton color="destructive" shape="square">
+    <Trash2 size={16} />
+  </IconButton>
+  ```
+
+#### TextInput 组件
+
+- **文件**：[components/text-input.tsx](components/text-input.tsx)
+- **用途**：文本输入框组件，提供统一的样式和交互体验
+- **Props**：
+  - `className?: string` — 额外 CSS 类名
+  - 其他原生 input 属性
+- **使用示例**：
+  ```tsx
+  <TextInput placeholder="请输入内容..." />
+  <TextInput value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+  ```
