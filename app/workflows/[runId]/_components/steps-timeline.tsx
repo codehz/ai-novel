@@ -32,16 +32,74 @@ const statusColors: Record<string, string> = {
   cancelled: "border-muted-foreground",
 };
 
+const formatDuration = (startedAt: Date | undefined, completedAt: Date | undefined) => {
+  if (!startedAt || !completedAt) return "-";
+  const duration = new Date(completedAt).getTime() - new Date(startedAt).getTime();
+  return `${duration}ms`;
+};
+
+function StepItem({
+  step,
+  isLast,
+  icon,
+  label,
+  borderColor,
+}: {
+  step: Step;
+  isLast: boolean;
+  icon: React.ReactNode;
+  label: string;
+  borderColor: string;
+}) {
+  return (
+    <div className="flex gap-4 mb-4">
+      <div className="flex flex-col items-center">
+        <div className={`p-1.5 rounded-full border-2 ${borderColor} bg-card`}>{icon}</div>
+        {!isLast && <div className="w-0.5 flex-1 bg-border" />}
+      </div>
+
+      <div className="flex-1">
+        <div className="p-4 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors">
+          <div className="space-y-3">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="font-semibold text-foreground">{step.stepName}</h3>
+                <p className="text-xs text-muted-foreground mt-1">步骤 ID: {step.stepId}</p>
+              </div>
+              <span className="text-xs font-medium text-muted-foreground">{label}</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div>
+                <p className="text-muted-foreground">开始时间</p>
+                <p className="font-mono">{formatDateToLocaleString(step.startedAt)}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">完成时间</p>
+                <p className="font-mono">{formatDateToLocaleString(step.completedAt)}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">执行耗时</p>
+                <p className="font-mono">{formatDuration(step.startedAt, step.completedAt)}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">重试次数</p>
+                <p className="font-mono">{step.attempt}</p>
+              </div>
+            </div>
+
+            <StepDetail step={step} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export async function StepsTimeline({ runId }: StepsTimelineProps) {
   const world = getWorld();
   const stepsResponse = await world.steps.list({ runId });
   const steps = stepsResponse.data || [];
-
-  const formatDuration = (startedAt: Date | undefined, completedAt: Date | undefined) => {
-    if (!startedAt || !completedAt) return "-";
-    const duration = new Date(completedAt).getTime() - new Date(startedAt).getTime();
-    return `${duration}ms`;
-  };
 
   if (steps.length === 0) {
     return (
@@ -53,59 +111,16 @@ export async function StepsTimeline({ runId }: StepsTimelineProps) {
 
   return (
     <div>
-      {steps.map((step: Step, index: number) => {
-        const isLast = index === steps.length - 1;
-        const icon = statusIcons[step.status] || statusIcons.pending;
-        const label = statusLabels[step.status] || step.status;
-        const borderColor = statusColors[step.status] || statusColors.pending;
-
-        return (
-          <div key={step.stepId} className="flex gap-4 mb-4">
-            {/* 时间线左侧 */}
-            <div className="flex flex-col items-center">
-              <div className={`p-1.5 rounded-full border-2 ${borderColor} bg-card`}>{icon}</div>
-              {!isLast && <div className="w-0.5 flex-1 bg-border" />}
-            </div>
-
-            {/* 步骤卡片 */}
-            <div className="flex-1">
-              <div className="p-4 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors">
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-foreground">{step.stepName}</h3>
-                      <p className="text-xs text-muted-foreground mt-1">步骤 ID: {step.stepId}</p>
-                    </div>
-                    <span className="text-xs font-medium text-muted-foreground">{label}</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <p className="text-muted-foreground">开始时间</p>
-                      <p className="font-mono">{formatDateToLocaleString(step.startedAt)}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">完成时间</p>
-                      <p className="font-mono">{formatDateToLocaleString(step.completedAt)}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">执行耗时</p>
-                      <p className="font-mono">{formatDuration(step.startedAt, step.completedAt)}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">重试次数</p>
-                      <p className="font-mono">{step.attempt}</p>
-                    </div>
-                  </div>
-
-                  {/* 步骤详情 */}
-                  <StepDetail step={step} />
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })}
+      {steps.map((step: Step, index: number) => (
+        <StepItem
+          key={step.stepId}
+          step={step}
+          isLast={index === steps.length - 1}
+          icon={statusIcons[step.status] || statusIcons.pending}
+          label={statusLabels[step.status] || step.status}
+          borderColor={statusColors[step.status] || statusColors.pending}
+        />
+      ))}
     </div>
   );
 }
