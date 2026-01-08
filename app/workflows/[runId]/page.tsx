@@ -1,3 +1,4 @@
+import { DetailsCard } from "@/components/details-card";
 import { getWorld } from "@workflow/core/runtime";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import Link from "next/link";
@@ -161,56 +162,43 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
             </div>
 
             {/* 输入参数 */}
-            <details className="border-t border-border pt-6">
-              <summary className="cursor-pointer font-semibold hover:text-primary transition-colors">输入参数</summary>
-              <div className="mt-3">
-                <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-64">
-                  {JSON.stringify(run.input, null, 2)}
-                </pre>
-              </div>
-            </details>
+            <DetailsCard label="输入参数" variant="default" icon>
+              <pre className="p-3 bg-muted rounded overflow-auto max-h-48 font-mono text-foreground text-xs whitespace-pre-wrap word-break-break-word">
+                {JSON.stringify(run.input, null, 2)}
+              </pre>
+            </DetailsCard>
 
             {/* 输出结果 */}
             {run.status === "completed" && run.output && (
-              <details className="border-t border-border pt-6">
-                <summary className="cursor-pointer font-semibold hover:text-primary transition-colors">
-                  输出结果
-                </summary>
-                <div className="mt-3">
-                  <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-64">
-                    {JSON.stringify(run.output, null, 2)}
-                  </pre>
-                </div>
-              </details>
+              <DetailsCard label="输出结果" variant="default" icon>
+                <pre className="p-3 bg-muted rounded overflow-auto max-h-48 font-mono text-foreground text-xs whitespace-pre-wrap word-break-break-word">
+                  {JSON.stringify(run.output, null, 2)}
+                </pre>
+              </DetailsCard>
             )}
 
             {/* 错误信息 */}
             {run.status === "failed" && run.error && (
-              <details className="border-t border-border pt-6" open>
-                <summary className="cursor-pointer font-semibold text-destructive hover:text-destructive/80 transition-colors">
-                  错误信息
-                </summary>
-                <div className="mt-3 space-y-3">
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">错误信息</p>
-                    <p className="text-sm text-destructive">{run.error.message}</p>
-                  </div>
-                  {run.error.code && (
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">错误代码</p>
-                      <p className="text-sm font-mono">{run.error.code}</p>
-                    </div>
-                  )}
-                  {run.error.stack && (
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">堆栈跟踪</p>
-                      <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-64">
-                        {run.error.stack}
-                      </pre>
-                    </div>
-                  )}
+              <DetailsCard label="错误信息" variant="destructive" className="space-y-2" icon>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">错误信息</p>
+                  <p className="text-sm text-destructive">{run.error.message}</p>
                 </div>
-              </details>
+                {run.error.code && (
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">错误代码</p>
+                    <p className="text-sm font-mono">{run.error.code}</p>
+                  </div>
+                )}
+                {run.error.stack && (
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">堆栈跟踪</p>
+                    <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-64">
+                      {run.error.stack}
+                    </pre>
+                  </div>
+                )}
+              </DetailsCard>
             )}
           </div>
         </div>

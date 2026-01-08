@@ -1,3 +1,4 @@
+import { DetailsCard } from "@/components/details-card";
 import { getWorld } from "@workflow/core/runtime";
 import { Event } from "@workflow/world";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Zap } from "lucide-react";
@@ -186,16 +187,13 @@ export default async function EventsPage({ params }: PageProps) {
 
                     {/* 事件 Payload */}
                     {"eventData" in event && event.eventData && (
-                      <details className="border-t border-border pt-4">
-                        <summary className="cursor-pointer text-sm font-medium hover:text-primary transition-colors">
-                          事件数据
-                        </summary>
+                      <DetailsCard label="事件数据" variant="default" icon={true}>
                         <div className="mt-3">
                           <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-96">
                             {JSON.stringify(event.eventData, null, 2)}
                           </pre>
                         </div>
-                      </details>
+                      </DetailsCard>
                     )}
                   </div>
                 </div>

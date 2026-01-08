@@ -158,3 +158,24 @@ body {
     @slot;
   }
 }
+
+details {
+  interpolate-size: allow-keywords;
+  overflow: hidden;
+}
+
+/* 内容动画（使用 ::details-content） */
+details::details-content {
+  block-size: 0; /* 初始高度 0 */
+  opacity: 0;
+  overflow: clip; /* 剪裁溢出内容 */
+  transition:
+    block-size 0.4s ease,
+    opacity 0.4s ease,
+    content-visibility 0.4s ease allow-discrete; /* allow-discrete 允许离散属性过渡 */
+}
+
+details[open]::details-content {
+  block-size: auto; /* 展开到自动高度 */
+  opacity: 1;
+}

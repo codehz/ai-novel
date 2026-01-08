@@ -1,3 +1,4 @@
+import { DetailsCard } from "@/components/details-card";
 import { getCallLogs, getCallStatistics } from "@/src/actions/models";
 import { getWorld } from "@workflow/core/runtime";
 import { ItemCard } from "../../components/item-card";
@@ -144,12 +145,11 @@ export default async function LogsPage({ searchParams }: PageProps) {
                         错误: {log.errorMessage}
                       </div>
                     )}
-                    <details className="mt-2">
-                      <summary className="cursor-pointer hover:text-foreground transition-colors">查看配置快照</summary>
-                      <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-x-auto">
+                    <DetailsCard label="配置快照" variant="minimal" icon>
+                      <pre className="p-2 bg-muted rounded text-xs overflow-x-auto">
                         {JSON.stringify(log.modelConfigSnapshot as object, null, 2)}
                       </pre>
-                    </details>
+                    </DetailsCard>
                   </div>
                 </ItemCard>
               );
