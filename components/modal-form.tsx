@@ -24,7 +24,7 @@ export function ModalForm({
   submitLabel = "保存",
   loadingLabel = "保存中...",
   className = "",
-  maxWidth = "max-w-md",
+  maxWidth = "max-w-xl",
   onClose,
 }: ModalFormProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -78,7 +78,7 @@ export function ModalForm({
         backdrop:bg-black/30
       "
     >
-      <div className={`bg-card rounded-2xl shadow-2xl w-full ${maxWidth} max-h-full flex flex-col overflow-hidden`}>
+      <div className={`bg-card rounded-2xl shadow-2xl w-screen ${maxWidth} max-h-full flex flex-col overflow-hidden`}>
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border flex-none">
           <h3 className="text-lg sm:text-xl font-bold">{title}</h3>
           <button onClick={performClose} className="p-2 hover:bg-muted rounded-full transition-colors">
