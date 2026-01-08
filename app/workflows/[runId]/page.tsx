@@ -224,36 +224,31 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
           </div>
         </div>
       </section>
-
-      {/* 工作流执行信息 */}
-      <section className="space-y-6">
-        <h2 className="text-2xl font-semibold">工作流执行信息</h2>
-        <Tabs
-          defaultTab="model-logs"
-          tabs={[
-            {
-              id: "model-logs",
-              label: "模型调用日志",
-              content: <ModelCallLogs callLogs={callLogs} showSection={false} />,
-            },
-            {
-              id: "steps",
-              label: "执行步骤",
-              content: <StepsTimeline runId={run.runId} />,
-            },
-            {
-              id: "streams",
-              label: "流输出数据",
-              content:
-                streams.length > 0 ? (
-                  <StreamViewer streamData={streams} />
-                ) : (
-                  <div className="text-center py-12 text-muted-foreground">暂无流数据</div>
-                ),
-            },
-          ]}
-        />
-      </section>
+      <Tabs
+        defaultTab="model-logs"
+        tabs={[
+          {
+            id: "model-logs",
+            label: "模型调用日志",
+            content: <ModelCallLogs callLogs={callLogs} showSection={false} />,
+          },
+          {
+            id: "steps",
+            label: "执行步骤",
+            content: <StepsTimeline runId={run.runId} />,
+          },
+          {
+            id: "streams",
+            label: "流输出数据",
+            content:
+              streams.length > 0 ? (
+                <StreamViewer streamData={streams} />
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">暂无流数据</div>
+              ),
+          },
+        ]}
+      />
     </div>
   );
 }

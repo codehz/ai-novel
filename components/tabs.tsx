@@ -22,18 +22,18 @@ export function Tabs({ tabs, defaultTab, className }: TabsProps) {
   const activeTabContent = tabs.find((tab) => tab.id === activeTab)?.content;
 
   return (
-    <div className={clsx("border border-border rounded-lg overflow-hidden", className)}>
+    <div className={className}>
       {/* Tab 标签栏 */}
-      <div className="flex bg-muted border-b border-border">
+      <div className="flex gap-2 mb-4">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={clsx(
-              "px-4 py-2 cursor-pointer transition-colors text-sm font-medium",
+              "px-3 py-1.5 cursor-pointer transition-all text-sm font-medium rounded-full",
               activeTab === tab.id
-                ? "text-primary border-b-2 border-primary -mb-1 pb-1"
-                : "text-muted-foreground hover:text-foreground",
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground",
             )}
           >
             {tab.label}
@@ -42,7 +42,7 @@ export function Tabs({ tabs, defaultTab, className }: TabsProps) {
       </div>
 
       {/* Tab 内容区 */}
-      <div className="p-6">{activeTabContent}</div>
+      <div>{activeTabContent}</div>
     </div>
   );
 }
