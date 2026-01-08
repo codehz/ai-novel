@@ -1,4 +1,5 @@
 import { DetailsCard } from "@/components/details-card";
+import { formatDateToLocaleString } from "@/src/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { Event } from "@workflow/world";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Zap } from "lucide-react";
@@ -109,11 +110,6 @@ export default async function EventsPage({ params }: PageProps) {
   // 按时间戳倒序排序（最新的事件在上）
   const sortedEvents = events.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  const formatDate = (date: Date | undefined) => {
-    if (!date) return "-";
-    return new Date(date).toLocaleString("zh-CN");
-  };
-
   return (
     <div className="space-y-8">
       <div className="space-y-4">
@@ -169,7 +165,7 @@ export default async function EventsPage({ params }: PageProps) {
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">时间</p>
-                        <p className="font-mono text-sm">{formatDate(event.createdAt)}</p>
+                        <p className="font-mono text-sm">{formatDateToLocaleString(event.createdAt)}</p>
                       </div>
                     </div>
 

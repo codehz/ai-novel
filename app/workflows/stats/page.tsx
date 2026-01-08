@@ -1,3 +1,4 @@
+import { formatDateToLocaleString } from "@/src/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { BarChart3, TrendingUp } from "lucide-react";
 import Link from "next/link";
@@ -257,7 +258,7 @@ export default async function StatsPage() {
 
       {/* 页面更新时间 */}
       <section className="text-center text-xs text-muted-foreground">
-        <p>数据更新于: {new Date().toLocaleString("zh-CN")}</p>
+        <p>数据更新于: {formatDateToLocaleString(new Date())}</p>
       </section>
     </div>
   );

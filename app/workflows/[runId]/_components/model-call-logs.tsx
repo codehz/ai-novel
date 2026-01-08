@@ -2,6 +2,7 @@
 
 import { DetailsCard } from "@/components/details-card";
 import { ItemCard } from "@/components/item-card";
+import { formatDateToLocaleString } from "@/src/lib/format";
 import Link from "next/link";
 
 interface ModelCallLog {
@@ -87,7 +88,7 @@ export function ModelCallLogs({ callLogs, showSection = true }: ModelCallLogsPro
                     {log.status === "success" ? "成功" : "失败"}
                   </span>
                 </span>
-                <span>时间: {log.createdAt.toLocaleString()}</span>
+                <span>时间: {formatDateToLocaleString(log.createdAt)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span>

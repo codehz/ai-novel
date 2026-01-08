@@ -10,6 +10,7 @@
         "@workflow/world-local": "^4.0.1-beta.24",
         "ai": "^6.0.5",
         "clsx": "^2.1.1",
+        "date-fns": "^4.1.0",
         "drizzle-orm": "^0.45.1",
         "jsonriver": "^1.1.1",
         "lucide-react": "^0.562.0",

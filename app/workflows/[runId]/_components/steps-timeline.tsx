@@ -1,3 +1,4 @@
+import { formatDateToLocaleString } from "@/src/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { Step } from "@workflow/world";
 import { AlertCircle, CheckCircle2, Circle, Loader2 } from "lucide-react";
@@ -35,11 +36,6 @@ export async function StepsTimeline({ runId }: StepsTimelineProps) {
   const world = getWorld();
   const stepsResponse = await world.steps.list({ runId });
   const steps = stepsResponse.data || [];
-
-  const formatDate = (date: Date | undefined) => {
-    if (!date) return "-";
-    return new Date(date).toLocaleString("zh-CN");
-  };
 
   const formatDuration = (startedAt: Date | undefined, completedAt: Date | undefined) => {
     if (!startedAt || !completedAt) return "-";
@@ -86,11 +82,11 @@ export async function StepsTimeline({ runId }: StepsTimelineProps) {
                   <div className="grid grid-cols-2 gap-3 text-xs">
                     <div>
                       <p className="text-muted-foreground">开始时间</p>
-                      <p className="font-mono">{formatDate(step.startedAt)}</p>
+                      <p className="font-mono">{formatDateToLocaleString(step.startedAt)}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">完成时间</p>
-                      <p className="font-mono">{formatDate(step.completedAt)}</p>
+                      <p className="font-mono">{formatDateToLocaleString(step.completedAt)}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">执行耗时</p>

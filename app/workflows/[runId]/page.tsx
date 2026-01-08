@@ -3,7 +3,7 @@ import { CopyButton } from "@/components/copy-button";
 import { DetailsCard } from "@/components/details-card";
 import { Tabs } from "@/components/tabs";
 import { getCallLogs } from "@/src/actions/models";
-import { formatJson } from "@/src/lib/format";
+import { formatDateToLocaleString, formatJson } from "@/src/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import Link from "next/link";
@@ -93,11 +93,6 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
     console.error("Failed to list streams:", err);
   }
 
-  const formatDate = (date: Date | undefined) => {
-    if (!date) return "-";
-    return new Date(date).toLocaleString("zh-CN");
-  };
-
   const formatDuration = (startedAt: Date | undefined, completedAt: Date | undefined) => {
     if (!startedAt || !completedAt) return "-";
     const duration = new Date(completedAt).getTime() - new Date(startedAt).getTime();
@@ -151,15 +146,15 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">创建时间</p>
-                <p className="text-sm">{formatDate(run.createdAt)}</p>
+                <p className="text-sm">{formatDateToLocaleString(run.createdAt)}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">开始时间</p>
-                <p className="text-sm">{formatDate(run.startedAt)}</p>
+                <p className="text-sm">{formatDateToLocaleString(run.startedAt)}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">完成时间</p>
-                <p className="text-sm">{formatDate(run.completedAt)}</p>
+                <p className="text-sm">{formatDateToLocaleString(run.completedAt)}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">执行耗时</p>

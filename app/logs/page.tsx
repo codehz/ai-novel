@@ -1,5 +1,6 @@
 import { DetailsCard } from "@/components/details-card";
 import { getCallLogs, getCallStatistics } from "@/src/actions/models";
+import { formatDateToLocaleString } from "@/src/lib/format";
 import { ItemCard } from "../../components/item-card";
 import { LogsFilter } from "./_components/logs-filter";
 
@@ -73,7 +74,7 @@ export default async function LogsPage({ searchParams }: PageProps) {
                         {log.status === "success" ? "成功" : "失败"}
                       </span>
                     </span>
-                    <span>时间: {log.createdAt.toLocaleString()}</span>
+                    <span>时间: {formatDateToLocaleString(log.createdAt)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>

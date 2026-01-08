@@ -1,5 +1,6 @@
 "use client";
 
+import { formatDateToShortLocaleString } from "@/src/lib/format";
 import { ToolHistoryItem } from "@/src/lib/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import { ChevronRight, Clock, History, Trash2 } from "lucide-react";
@@ -103,14 +104,7 @@ function GenericHistoryListInner({
               <div className="flex flex-col gap-1 text-xs text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Clock className="w-3 h-3 shrink-0" />
-                  <span className="truncate">
-                    {new Date(item.timestamp).toLocaleString("zh-CN", {
-                      month: "numeric",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
+                  <span className="truncate">{formatDateToShortLocaleString(item.timestamp)}</span>
                 </div>
                 {item.providerName && item.modelName && (
                   <div className="text-[10px] px-2 py-1 rounded bg-muted text-muted-foreground truncate">

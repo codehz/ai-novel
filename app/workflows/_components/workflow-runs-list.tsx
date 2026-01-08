@@ -3,6 +3,7 @@
 import { FormField } from "@/components/form-field";
 import { ItemCard } from "@/components/item-card";
 import { SelectInput } from "@/components/select-input";
+import { formatDateToLocaleString } from "@/src/lib/format";
 import { AutoTransition } from "@codehz/auto-transition";
 import { WorkflowRun, WorkflowRunStatus } from "@workflow/world";
 import { AlertCircle, CheckCircle2, Clock, Pause, X } from "lucide-react";
@@ -57,11 +58,6 @@ const statusOptions = [
 ];
 
 function WorkflowRunItem({ run }: { run: WorkflowRun }) {
-  const formatDate = (date: Date | undefined) => {
-    if (!date) return "-";
-    return new Date(date).toLocaleString("zh-CN");
-  };
-
   const formatDuration = (startedAt: Date | undefined, completedAt: Date | undefined) => {
     if (!startedAt || !completedAt) return "-";
     const duration = new Date(completedAt).getTime() - new Date(startedAt).getTime();
@@ -84,15 +80,15 @@ function WorkflowRunItem({ run }: { run: WorkflowRun }) {
         <div className="grid grid-cols-2 gap-3 text-xs">
           <div>
             <p className="text-muted-foreground">启动时间</p>
-            <p className="font-mono">{formatDate(run.startedAt)}</p>
+            <p className="font-mono">{formatDateToLocaleString(run.startedAt)}</p>
           </div>
           <div>
             <p className="text-muted-foreground">完成时间</p>
-            <p className="font-mono">{formatDate(run.completedAt)}</p>
+            <p className="font-mono">{formatDateToLocaleString(run.completedAt)}</p>
           </div>
           <div>
             <p className="text-muted-foreground">创建时间</p>
-            <p className="font-mono">{formatDate(run.createdAt)}</p>
+            <p className="font-mono">{formatDateToLocaleString(run.createdAt)}</p>
           </div>
           <div>
             <p className="text-muted-foreground">执行耗时</p>
