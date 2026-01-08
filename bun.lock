@@ -6,7 +6,7 @@
       "name": "ai-novel",
       "dependencies": {
         "@ai-sdk/openai-compatible": "^2.0.2",
-        "@codehz/auto-transition": "^0.0.3",
+        "@codehz/auto-transition": "^0.0.5",
         "@workflow/world-local": "^4.0.1-beta.24",
         "ai": "^6.0.5",
         "clsx": "^2.1.1",
@@ -143,7 +143,7 @@
 
     "@babel/types": ["@babel/types@7.28.5", "", { "dependencies": { "@babel/helper-string-parser": "^7.27.1", "@babel/helper-validator-identifier": "^7.28.5" } }, "sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA=="],
 
-    "@codehz/auto-transition": ["@codehz/auto-transition@0.0.3", "", { "dependencies": { "@radix-ui/react-slot": "^1.2.4" }, "peerDependencies": { "react": "^19.2.3" } }, "sha512-WF9kZYboHgZhsX2kBSrFFDux0Mnt8teiIF3vgm2hEgzXXlae2Iq0WOYJMiq0FDtBzxdd4A7b14vIMdFOoAPIWw=="],
+    "@codehz/auto-transition": ["@codehz/auto-transition@0.0.5", "", { "dependencies": { "@radix-ui/react-slot": "^1.2.4" }, "peerDependencies": { "react": "^19.2.3" } }, "sha512-h5XB6i4D1AdqbnvLtDEOReIOJjfMpjb6htgNTX6B0dhnyoN9ivr/WUUW9Az0xEHTd7hwqbqP6siqxlQSDGC6ww=="],
 
     "@drizzle-team/brocli": ["@drizzle-team/brocli@0.10.2", "", {}, "sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w=="],
 
