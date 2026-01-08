@@ -5,7 +5,7 @@ import { ButtonHTMLAttributes, SelectHTMLAttributes } from "react";
 import { Dropdown } from "./dropdown";
 
 interface SelectInputProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, "onChange"> {
-  variant?: "default" | "primary";
+  variant?: "default";
   options?: { label: string; value: string | number }[];
   onChange?: (e: { target: { value: string } }) => void;
   placeholder?: string;
@@ -26,8 +26,7 @@ export function SelectInput({
   const label = selectedOption ? selectedOption.label : placeholder;
 
   const variants = {
-    default: "p-2 text-sm rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20",
-    primary:
+    default:
       "px-4 py-2 rounded-lg border border-input-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-primary",
   };
 

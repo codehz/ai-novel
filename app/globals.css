@@ -179,3 +179,7 @@ details[open]::details-content {
   block-size: auto; /* 展开到自动高度 */
   opacity: 1;
 }
+
+textarea {
+  field-sizing: content;
+}

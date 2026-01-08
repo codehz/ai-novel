@@ -73,7 +73,6 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
 
       <FormField label="提供商名称" required description="用于识别该提供商的友好名称">
         <TextInput
-          variant="primary"
           required
           value={formData.providerName}
           onChange={(e) => setFormData({ ...formData, providerName: e.target.value })}
@@ -84,7 +83,6 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
 
       <FormField label="提供商类型" description="选择 API 协议类型">
         <SelectInput
-          variant="primary"
           value={formData.providerType}
           onChange={(e) => setFormData({ ...formData, providerType: e.target.value })}
           disabled={loading}
@@ -98,7 +96,6 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
 
       <FormField label="API 密钥">
         <TextInput
-          variant="primary"
           type="password"
           value={formData.apiKey}
           onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
@@ -109,7 +106,6 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
 
       <FormField label="API 端点">
         <TextInput
-          variant="primary"
           type="url"
           value={formData.apiEndpoint}
           onChange={(e) => setFormData({ ...formData, apiEndpoint: e.target.value })}
@@ -120,7 +116,6 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
 
       <FormField label="额外配置 (JSON)">
         <TextAreaInput
-          variant="primary"
           value={formData.config}
           onChange={(e) => setFormData({ ...formData, config: e.target.value })}
           placeholder="{}"

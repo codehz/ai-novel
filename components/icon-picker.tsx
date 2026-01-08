@@ -146,7 +146,7 @@ export function IconPicker({ value, onChange, disabled = false }: IconPickerProp
       <button
         type="button"
         disabled={disabled}
-        className="w-full p-2 rounded-lg border border-input bg-background flex items-center gap-2 hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/20"
+        className="w-full transition-all px-4 py-2 rounded-lg border border-input-border bg-input flex items-center gap-2 hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
       >
         <Icon iconName={value} className="w-4 h-4 shrink-0 text-foreground" />
         <span className="text-sm text-foreground flex-1 text-left">{value || "选择图标"}</span>
