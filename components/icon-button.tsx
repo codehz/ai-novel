@@ -1,4 +1,5 @@
 import { getIconButtonClasses, type ButtonColor, type IconButtonShape } from "@/src/lib/button-styles";
+import clsx from "clsx";
 import React from "react";
 
 interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -23,7 +24,7 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
   ({ color = "default", shape = "round", className = "", children, ...props }, ref) => {
     const baseClasses = getIconButtonClasses(color, shape);
-    const finalClasses = [baseClasses, className].filter(Boolean).join(" ");
+    const finalClasses = clsx(baseClasses, className);
 
     return (
       <button ref={ref} className={finalClasses} {...props}>

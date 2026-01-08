@@ -1,4 +1,5 @@
 import { getButtonClasses, type ButtonSize, type ButtonVariant } from "@/src/lib/button-styles";
+import clsx from "clsx";
 import { Loader2 } from "lucide-react";
 import React from "react";
 
@@ -26,7 +27,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const baseClasses = getButtonClasses(variant, size);
-    const finalClasses = [baseClasses, className].filter(Boolean).join(" ");
+    const finalClasses = clsx(baseClasses, className);
 
     return (
       <button ref={ref} disabled={loading || disabled} className={finalClasses} {...props}>
