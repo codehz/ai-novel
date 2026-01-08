@@ -8,6 +8,7 @@ import { getWorld } from "@workflow/core/runtime";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { ModelCallLogs } from "./_components/model-call-logs";
 import { StepsTimeline } from "./_components/steps-timeline";
 import { StreamViewer } from "./_components/stream-viewer";
@@ -42,6 +43,17 @@ const statusColors: Record<string, { bg: string; text: string; icon: React.React
   paused: { bg: "bg-gray-500/10", text: "text-gray-700 dark:text-gray-400", icon: <Pause className="w-5 h-5" /> },
   cancelled: { bg: "bg-gray-500/10", text: "text-gray-700 dark:text-gray-400", icon: <X className="w-5 h-5" /> },
 };
+
+const LoadingPlaceholder = () => (
+  <div className="flex items-center justify-center py-12">
+    <Clock className="w-6 h-6 animate-spin text-muted-foreground" />
+    <span className="ml-2 text-muted-foreground">加载中...</span>
+  </div>
+);
+
+const TabContent = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<LoadingPlaceholder />}>{children}</Suspense>
+);
 
 export default async function WorkflowRunDetailPage({ params }: PageProps) {
   const { runId } = await params;
@@ -225,22 +237,33 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
           {
             id: "model-logs",
             label: "模型调用日志",
-            content: <ModelCallLogs callLogs={callLogs} showSection={false} />,
+            content: (
+              <TabContent>
+                <ModelCallLogs callLogs={callLogs} showSection={false} />
+              </TabContent>
+            ),
           },
           {
             id: "steps",
             label: "执行步骤",
-            content: <StepsTimeline runId={run.runId} />,
+            content: (
+              <TabContent>
+                <StepsTimeline runId={run.runId} />
+              </TabContent>
+            ),
           },
           {
             id: "streams",
             label: "流输出数据",
-            content:
-              streams.length > 0 ? (
-                <StreamViewer streamData={streams} />
-              ) : (
-                <div className="text-center py-12 text-muted-foreground">暂无流数据</div>
-              ),
+            content: (
+              <TabContent>
+                {streams.length > 0 ? (
+                  <StreamViewer streamData={streams} />
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">暂无流数据</div>
+                )}
+              </TabContent>
+            ),
           },
         ]}
       />
