@@ -55,6 +55,54 @@ const statusOptions = [
   ...Object.entries(statusConfigs).map(([status, config]) => ({ value: status, label: config.label })),
 ];
 
+function WorkflowRunItem({ run }: { run: WorkflowRun }) {
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return "-";
+    return new Date(date).toLocaleString("zh-CN");
+  };
+
+  const formatDuration = (startedAt: Date | undefined, completedAt: Date | undefined) => {
+    if (!startedAt || !completedAt) return "-";
+    const duration = new Date(completedAt).getTime() - new Date(startedAt).getTime();
+    return `${duration}ms`;
+  };
+
+  const config = statusConfigs[run.status];
+
+  return (
+    <ItemCard title={run.runId} href={`/workflows/${run.runId}`} subtitle={run.runId}>
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <span
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium ${config.bg} ${config.text}`}
+          >
+            {config.icon}
+            {config.label}
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <p className="text-muted-foreground">启动时间</p>
+            <p className="font-mono">{formatDate(run.startedAt)}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">完成时间</p>
+            <p className="font-mono">{formatDate(run.completedAt)}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">创建时间</p>
+            <p className="font-mono">{formatDate(run.createdAt)}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">执行耗时</p>
+            <p className="font-mono">{formatDuration(run.startedAt, run.completedAt)}</p>
+          </div>
+        </div>
+      </div>
+    </ItemCard>
+  );
+}
+
 export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
   const [selectedStatus, setSelectedStatus] = useState<WorkflowRunStatus | "all">("all");
 
@@ -68,17 +116,6 @@ export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
     // 按创建时间倒序排序
     return filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [runs, selectedStatus]);
-
-  const formatDate = (date: Date | undefined) => {
-    if (!date) return "-";
-    return new Date(date).toLocaleString("zh-CN");
-  };
-
-  const formatDuration = (startedAt: Date | undefined, completedAt: Date | undefined) => {
-    if (!startedAt || !completedAt) return "-";
-    const duration = new Date(completedAt).getTime() - new Date(startedAt).getTime();
-    return `${duration}ms`;
-  };
 
   return (
     <div className="space-y-6">
@@ -98,42 +135,9 @@ export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
         </div>
       ) : (
         <div className="grid gap-4">
-          {filteredAndSorted.map((run) => {
-            const config = statusConfigs[run.status];
-
-            return (
-              <ItemCard title={run.runId} key={run.runId} href={`/workflows/${run.runId}`} subtitle={run.runId}>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium ${config.bg} ${config.text}`}
-                    >
-                      {config.icon}
-                      {config.label}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <p className="text-muted-foreground">启动时间</p>
-                      <p className="font-mono">{formatDate(run.startedAt)}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">完成时间</p>
-                      <p className="font-mono">{formatDate(run.completedAt)}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">创建时间</p>
-                      <p className="font-mono">{formatDate(run.createdAt)}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">执行耗时</p>
-                      <p className="font-mono">{formatDuration(run.startedAt, run.completedAt)}</p>
-                    </div>
-                  </div>
-                </div>
-              </ItemCard>
-            );
-          })}
+          {filteredAndSorted.map((run) => (
+            <WorkflowRunItem key={run.runId} run={run} />
+          ))}
         </div>
       )}
     </div>
