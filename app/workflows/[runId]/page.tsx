@@ -1,0 +1,234 @@
+import { getWorld } from "@workflow/core/runtime";
+import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Pause, X } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { StepsTimeline } from "./_components/steps-timeline";
+import { StreamViewer } from "./_components/stream-viewer";
+import { WorkflowControls } from "./_components/workflow-controls";
+
+interface PageProps {
+  params: Promise<{ runId: string }>;
+}
+
+const statusLabels: Record<string, string> = {
+  pending: "等待中",
+  running: "运行中",
+  completed: "已完成",
+  failed: "失败",
+  paused: "已暂停",
+  cancelled: "已取消",
+};
+
+const statusColors: Record<string, { bg: string; text: string; icon: React.ReactNode }> = {
+  pending: { bg: "bg-amber-500/10", text: "text-amber-700 dark:text-amber-400", icon: <Clock className="w-5 h-5" /> },
+  running: {
+    bg: "bg-blue-500/10",
+    text: "text-blue-700 dark:text-blue-400",
+    icon: <Clock className="w-5 h-5 animate-spin" />,
+  },
+  completed: {
+    bg: "bg-green-500/10",
+    text: "text-green-700 dark:text-green-400",
+    icon: <CheckCircle2 className="w-5 h-5" />,
+  },
+  failed: { bg: "bg-red-500/10", text: "text-red-700 dark:text-red-400", icon: <AlertCircle className="w-5 h-5" /> },
+  paused: { bg: "bg-gray-500/10", text: "text-gray-700 dark:text-gray-400", icon: <Pause className="w-5 h-5" /> },
+  cancelled: { bg: "bg-gray-500/10", text: "text-gray-700 dark:text-gray-400", icon: <X className="w-5 h-5" /> },
+};
+
+export default async function WorkflowRunDetailPage({ params }: PageProps) {
+  const { runId } = await params;
+  const world = getWorld();
+
+  const run = await world.runs.get(runId);
+
+  if (!run) {
+    notFound();
+  }
+
+  // 获取流数据
+  const streams: Array<{ name: string; content: string }> = [];
+  try {
+    const streamNames = await world.listStreamsByRunId(runId);
+
+    for (const streamName of streamNames) {
+      try {
+        const readable = await world.readFromStream(streamName);
+        if (readable) {
+          const chunks: Uint8Array[] = [];
+          const reader = readable.getReader();
+
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              chunks.push(value);
+            }
+          } finally {
+            reader.releaseLock();
+          }
+
+          const buffer = Buffer.concat(chunks.map((c) => Buffer.from(c)));
+          const content = buffer.toString("utf-8");
+          streams.push({ name: streamName, content });
+        }
+      } catch (err) {
+        console.error(`Failed to read stream ${streamName}:`, err);
+      }
+    }
+  } catch (err) {
+    console.error("Failed to list streams:", err);
+  }
+
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return "-";
+    return new Date(date).toLocaleString("zh-CN");
+  };
+
+  const formatDuration = (startedAt: Date | undefined, completedAt: Date | undefined) => {
+    if (!startedAt || !completedAt) return "-";
+    const duration = new Date(completedAt).getTime() - new Date(startedAt).getTime();
+    return `${duration}ms`;
+  };
+
+  const color = statusColors[run.status];
+  const label = statusLabels[run.status];
+
+  return (
+    <div className="space-y-8">
+      <div className="space-y-4">
+        <Link
+          href="/workflows"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          返回工作流列表
+        </Link>
+
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">工作流运行详情</h1>
+          <p className="text-muted-foreground">运行 ID: {run.runId}</p>
+        </div>
+      </div>
+
+      {/* 基本信息面板 */}
+      <section className="space-y-6">
+        <div className="p-6 rounded-xl border border-border bg-card shadow-sm">
+          <div className="space-y-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-2xl font-semibold mb-4">运行信息</h2>
+              </div>
+              <div
+                className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${color.bg} ${color.text}`}
+              >
+                {color.icon}
+                {label}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">运行 ID</p>
+                <p className="font-mono text-sm">{run.runId}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">工作流名称</p>
+                <p className="text-sm">{run.workflowName}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">创建时间</p>
+                <p className="text-sm">{formatDate(run.createdAt)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">开始时间</p>
+                <p className="text-sm">{formatDate(run.startedAt)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">完成时间</p>
+                <p className="text-sm">{formatDate(run.completedAt)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">执行耗时</p>
+                <p className="text-sm">{formatDuration(run.startedAt, run.completedAt)}</p>
+              </div>
+            </div>
+
+            {/* 控制面板 */}
+            <div className="border-t border-border pt-6">
+              <h3 className="font-semibold mb-3">工作流控制</h3>
+              <WorkflowControls runId={run.runId} status={run.status} />
+            </div>
+
+            {/* 输入参数 */}
+            <details className="border-t border-border pt-6">
+              <summary className="cursor-pointer font-semibold hover:text-primary transition-colors">输入参数</summary>
+              <div className="mt-3">
+                <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-64">
+                  {JSON.stringify(run.input, null, 2)}
+                </pre>
+              </div>
+            </details>
+
+            {/* 输出结果 */}
+            {run.status === "completed" && run.output && (
+              <details className="border-t border-border pt-6">
+                <summary className="cursor-pointer font-semibold hover:text-primary transition-colors">
+                  输出结果
+                </summary>
+                <div className="mt-3">
+                  <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-64">
+                    {JSON.stringify(run.output, null, 2)}
+                  </pre>
+                </div>
+              </details>
+            )}
+
+            {/* 错误信息 */}
+            {run.status === "failed" && run.error && (
+              <details className="border-t border-border pt-6" open>
+                <summary className="cursor-pointer font-semibold text-destructive hover:text-destructive/80 transition-colors">
+                  错误信息
+                </summary>
+                <div className="mt-3 space-y-3">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">错误信息</p>
+                    <p className="text-sm text-destructive">{run.error.message}</p>
+                  </div>
+                  {run.error.code && (
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">错误代码</p>
+                      <p className="text-sm font-mono">{run.error.code}</p>
+                    </div>
+                  )}
+                  {run.error.stack && (
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">堆栈跟踪</p>
+                      <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-64">
+                        {run.error.stack}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              </details>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* 流数据查看器 */}
+      {streams.length > 0 && (
+        <section className="space-y-6">
+          <h2 className="text-2xl font-semibold">流输出数据</h2>
+          <StreamViewer streamData={streams} />
+        </section>
+      )}
+
+      {/* 步骤时间线 */}
+      <section className="space-y-6">
+        <h2 className="text-2xl font-semibold">执行步骤</h2>
+        <StepsTimeline runId={run.runId} />
+      </section>
+    </div>
+  );
+}

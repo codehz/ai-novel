@@ -49,6 +49,12 @@ export default function RootLayout({
                 >
                   工具箱
                 </Link>
+                <Link
+                  href="/workflows"
+                  className="text-sm font-medium hover:text-primary transition-colors px-2 py-1 rounded-md hover:bg-muted md:hover:bg-transparent"
+                >
+                  工作流
+                </Link>
               </ResponsiveNav>
             </div>
           </header>

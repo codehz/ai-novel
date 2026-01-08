@@ -1,0 +1,132 @@
+"use client";
+
+import { ItemCard } from "@/components/item-card";
+import { WorkflowRun, WorkflowRunStatus } from "@workflow/world";
+import { AlertCircle, CheckCircle2, Clock, Pause, X } from "lucide-react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+
+interface WorkflowRunsListProps {
+  runs: WorkflowRun[];
+}
+
+const statusColors: Record<WorkflowRunStatus, { bg: string; text: string; icon: React.ReactNode }> = {
+  pending: { bg: "bg-amber-500/10", text: "text-amber-700 dark:text-amber-400", icon: <Clock className="w-4 h-4" /> },
+  running: {
+    bg: "bg-blue-500/10",
+    text: "text-blue-700 dark:text-blue-400",
+    icon: <Clock className="w-4 h-4 animate-spin" />,
+  },
+  completed: {
+    bg: "bg-green-500/10",
+    text: "text-green-700 dark:text-green-400",
+    icon: <CheckCircle2 className="w-4 h-4" />,
+  },
+  failed: { bg: "bg-red-500/10", text: "text-red-700 dark:text-red-400", icon: <AlertCircle className="w-4 h-4" /> },
+  paused: { bg: "bg-gray-500/10", text: "text-gray-700 dark:text-gray-400", icon: <Pause className="w-4 h-4" /> },
+  cancelled: { bg: "bg-gray-500/10", text: "text-gray-700 dark:text-gray-400", icon: <X className="w-4 h-4" /> },
+};
+
+const statusLabels: Record<WorkflowRunStatus, string> = {
+  pending: "等待中",
+  running: "运行中",
+  completed: "已完成",
+  failed: "失败",
+  paused: "已暂停",
+  cancelled: "已取消",
+};
+
+export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
+  const [selectedStatus, setSelectedStatus] = useState<WorkflowRunStatus | "all">("all");
+
+  const filteredAndSorted = useMemo(() => {
+    let filtered = runs;
+
+    if (selectedStatus !== "all") {
+      filtered = filtered.filter((run) => run.status === selectedStatus);
+    }
+
+    // 按创建时间倒序排序
+    return filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }, [runs, selectedStatus]);
+
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return "-";
+    return new Date(date).toLocaleString("zh-CN");
+  };
+
+  const formatDuration = (startedAt: Date | undefined, completedAt: Date | undefined) => {
+    if (!startedAt || !completedAt) return "-";
+    const duration = new Date(completedAt).getTime() - new Date(startedAt).getTime();
+    return `${duration}ms`;
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <label className="text-sm font-medium">按状态筛选：</label>
+        <select
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value as WorkflowRunStatus | "all")}
+          className="px-3 py-2 rounded-lg border border-border bg-card text-foreground hover:border-primary/50 transition-colors cursor-pointer"
+        >
+          <option value="all">全部状态</option>
+          <option value="pending">等待中</option>
+          <option value="running">运行中</option>
+          <option value="completed">已完成</option>
+          <option value="failed">失败</option>
+          <option value="paused">已暂停</option>
+          <option value="cancelled">已取消</option>
+        </select>
+      </div>
+
+      {filteredAndSorted.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">暂无工作流运行</p>
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {filteredAndSorted.map((run) => {
+            const color = statusColors[run.status];
+            const label = statusLabels[run.status];
+
+            return (
+              <Link key={run.runId} href={`/workflows/${run.runId}`}>
+                <ItemCard title={run.runId} subtitle={run.runId}>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium ${color.bg} ${color.text}`}
+                      >
+                        {color.icon}
+                        {label}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <p className="text-muted-foreground">启动时间</p>
+                        <p className="font-mono">{formatDate(run.startedAt)}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">完成时间</p>
+                        <p className="font-mono">{formatDate(run.completedAt)}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">创建时间</p>
+                        <p className="font-mono">{formatDate(run.createdAt)}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">执行耗时</p>
+                        <p className="font-mono">{formatDuration(run.startedAt, run.completedAt)}</p>
+                      </div>
+                    </div>
+                  </div>
+                </ItemCard>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
