@@ -2,13 +2,13 @@
 
 import { AutoTransition } from "@codehz/auto-transition";
 import clsx from "clsx";
-import { Fragment, useState } from "react";
+import { Fragment, ReactNode, useState } from "react";
 import { AutoHeight } from "./auto-height";
 
 interface Tab {
   id: string;
   label: string;
-  content: React.ReactNode;
+  content: ReactNode;
 }
 
 interface TabsProps {
