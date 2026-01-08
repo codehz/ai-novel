@@ -145,10 +145,7 @@ export function WorkflowRunsList({ runs, selectedStatus, hasMore, cursor }: Work
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <p className="text-sm font-medium">按状态筛选：</p>
-        <ChipList options={chipOptions} value={selectedStatus} onChange={handleStatusChange} showAll />
-      </div>
+      <ChipList options={chipOptions} value={selectedStatus} onChange={handleStatusChange} showAll />
 
       <AutoTransition as="div" className="grid relative gap-4">
         {allRuns.length === 0 ? (
