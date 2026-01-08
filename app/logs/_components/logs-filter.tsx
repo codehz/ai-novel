@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/button";
 import { Dropdown } from "@/components/dropdown";
 import { getDistinctCallReasons } from "@/src/actions/models";
 import { ChevronDown, Loader2 } from "lucide-react";
@@ -81,12 +80,12 @@ export function LogsFilter({ selectedCallReason }: LogsFilterProps) {
         </div>
       )}
     >
-      <Button variant="outline" className="flex w-full justify-between items-center gap-2 px-4 font-medium text-sm">
+      <button className="flex w-full justify-between items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card hover:bg-muted transition-colors font-medium text-sm">
         <span className="truncate min-w-0">
           {selectedCallReason ? `筛选: ${selectedCallReason}` : "筛选 callReason"}
         </span>
         <ChevronDown className="w-4 h-4 shrink-0" />
-      </Button>
+      </button>
     </Dropdown>
   );
 }
