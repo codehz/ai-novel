@@ -1,6 +1,6 @@
 import { OverlayQueue } from "@/components/overlay";
+import { PageTransition } from "@/components/page-transition";
 import { ResponsiveNav, type NavItem } from "@/components/responsive-nav";
-import { AutoTransition } from "@codehz/auto-transition";
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
@@ -40,11 +40,7 @@ export default function RootLayout({
               <ResponsiveNav items={navItems} />
             </div>
           </header>
-          <main className="flex-1 container mx-auto px-4 py-8">
-            <AutoTransition as="div" className="relative">
-              {children}
-            </AutoTransition>
-          </main>
+          <PageTransition>{children}</PageTransition>
           <footer className="border-t border-border py-6 text-center text-sm text-muted-foreground transition-colors">
             &copy; {new Date().getFullYear()} AI Novel. All rights reserved.
           </footer>
