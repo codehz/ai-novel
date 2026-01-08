@@ -1,6 +1,8 @@
 "use client";
 
+import { FormField } from "@/components/form-field";
 import { ItemCard } from "@/components/item-card";
+import { SelectInput } from "@/components/select-input";
 import { WorkflowRun, WorkflowRunStatus } from "@workflow/world";
 import { AlertCircle, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -62,22 +64,23 @@ export function WorkflowRunsList({ runs }: WorkflowRunsListProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <label className="text-sm font-medium">按状态筛选：</label>
-        <select
+      <FormField label="按状态筛选：">
+        <SelectInput
           value={selectedStatus}
           onChange={(e) => setSelectedStatus(e.target.value as WorkflowRunStatus | "all")}
-          className="px-3 py-2 rounded-lg border border-border bg-card text-foreground hover:border-primary/50 transition-colors cursor-pointer"
-        >
-          <option value="all">全部状态</option>
-          <option value="pending">等待中</option>
-          <option value="running">运行中</option>
-          <option value="completed">已完成</option>
-          <option value="failed">失败</option>
-          <option value="paused">已暂停</option>
-          <option value="cancelled">已取消</option>
-        </select>
-      </div>
+          options={[
+            { value: "all", label: "全部状态" },
+            { value: "pending", label: "等待中" },
+            { value: "running", label: "运行中" },
+            { value: "completed", label: "已完成" },
+            { value: "failed", label: "失败" },
+            { value: "paused", label: "已暂停" },
+            { value: "cancelled", label: "已取消" },
+          ]}
+          placeholder="全部状态"
+          className="px-3 py-2 rounded-lg border border-border bg-card text-foreground hover:border-primary/50 transition-colors"
+        />
+      </FormField>
 
       {filteredAndSorted.length === 0 ? (
         <div className="text-center py-12">
