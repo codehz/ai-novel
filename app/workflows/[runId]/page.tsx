@@ -112,6 +112,8 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
     return `${duration}ms`;
   };
 
+  const showControls = run.status === "running" || run.status === "paused";
+
   const color = statusColors[run.status];
   const label = statusLabels[run.status];
 
@@ -176,10 +178,12 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
             </div>
 
             {/* 控制面板 */}
-            <div className="border-t border-border pt-6">
-              <h3 className="font-semibold mb-3">工作流控制</h3>
-              <WorkflowControls runId={run.runId} status={run.status} />
-            </div>
+            {showControls && (
+              <div className="border-t border-border pt-6">
+                <h3 className="font-semibold mb-3">工作流控制</h3>
+                <WorkflowControls runId={run.runId} status={run.status} />
+              </div>
+            )}
 
             {/* 输入参数 */}
             <DetailsCard label="输入参数" variant="default">
