@@ -162,7 +162,7 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
             </div>
 
             {/* 输入参数 */}
-            <DetailsCard label="输入参数" variant="default" icon>
+            <DetailsCard label="输入参数" variant="default">
               <pre className="p-3 bg-muted rounded overflow-auto max-h-48 font-mono text-foreground text-xs whitespace-pre-wrap word-break-break-word">
                 {JSON.stringify(run.input, null, 2)}
               </pre>
@@ -170,7 +170,7 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
 
             {/* 输出结果 */}
             {run.status === "completed" && run.output && (
-              <DetailsCard label="输出结果" variant="default" icon>
+              <DetailsCard label="输出结果" variant="default">
                 <pre className="p-3 bg-muted rounded overflow-auto max-h-48 font-mono text-foreground text-xs whitespace-pre-wrap word-break-break-word">
                   {JSON.stringify(run.output, null, 2)}
                 </pre>
@@ -179,7 +179,7 @@ export default async function WorkflowRunDetailPage({ params }: PageProps) {
 
             {/* 错误信息 */}
             {run.status === "failed" && run.error && (
-              <DetailsCard label="错误信息" variant="destructive" className="space-y-2" icon>
+              <DetailsCard label="错误信息" variant="destructive" className="space-y-2">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider font-mono">错误信息</p>
                   <p className="text-sm text-destructive">{run.error.message}</p>

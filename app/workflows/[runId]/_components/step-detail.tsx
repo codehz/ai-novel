@@ -33,7 +33,6 @@ export function StepDetail({ step }: StepDetailProps) {
     <DetailsCard
       label="详细信息"
       variant="default"
-      icon={true}
       isControlled={true}
       open={expanded}
       onToggle={(open) => setExpanded(open)}

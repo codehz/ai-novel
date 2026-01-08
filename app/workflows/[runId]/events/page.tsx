@@ -187,7 +187,7 @@ export default async function EventsPage({ params }: PageProps) {
 
                     {/* 事件 Payload */}
                     {"eventData" in event && event.eventData && (
-                      <DetailsCard label="事件数据" variant="default" icon={true}>
+                      <DetailsCard label="事件数据" variant="default">
                         <div className="mt-3">
                           <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-96">
                             {JSON.stringify(event.eventData, null, 2)}

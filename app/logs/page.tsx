@@ -145,7 +145,7 @@ export default async function LogsPage({ searchParams }: PageProps) {
                         错误: {log.errorMessage}
                       </div>
                     )}
-                    <DetailsCard label="配置快照" variant="minimal" icon>
+                    <DetailsCard label="配置快照" variant="minimal">
                       <pre className="p-2 bg-muted rounded text-xs overflow-x-auto">
                         {JSON.stringify(log.modelConfigSnapshot as object, null, 2)}
                       </pre>

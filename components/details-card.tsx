@@ -8,7 +8,6 @@ interface DetailsCardProps {
   label: string;
   children: React.ReactNode;
   variant?: "default" | "destructive" | "minimal";
-  icon?: boolean;
   open?: boolean;
   onToggle?: (open: boolean) => void;
   isControlled?: boolean;
@@ -19,7 +18,6 @@ export function DetailsCard({
   label,
   children,
   variant = "default",
-  icon = false,
   open: externalOpen = false,
   onToggle,
   isControlled = false,
@@ -83,11 +81,9 @@ export function DetailsCard({
     >
       <summary className={clsx("flex items-center justify-between text-sm", getSummaryClasses())}>
         <span>{label}</span>
-        {icon && (
-          <div className="flex items-center">
-            {currentOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </div>
-        )}
+        <div className="flex items-center">
+          {currentOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </div>
       </summary>
       <div className={clsx("pt-3", className)}>{children}</div>
     </details>
