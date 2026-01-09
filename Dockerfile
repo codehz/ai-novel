@@ -4,7 +4,7 @@ FROM oven/bun:alpine AS base
 # 设置环境变量为生产环境
 ENV NODE_ENV=production
 ENV DB_FILE_NAME=/app/data/novel.db
-ENV WORKFLOW_LOCAL_DATA_DIR=/app/data/workflow-data
+ENV WORKFLOW_LOCAL_DATA_DIR=/app/data
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # --- 第一阶段：安装依赖 ---
