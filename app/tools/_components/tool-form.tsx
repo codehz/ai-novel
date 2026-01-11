@@ -8,9 +8,10 @@ import { useOverlayRef } from "@/components/overlay/overlay-context";
 import { Switch } from "@/components/switch";
 import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
+import { useEventHandler } from "@/hooks/useEventHandler";
 import { InputSchema, OutputSchema, PromptSet, ToolConfig } from "@/shared/tool-types";
 import { upsertToolConfig } from "@/src/actions/tools";
-import type { FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
 import { InputSchemaEditor } from "./input-schema-editor";
 import { OutputSchemaEditor } from "./output-schema-editor";
@@ -39,7 +40,7 @@ export function ToolForm({ tool, onSuccess }: ToolFormProps) {
   const [outputSchema, setOutputSchema] = useState<OutputSchema>(tool?.outputSchema || { type: "text" });
   const [prompts, setPrompts] = useState<PromptSet>(tool?.prompts || { userTemplate: "" });
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = useEventHandler(async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -59,7 +60,31 @@ export function ToolForm({ tool, onSuccess }: ToolFormProps) {
     } finally {
       setLoading(false);
     }
-  };
+  });
+
+  const handleIsEnabledChange = useEventHandler((checked: boolean) => {
+    setFormData({ ...formData, isEnabled: checked });
+  });
+
+  const handleToolIdChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, toolId: e.target.value });
+  });
+
+  const handleVersionChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, version: e.target.value });
+  });
+
+  const handleNameChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, name: e.target.value });
+  });
+
+  const handleDescriptionChange = useEventHandler((e: ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData({ ...formData, description: e.target.value });
+  });
+
+  const handleIconChange = useEventHandler((icon: string) => {
+    setFormData({ ...formData, icon });
+  });
 
   return (
     <ModalForm
@@ -76,18 +101,14 @@ export function ToolForm({ tool, onSuccess }: ToolFormProps) {
           <div className="text-sm font-medium">启用状态</div>
           <div className="text-xs text-muted-foreground">控制该工具是否在工作流中可用</div>
         </div>
-        <Switch
-          checked={formData.isEnabled}
-          onChange={(checked) => setFormData({ ...formData, isEnabled: checked })}
-          disabled={loading}
-        />
+        <Switch checked={formData.isEnabled} onChange={handleIsEnabledChange} disabled={loading} />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <FormField label="工具 ID" required description="工具的唯一标识符，创建后不可更改">
           <TextInput
             value={formData.toolId}
-            onChange={(e) => setFormData({ ...formData, toolId: e.target.value })}
+            onChange={handleToolIdChange}
             disabled={!!tool || loading}
             placeholder="例如: my-tool"
             required
@@ -96,7 +117,7 @@ export function ToolForm({ tool, onSuccess }: ToolFormProps) {
         <FormField label="版本" required description="遵循语义化版本规范 (如 1.0.0)">
           <TextInput
             value={formData.version}
-            onChange={(e) => setFormData({ ...formData, version: e.target.value })}
+            onChange={handleVersionChange}
             disabled={loading}
             placeholder="1.0.0"
             required
@@ -107,7 +128,7 @@ export function ToolForm({ tool, onSuccess }: ToolFormProps) {
       <FormField label="名称" required description="显示在工具列表和执行界面的名称">
         <TextInput
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={handleNameChange}
           disabled={loading}
           placeholder="工具显示名称"
           required
@@ -117,7 +138,7 @@ export function ToolForm({ tool, onSuccess }: ToolFormProps) {
       <FormField label="描述" required description="简要说明该工具的功能和用途">
         <TextAreaInput
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={handleDescriptionChange}
           disabled={loading}
           placeholder="工具功能描述"
           className="min-h-20"
@@ -126,7 +147,7 @@ export function ToolForm({ tool, onSuccess }: ToolFormProps) {
       </FormField>
 
       <FormField label="图标 (Lucide 名称)">
-        <IconPicker value={formData.icon} onChange={(icon) => setFormData({ ...formData, icon })} disabled={loading} />
+        <IconPicker value={formData.icon} onChange={handleIconChange} disabled={loading} />
       </FormField>
 
       <div className="space-y-8 pt-6 mt-6 border-t border-border">
