@@ -3,6 +3,7 @@
 import { Dropdown } from "@/components/dropdown";
 import { useEventHandler } from "@/hooks/useEventHandler";
 import { getDistinctCallReasons, getDistinctModelNames } from "@/src/actions/models";
+import { AutoTransition } from "@codehz/auto-transition";
 import clsx from "clsx";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -87,10 +88,21 @@ function FilterDropdown({
         </div>
       )}
     >
-      <button className="flex w-full justify-between items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card hover:bg-muted transition-colors font-medium text-sm">
-        <span className="truncate min-w-0">{selectedValue ? `${label}: ${selectedValue}` : placeholder}</span>
-        <ChevronDown className="w-4 h-4 shrink-0" />
-      </button>
+      <AutoTransition
+        as="button"
+        type="button"
+        className="flex w-full justify-between items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card hover:bg-muted transition-colors font-medium text-sm"
+        disabled={isLoading}
+      >
+        <span key={selectedValue ? `${label}: ${selectedValue}` : placeholder} className="truncate min-w-0">
+          {selectedValue ? `${label}: ${selectedValue}` : placeholder}
+        </span>
+        {isLoading ? (
+          <Loader2 className="w-4 h-4 shrink-0 animate-spin" />
+        ) : (
+          <ChevronDown className="w-4 h-4 shrink-0" />
+        )}
+      </AutoTransition>
     </Dropdown>
   );
 }
