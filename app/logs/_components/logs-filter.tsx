@@ -144,8 +144,8 @@ export function LogsFilter({ selectedCallReason, selectedModel }: LogsFilterProp
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <div className="w-48">
+    <div className="flex flex-wrap gap-4">
+      <div className="basis-48 grow">
         <FilterDropdown
           label="callReason"
           selectedValue={selectedCallReason}
@@ -155,7 +155,7 @@ export function LogsFilter({ selectedCallReason, selectedModel }: LogsFilterProp
           onSelect={handleCallReasonSelect}
         />
       </div>
-      <div className="w-48">
+      <div className="basis-48 grow">
         <FilterDropdown
           label="模型"
           selectedValue={selectedModel}
