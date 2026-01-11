@@ -3,6 +3,7 @@
 import { Button } from "@/components/button";
 import { ItemCard } from "@/components/item-card";
 import { useOverlayQueue } from "@/components/overlay";
+import { useEventHandler } from "@/hooks/useEventHandler";
 import { deleteModel, toggleModelStatus } from "@/src/actions/models";
 import { modelProviders, models } from "@/src/db/schema";
 import { Plus } from "lucide-react";
@@ -19,13 +20,13 @@ interface ModelListProps {
 export function ModelList({ initialProviders }: ModelListProps) {
   const queue = useOverlayQueue();
 
-  const handleEdit = (model: typeof models.$inferSelect) => {
+  const handleEdit = useEventHandler((model: typeof models.$inferSelect) => {
     queue.show(<ModelForm model={model} providerId={model.providerId} />);
-  };
+  });
 
-  const handleAdd = (providerId: number) => {
+  const handleAdd = useEventHandler((providerId: number) => {
     queue.show(<ModelForm providerId={providerId} />);
-  };
+  });
 
   if (initialProviders.length === 0) {
     return (
@@ -66,6 +67,8 @@ function ProviderModelSection({
   toggleModelStatus,
   deleteModel,
 }: ProviderModelSectionProps) {
+  const onAdd = useEventHandler(() => handleAdd(provider.id));
+
   return (
     <div key={provider.id} className="space-y-4">
       <div className="flex items-center justify-between border-b border-border pb-2">
@@ -76,7 +79,7 @@ function ProviderModelSection({
           </span>
         </h3>
         <Button
-          onClick={() => handleAdd(provider.id)}
+          onClick={onAdd}
           variant="ghost"
           size="sm"
           className="text-primary hover:text-primary hover:bg-primary/10 font-medium"
@@ -87,25 +90,13 @@ function ProviderModelSection({
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {provider.models.map((model) => (
-          <ItemCard
+          <ModelItem
             key={model.id}
-            title={model.displayName}
-            subtitle={model.modelName}
-            isEnabled={model.isEnabled}
-            onToggle={() => toggleModelStatus(model.id, !model.isEnabled)}
-            onEdit={() => handleEdit(model)}
-            onDelete={() => deleteModel(model.id)}
-            deleteConfirmMessage="确定要删除该模型吗？"
-          >
-            <div className="flex justify-between">
-              <span>输入价格:</span>
-              <span className="text-foreground">${model.inputPrice}/1M tokens</span>
-            </div>
-            <div className="flex justify-between">
-              <span>输出价格:</span>
-              <span className="text-foreground">${model.outputPrice}/1M tokens</span>
-            </div>
-          </ItemCard>
+            model={model}
+            toggleModelStatus={toggleModelStatus}
+            handleEdit={handleEdit}
+            deleteModel={deleteModel}
+          />
         ))}
         {provider.models.length === 0 && (
           <div className="col-span-full py-8 text-center text-muted-foreground text-sm italic">
@@ -114,5 +105,39 @@ function ProviderModelSection({
         )}
       </div>
     </div>
+  );
+}
+
+interface ModelItemProps {
+  model: typeof models.$inferSelect;
+  toggleModelStatus: (modelId: number, isEnabled: boolean) => Promise<void>;
+  handleEdit: (model: typeof models.$inferSelect) => void;
+  deleteModel: (modelId: number) => Promise<void>;
+}
+
+function ModelItem({ model, toggleModelStatus, handleEdit, deleteModel }: ModelItemProps) {
+  const onToggle = useEventHandler(() => toggleModelStatus(model.id, !model.isEnabled));
+  const onEdit = useEventHandler(() => handleEdit(model));
+  const onDelete = useEventHandler(() => deleteModel(model.id));
+
+  return (
+    <ItemCard
+      title={model.displayName}
+      subtitle={model.modelName}
+      isEnabled={model.isEnabled}
+      onToggle={onToggle}
+      onEdit={onEdit}
+      onDelete={onDelete}
+      deleteConfirmMessage="确定要删除该模型吗？"
+    >
+      <div className="flex justify-between">
+        <span>输入价格:</span>
+        <span className="text-foreground">${model.inputPrice}/1M tokens</span>
+      </div>
+      <div className="flex justify-between">
+        <span>输出价格:</span>
+        <span className="text-foreground">${model.outputPrice}/1M tokens</span>
+      </div>
+    </ItemCard>
   );
 }
