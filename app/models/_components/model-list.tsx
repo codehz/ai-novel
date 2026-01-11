@@ -38,54 +38,81 @@ export function ModelList({ initialProviders }: ModelListProps) {
   return (
     <div className="space-y-8">
       {initialProviders.map((provider) => (
-        <div key={provider.id} className="space-y-4">
-          <div className="flex items-center justify-between border-b border-border pb-2">
-            <h3 className="text-lg font-bold flex items-center gap-2">
-              {provider.providerName}
-              <span className="text-xs font-normal px-2 py-0.5 bg-muted rounded text-muted-foreground uppercase">
-                {provider.providerType}
-              </span>
-            </h3>
-            <Button
-              onClick={() => handleAdd(provider.id)}
-              variant="ghost"
-              size="sm"
-              className="text-primary hover:text-primary hover:bg-primary/10 font-medium"
-            >
-              <Plus size={16} className="mr-1" /> 添加模型
-            </Button>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {provider.models.map((model) => (
-              <ItemCard
-                key={model.id}
-                title={model.displayName}
-                subtitle={model.modelName}
-                isEnabled={model.isEnabled}
-                onToggle={() => toggleModelStatus(model.id, !model.isEnabled)}
-                onEdit={() => handleEdit(model)}
-                onDelete={() => deleteModel(model.id)}
-                deleteConfirmMessage="确定要删除该模型吗？"
-              >
-                <div className="flex justify-between">
-                  <span>输入价格:</span>
-                  <span className="text-foreground">${model.inputPrice}/1M tokens</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>输出价格:</span>
-                  <span className="text-foreground">${model.outputPrice}/1M tokens</span>
-                </div>
-              </ItemCard>
-            ))}
-            {provider.models.length === 0 && (
-              <div className="col-span-full py-8 text-center text-muted-foreground text-sm italic">
-                暂无模型，点击右上角添加。
-              </div>
-            )}
-          </div>
-        </div>
+        <ProviderModelSection
+          key={provider.id}
+          provider={provider}
+          handleAdd={handleAdd}
+          handleEdit={handleEdit}
+          toggleModelStatus={toggleModelStatus}
+          deleteModel={deleteModel}
+        />
       ))}
+    </div>
+  );
+}
+
+interface ProviderModelSectionProps {
+  provider: ProviderWithModels;
+  handleAdd: (providerId: number) => void;
+  handleEdit: (model: typeof models.$inferSelect) => void;
+  toggleModelStatus: (modelId: number, isEnabled: boolean) => Promise<void>;
+  deleteModel: (modelId: number) => Promise<void>;
+}
+
+function ProviderModelSection({
+  provider,
+  handleAdd,
+  handleEdit,
+  toggleModelStatus,
+  deleteModel,
+}: ProviderModelSectionProps) {
+  return (
+    <div key={provider.id} className="space-y-4">
+      <div className="flex items-center justify-between border-b border-border pb-2">
+        <h3 className="text-lg font-bold flex items-center gap-2">
+          {provider.providerName}
+          <span className="text-xs font-normal px-2 py-0.5 bg-muted rounded text-muted-foreground uppercase">
+            {provider.providerType}
+          </span>
+        </h3>
+        <Button
+          onClick={() => handleAdd(provider.id)}
+          variant="ghost"
+          size="sm"
+          className="text-primary hover:text-primary hover:bg-primary/10 font-medium"
+        >
+          <Plus size={16} className="mr-1" /> 添加模型
+        </Button>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {provider.models.map((model) => (
+          <ItemCard
+            key={model.id}
+            title={model.displayName}
+            subtitle={model.modelName}
+            isEnabled={model.isEnabled}
+            onToggle={() => toggleModelStatus(model.id, !model.isEnabled)}
+            onEdit={() => handleEdit(model)}
+            onDelete={() => deleteModel(model.id)}
+            deleteConfirmMessage="确定要删除该模型吗？"
+          >
+            <div className="flex justify-between">
+              <span>输入价格:</span>
+              <span className="text-foreground">${model.inputPrice}/1M tokens</span>
+            </div>
+            <div className="flex justify-between">
+              <span>输出价格:</span>
+              <span className="text-foreground">${model.outputPrice}/1M tokens</span>
+            </div>
+          </ItemCard>
+        ))}
+        {provider.models.length === 0 && (
+          <div className="col-span-full py-8 text-center text-muted-foreground text-sm italic">
+            暂无模型，点击右上角添加。
+          </div>
+        )}
+      </div>
     </div>
   );
 }

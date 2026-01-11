@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/button";
 import { IconButton } from "@/components/icon-button";
-import { getAvailableModels, type ProviderWithModels } from "@/src/actions/models";
+import { getAvailableModels, type ModelInfo, type ProviderWithModels } from "@/src/actions/models";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import { clsx } from "clsx";
 import { ChevronDown, Package, X } from "lucide-react";
@@ -15,7 +15,73 @@ interface ModelSelectorProps {
   disabled?: boolean;
 }
 
+interface ProviderDropdownItemProps {
+  provider: ProviderWithModels;
+  selectedModelId?: number;
+  onSelectModel: (modelId: number) => void;
+  close: () => void;
+}
+
+const ProviderDropdownItem = ({ provider, selectedModelId, onSelectModel, close }: ProviderDropdownItemProps) => {
+  return (
+    <div className="border-b border-border last:border-b-0">
+      <div className="px-4 py-2 bg-muted/50 sticky top-0 text-xs font-semibold text-muted-foreground">
+        {provider.providerName}
+      </div>
+      {provider.models.map((model) => (
+        <ModelItem
+          key={model.modelId}
+          model={model}
+          onSelectModel={onSelectModel}
+          close={close}
+          selected={selectedModelId === model.modelId}
+        />
+      ))}
+    </div>
+  );
+};
+
 export const ModelSelector = withAutoTransition(ModelSelectorInner, { as: "div", className: "relative" });
+
+function ModelItem({
+  model,
+  onSelectModel,
+  close,
+  selected,
+}: {
+  model: ModelInfo;
+  onSelectModel: (modelId: number) => void;
+  close: () => void;
+  selected: boolean;
+}) {
+  return (
+    <button
+      key={model.modelId}
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        onSelectModel(model.modelId);
+        close();
+      }}
+      className={clsx(
+        "cursor-pointer w-full text-left px-4 py-3 text-sm transition-colors border-b border-border/50 last:border-b-0",
+        selected ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted/50 text-foreground",
+      )}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          {selected && <span className="text-primary">✓</span>}
+          {model.displayName}
+        </div>
+        <div className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded shrink-0">
+          ${model.inputPrice}/${model.outputPrice} (1M)
+        </div>
+      </div>
+    </button>
+  );
+}
 
 function ModelSelectorInner({ selectedModelId, onSelectModel, onClear, disabled = false }: ModelSelectorProps) {
   const [providers, setProviders] = useState<ProviderWithModels[]>([]);
@@ -67,40 +133,13 @@ function ModelSelectorInner({ selectedModelId, onSelectModel, onClear, disabled 
       <Dropdown
         content={({ close }) =>
           providers.map((provider) => (
-            <div key={provider.providerId} className="border-b border-border last:border-b-0">
-              <div className="px-4 py-2 bg-muted/50 sticky top-0 text-xs font-semibold text-muted-foreground">
-                {provider.providerName}
-              </div>
-              {provider.models.map((model) => (
-                <button
-                  key={model.modelId}
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    onSelectModel(model.modelId);
-                    close();
-                  }}
-                  className={clsx(
-                    "cursor-pointer w-full text-left px-4 py-3 text-sm transition-colors border-b border-border/50 last:border-b-0",
-                    selectedModelId === model.modelId
-                      ? "bg-primary/10 text-primary font-medium"
-                      : "hover:bg-muted/50 text-foreground",
-                  )}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      {selectedModelId === model.modelId && <span className="text-primary">✓</span>}
-                      {model.displayName}
-                    </div>
-                    <div className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded shrink-0">
-                      ${model.inputPrice}/${model.outputPrice} (1M)
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
+            <ProviderDropdownItem
+              key={provider.providerId}
+              provider={provider}
+              selectedModelId={selectedModelId}
+              onSelectModel={onSelectModel}
+              close={close}
+            />
           ))
         }
       >

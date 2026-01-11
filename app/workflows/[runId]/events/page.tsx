@@ -136,70 +136,9 @@ export default async function EventsPage({ params }: PageProps) {
           </div>
         ) : (
           <div className="space-y-4">
-            {sortedEvents.map((event, index) => {
-              const color = eventTypeColors[event.eventType] || {
-                bg: "bg-gray-500/10",
-                text: "text-gray-700 dark:text-gray-400",
-                icon: <Clock className="w-4 h-4" />,
-              };
-              const label = eventTypeLabels[event.eventType] || event.eventType;
-
-              return (
-                <div
-                  key={`${event.eventId}-${index}`}
-                  className="p-6 rounded-xl border border-border bg-card shadow-sm transition-all hover:border-primary/50"
-                >
-                  <div className="space-y-4">
-                    {/* 事件头部 */}
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={clsx(
-                            "inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
-                            color.bg,
-                            color.text,
-                          )}
-                        >
-                          {color.icon}
-                          {label}
-                        </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono">事件 ID</p>
-                          <p className="font-mono text-sm text-muted-foreground">{event.eventId.substring(0, 12)}...</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">时间</p>
-                        <p className="font-mono text-sm">{formatDateToLocaleString(event.createdAt)}</p>
-                      </div>
-                    </div>
-
-                    {/* 关联 ID */}
-                    {event.correlationId && (
-                      <div>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">
-                          关联 ID（步骤）
-                        </p>
-                        <p className="font-mono text-sm text-muted-foreground">
-                          {event.correlationId.substring(0, 16)}...
-                        </p>
-                      </div>
-                    )}
-
-                    {/* 事件 Payload */}
-                    {"eventData" in event && event.eventData && (
-                      <DetailsCard label="事件数据" variant="default">
-                        <div className="mt-3">
-                          <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-96">
-                            {JSON.stringify(event.eventData, null, 2)}
-                          </pre>
-                        </div>
-                      </DetailsCard>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+            {sortedEvents.map((event, index) => (
+              <WorkflowEventItem key={`${event.eventId}-${index}`} event={event} />
+            ))}
           </div>
         )}
       </section>
@@ -232,6 +171,68 @@ export default async function EventsPage({ params }: PageProps) {
           </div>
         </section>
       )}
+    </div>
+  );
+}
+
+interface WorkflowEventItemProps {
+  event: Event;
+}
+
+function WorkflowEventItem({ event }: WorkflowEventItemProps) {
+  const color = eventTypeColors[event.eventType] || {
+    bg: "bg-gray-500/10",
+    text: "text-gray-700 dark:text-gray-400",
+    icon: <Clock className="w-4 h-4" />,
+  };
+  const label = eventTypeLabels[event.eventType] || event.eventType;
+
+  return (
+    <div className="p-6 rounded-xl border border-border bg-card shadow-sm transition-all hover:border-primary/50">
+      <div className="space-y-4">
+        {/* 事件头部 */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <div
+              className={clsx(
+                "inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
+                color.bg,
+                color.text,
+              )}
+            >
+              {color.icon}
+              {label}
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono">事件 ID</p>
+              <p className="font-mono text-sm text-muted-foreground">{event.eventId.substring(0, 12)}...</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">时间</p>
+            <p className="font-mono text-sm">{formatDateToLocaleString(event.createdAt)}</p>
+          </div>
+        </div>
+
+        {/* 关联 ID */}
+        {event.correlationId && (
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">关联 ID（步骤）</p>
+            <p className="font-mono text-sm text-muted-foreground">{event.correlationId.substring(0, 16)}...</p>
+          </div>
+        )}
+
+        {/* 事件 Payload */}
+        {"eventData" in event && event.eventData && (
+          <DetailsCard label="事件数据" variant="default">
+            <div className="mt-3">
+              <pre className="p-4 bg-muted rounded-lg overflow-auto text-xs font-mono text-foreground max-h-96">
+                {JSON.stringify(event.eventData, null, 2)}
+              </pre>
+            </div>
+          </DetailsCard>
+        )}
+      </div>
     </div>
   );
 }

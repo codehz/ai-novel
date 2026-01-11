@@ -16,16 +16,18 @@ export async function getProviders() {
   });
 }
 
+export interface ModelInfo {
+  modelId: number;
+  displayName: string;
+  modelName: string;
+  inputPrice: number;
+  outputPrice: number;
+}
+
 export interface ProviderWithModels {
   providerId: number;
   providerName: string;
-  models: Array<{
-    modelId: number;
-    displayName: string;
-    modelName: string;
-    inputPrice: number;
-    outputPrice: number;
-  }>;
+  models: ModelInfo[];
 }
 
 export async function getAvailableModels(): Promise<ProviderWithModels[]> {

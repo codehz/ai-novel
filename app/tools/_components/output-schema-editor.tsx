@@ -76,57 +76,84 @@ export function OutputSchemaEditor({ value, onChange }: OutputSchemaEditorProps)
 
             <div className="space-y-3">
               {(value.categories || []).map((cat, index) => (
-                <div key={index} className="p-3 sm:p-4 rounded-xl border border-border bg-muted/10 space-y-3">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex-1 grid sm:grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">分类 ID</label>
-                        <TextInput
-                          value={cat.id}
-                          onChange={(e) => updateCategory(index, { id: e.target.value })}
-                          className="p-1.5 text-xs font-mono"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">显示名称</label>
-                        <TextInput
-                          value={cat.label}
-                          onChange={(e) => updateCategory(index, { label: e.target.value })}
-                          className="p-1.5 text-xs"
-                        />
-                      </div>
-                    </div>
-                    <ReorderControls
-                      onMoveUp={() => moveCategory(index, "up")}
-                      onMoveDown={() => moveCategory(index, "down")}
-                      onDelete={() => removeCategory(index)}
-                      canMoveUp={index > 0}
-                      canMoveDown={index < (value.categories?.length || 0) - 1}
-                      className="mt-4"
-                    />
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">图标</label>
-                      <IconPicker value={cat.icon || "Tag"} onChange={(icon) => updateCategory(index, { icon })} />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">
-                        颜色 (HSL Hue)
-                      </label>
-                      <HueColorPicker
-                        value={cat.hue}
-                        onChange={(hue) => updateCategory(index, { hue })}
-                        className="w-full h-9"
-                      />
-                    </div>
-                  </div>
-                </div>
+                <CategoryItem
+                  key={index}
+                  category={cat}
+                  index={index}
+                  totalCategories={value.categories?.length || 0}
+                  onUpdate={(updates) => updateCategory(index, updates)}
+                  onMoveUp={() => moveCategory(index, "up")}
+                  onMoveDown={() => moveCategory(index, "down")}
+                  onDelete={() => removeCategory(index)}
+                />
               ))}
             </div>
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+interface CategoryItemProps {
+  category: CategoryConfig;
+  index: number;
+  totalCategories: number;
+  onUpdate: (updates: Partial<CategoryConfig>) => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  onDelete: () => void;
+}
+
+function CategoryItem({
+  category,
+  index,
+  totalCategories,
+  onUpdate,
+  onMoveUp,
+  onMoveDown,
+  onDelete,
+}: CategoryItemProps) {
+  return (
+    <div className="p-3 sm:p-4 rounded-xl border border-border bg-muted/10 space-y-3">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex-1 grid sm:grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">分类 ID</label>
+            <TextInput
+              value={category.id}
+              onChange={(e) => onUpdate({ id: e.target.value })}
+              className="p-1.5 text-xs font-mono"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">显示名称</label>
+            <TextInput
+              value={category.label}
+              onChange={(e) => onUpdate({ label: e.target.value })}
+              className="p-1.5 text-xs"
+            />
+          </div>
+        </div>
+        <ReorderControls
+          onMoveUp={onMoveUp}
+          onMoveDown={onMoveDown}
+          onDelete={onDelete}
+          canMoveUp={index > 0}
+          canMoveDown={index < totalCategories - 1}
+          className="mt-4"
+        />
+      </div>
+      <div className="grid sm:grid-cols-2 gap-3">
+        <div className="space-y-1">
+          <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">图标</label>
+          <IconPicker value={category.icon || "Tag"} onChange={(icon) => onUpdate({ icon })} />
+        </div>
+        <div className="space-y-1">
+          <label className="text-[10px] uppercase font-bold text-muted-foreground ml-1">颜色 (HSL Hue)</label>
+          <HueColorPicker value={category.hue} onChange={(hue) => onUpdate({ hue })} className="w-full h-9" />
+        </div>
+      </div>
     </div>
   );
 }
