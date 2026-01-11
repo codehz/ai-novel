@@ -70,7 +70,7 @@ export function ModalForm({
     <dialog
       ref={dialogRef}
       className="
-        max-h-full max-w-full grid items-center justify-center w-full h-full p-0 
+        max-h-full max-w-full grid items-center justify-center size-full p-0 fixed inset-0
         starting:opacity-0 starting:scale-95 starting:duration-100
         not-dialog-open:opacity-0 not-dialog-open:scale-95
         transition-all duration-200 ease-out
