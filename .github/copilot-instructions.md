@@ -18,6 +18,19 @@
 3. **AI 层**（AI SDK + 中间件）：统一模型访问、日志、成本计算
 4. **数据层**（SQLite + Drizzle）：持久化存储，自动时间戳管理
 
+### 目录结构约定
+
+- **前端代码**：位于 `app/`、`components/` 和 `hooks/` 目录
+  - `app/`：Next.js 页面路由和布局
+  - `components/`：可复用的 UI 组件
+  - `hooks/`：自定义 React hooks
+- **后端代码**：位于 `src/` 目录
+  - `src/actions/`：Server Actions
+  - `src/db/`：数据库相关代码
+  - `src/lib/`：工具函数和库
+  - `src/workflows/`：工作流定义
+  - `src/steps/`：工作流步骤定义
+
 ### AI 工作流引擎
 
 - **标记**：`"use workflow"` 标记工作流函数，`"use step"` 标记原子步骤。
