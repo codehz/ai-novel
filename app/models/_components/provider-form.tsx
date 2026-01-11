@@ -7,9 +7,10 @@ import { SelectInput } from "@/components/select-input";
 import { Switch } from "@/components/switch";
 import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
-import { FormEvent, upsertProvider } from "@/src/actions/models";
+import { useEventHandler } from "@/hooks/useEventHandler";
+import { upsertProvider } from "@/src/actions/models";
 import { modelProviders } from "@/src/db/schema";
-import { useState } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 
 interface ProviderFormProps {
   provider?: typeof modelProviders.$inferSelect | null;
@@ -29,7 +30,7 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
     isEnabled: provider?.isEnabled ?? true,
   });
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = useEventHandler(async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -55,7 +56,31 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
     } finally {
       setLoading(false);
     }
-  };
+  });
+
+  const handleIsEnabledChange = useEventHandler((checked: boolean) => {
+    setFormData({ ...formData, isEnabled: checked });
+  });
+
+  const handleProviderNameChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, providerName: e.target.value });
+  });
+
+  const handleProviderTypeChange = useEventHandler((e: { target: { value: string } }) => {
+    setFormData({ ...formData, providerType: e.target.value });
+  });
+
+  const handleApiKeyChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, apiKey: e.target.value });
+  });
+
+  const handleApiEndpointChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, apiEndpoint: e.target.value });
+  });
+
+  const handleConfigChange = useEventHandler((e: ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData({ ...formData, config: e.target.value });
+  });
 
   return (
     <ModalForm title={provider ? "编辑提供商" : "添加提供商"} onSubmit={handleSubmit} loading={loading}>
@@ -64,18 +89,14 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
           <div className="text-sm font-medium">启用状态</div>
           <div className="text-xs text-muted-foreground">控制该提供商及其下的所有模型是否可用</div>
         </div>
-        <Switch
-          checked={formData.isEnabled}
-          onChange={(checked) => setFormData({ ...formData, isEnabled: checked })}
-          disabled={loading}
-        />
+        <Switch checked={formData.isEnabled} onChange={handleIsEnabledChange} disabled={loading} />
       </div>
 
       <FormField label="提供商名称" required description="用于识别该提供商的友好名称">
         <TextInput
           required
           value={formData.providerName}
-          onChange={(e) => setFormData({ ...formData, providerName: e.target.value })}
+          onChange={handleProviderNameChange}
           placeholder="例如: OpenAI, 阿里云"
           disabled={loading}
         />
@@ -84,7 +105,7 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
       <FormField label="提供商类型" description="选择 API 协议类型">
         <SelectInput
           value={formData.providerType}
-          onChange={(e) => setFormData({ ...formData, providerType: e.target.value })}
+          onChange={handleProviderTypeChange}
           disabled={loading}
           options={[
             { label: "OpenAI 兼容", value: "openai-compatible" },
@@ -98,7 +119,7 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
         <TextInput
           type="password"
           value={formData.apiKey}
-          onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
+          onChange={handleApiKeyChange}
           placeholder="sk-..."
           disabled={loading}
         />
@@ -108,7 +129,7 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
         <TextInput
           type="url"
           value={formData.apiEndpoint}
-          onChange={(e) => setFormData({ ...formData, apiEndpoint: e.target.value })}
+          onChange={handleApiEndpointChange}
           placeholder="https://api.openai.com/v1"
           disabled={loading}
         />
@@ -117,7 +138,7 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
       <FormField label="额外配置 (JSON)">
         <TextAreaInput
           value={formData.config}
-          onChange={(e) => setFormData({ ...formData, config: e.target.value })}
+          onChange={handleConfigChange}
           placeholder="{}"
           rows={4}
           className="font-mono text-sm"
