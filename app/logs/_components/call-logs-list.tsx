@@ -28,6 +28,7 @@ interface CallLog {
 interface CallLogsListProps {
   logs: CallLog[];
   selectedCallReason?: string;
+  selectedModel?: string;
   hasMore: boolean;
   cursor: string | null;
 }
@@ -79,7 +80,13 @@ function CallLogItem({ log }: { log: CallLog }) {
   );
 }
 
-export function CallLogsList({ logs, selectedCallReason, hasMore: initialHasMore, cursor }: CallLogsListProps) {
+export function CallLogsList({
+  logs,
+  selectedCallReason,
+  selectedModel,
+  hasMore: initialHasMore,
+  cursor,
+}: CallLogsListProps) {
   const {
     items: allLogs,
     isPending,
@@ -91,14 +98,19 @@ export function CallLogsList({ logs, selectedCallReason, hasMore: initialHasMore
     initialHasMore: initialHasMore,
     onLoadMore: useCallback(
       async (loadCursor) => {
-        const result = await getCallLogs({ callReason: selectedCallReason, cursor: loadCursor, limit: 20 });
+        const result = await getCallLogs({
+          callReason: selectedCallReason,
+          modelName: selectedModel,
+          cursor: loadCursor,
+          limit: 20,
+        });
         return {
           data: result.data,
           cursor: result.nextCursor,
           hasMore: result.hasMore,
         };
       },
-      [selectedCallReason],
+      [selectedCallReason, selectedModel],
     ),
   });
 

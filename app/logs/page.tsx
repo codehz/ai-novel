@@ -5,18 +5,20 @@ import { LogsFilter } from "./_components/logs-filter";
 interface PageProps {
   searchParams: Promise<{
     callReason?: string;
+    model?: string;
   }>;
 }
 
 export default async function LogsPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const callReason = params.callReason;
+  const model = params.model;
 
-  // 获取日志，如果选择了 callReason 则过滤
-  const result = await getCallLogs({ limit: 20, callReason });
+  // 获取日志，如果选择了筛选条件则过滤
+  const result = await getCallLogs({ limit: 20, callReason, modelName: model });
 
   // 计算成本统计
-  const stats = await getCallStatistics(callReason ? { callReason } : undefined);
+  const stats = await getCallStatistics({ callReason, modelName: model });
 
   return (
     <div className="space-y-6">
@@ -44,13 +46,14 @@ export default async function LogsPage({ searchParams }: PageProps) {
         </div>
       </div>
 
-      {/* callReason 筛选 */}
-      <LogsFilter selectedCallReason={callReason} />
+      {/* 筛选器 */}
+      <LogsFilter selectedCallReason={callReason} selectedModel={model} />
 
       {/* 日志列表 */}
       <CallLogsList
         logs={result.data}
         selectedCallReason={callReason}
+        selectedModel={model}
         hasMore={result.hasMore}
         cursor={result.nextCursor}
       />

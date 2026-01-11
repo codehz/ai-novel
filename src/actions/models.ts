@@ -170,6 +170,7 @@ export async function getCallLogs(filters?: {
   endDate?: Date;
   workflowRunId?: string;
   callReason?: string;
+  modelName?: string;
   limit?: number;
   cursor?: string;
 }): Promise<CallLogsResult> {
@@ -179,6 +180,7 @@ export async function getCallLogs(filters?: {
   if (filters?.endDate) where.push(lte(modelCallLogs.createdAt, filters.endDate));
   if (filters?.workflowRunId) where.push(eq(modelCallLogs.workflowRunId, filters.workflowRunId));
   if (filters?.callReason) where.push(eq(modelCallLogs.callReason, filters.callReason));
+  if (filters?.modelName) where.push(eq(modelCallLogs.modelName, filters.modelName));
 
   const limit = filters?.limit ?? 50;
 
@@ -209,11 +211,17 @@ export async function getCallLogs(filters?: {
   };
 }
 
-export async function getCallStatistics(filters?: { startDate?: Date; endDate?: Date; callReason?: string }) {
+export async function getCallStatistics(filters?: {
+  startDate?: Date;
+  endDate?: Date;
+  callReason?: string;
+  modelName?: string;
+}) {
   const where = [];
   if (filters?.startDate) where.push(gte(modelCallLogs.createdAt, filters.startDate));
   if (filters?.endDate) where.push(lte(modelCallLogs.createdAt, filters.endDate));
   if (filters?.callReason) where.push(eq(modelCallLogs.callReason, filters.callReason));
+  if (filters?.modelName) where.push(eq(modelCallLogs.modelName, filters.modelName));
 
   const condition = where.length > 0 ? and(...where) : undefined;
 
@@ -238,4 +246,13 @@ export async function getDistinctCallReasons() {
     .orderBy(modelCallLogs.callReason);
 
   return reasons.map((r) => r.callReason);
+}
+
+export async function getDistinctModelNames() {
+  const models = await db
+    .selectDistinct({ modelName: modelCallLogs.modelName })
+    .from(modelCallLogs)
+    .orderBy(modelCallLogs.modelName);
+
+  return models.map((m) => m.modelName);
 }
