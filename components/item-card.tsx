@@ -38,6 +38,11 @@ export function ItemCard({
     }
   });
 
+  const handleActionContainerClick = useEventHandler((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
   const content = (
     <>
       <div className="flex justify-between items-start mb-3">
@@ -49,13 +54,7 @@ export function ItemCard({
             </p>
           )}
         </div>
-        <div
-          className="flex gap-1 ml-2 shrink-0"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-        >
+        <div className="flex gap-1 ml-2 shrink-0" onClick={handleActionContainerClick}>
           {onToggle && (
             <IconButton
               onClick={onToggle}
