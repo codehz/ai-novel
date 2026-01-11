@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/button";
 import { IconButton } from "@/components/icon-button";
+import { useEventHandler } from "@/hooks/useEventHandler";
 import { getAvailableModels, type ModelInfo, type ProviderWithModels } from "@/src/actions/models";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import { clsx } from "clsx";
@@ -54,17 +55,19 @@ function ModelItem({
   close: () => void;
   selected: boolean;
 }) {
+  const handleClick = useEventHandler((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    onSelectModel(model.modelId);
+    close();
+  });
+
   return (
     <button
       key={model.modelId}
       type="button"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        onSelectModel(model.modelId);
-        close();
-      }}
+      onClick={handleClick}
       className={clsx(
         "cursor-pointer w-full text-left px-4 py-3 text-sm transition-colors border-b border-border/50 last:border-b-0",
         selected ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted/50 text-foreground",
@@ -80,6 +83,29 @@ function ModelItem({
         </div>
       </div>
     </button>
+  );
+}
+
+interface ClearButtonProps {
+  onClear: () => void;
+}
+
+function ClearButton({ onClear }: ClearButtonProps) {
+  const handleClearClick = useEventHandler((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClear();
+  });
+
+  return (
+    <IconButton
+      type="button"
+      onClick={handleClearClick}
+      color="default"
+      title="清除选择"
+      className="absolute right-10 h-auto w-auto p-1"
+    >
+      <X className="w-3.5 h-3.5" />
+    </IconButton>
   );
 }
 
@@ -169,20 +195,7 @@ function ModelSelectorInner({ selectedModelId, onSelectModel, onClear, disabled 
           <ChevronDown className="w-4 h-4 text-muted-foreground ml-2 shrink-0" />
         </Button>
       </Dropdown>
-      {selectedModel && onClear && (
-        <IconButton
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onClear();
-          }}
-          color="default"
-          title="清除选择"
-          className="absolute right-10 h-auto w-auto p-1"
-        >
-          <X className="w-3.5 h-3.5" />
-        </IconButton>
-      )}
+      {selectedModel && onClear && <ClearButton onClear={onClear} />}
     </AutoTransition>
   );
 }
