@@ -11,6 +11,36 @@ export interface SelectOption {
   value: string | number;
 }
 
+function OptionItem({
+  opt,
+  value,
+  onSelect,
+  close,
+}: {
+  opt: SelectOption;
+  value?: string | number;
+  onSelect: (v: string | number) => void;
+  close: () => void;
+}) {
+  const handleClick = useEventHandler(() => {
+    onSelect(opt.value);
+    close();
+  });
+
+  return (
+    <button
+      type="button"
+      className={clsx(
+        "w-full text-left px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors",
+        opt.value === value ? "bg-accent/50 font-medium" : "",
+      )}
+      onClick={handleClick}
+    >
+      {opt.label}
+    </button>
+  );
+}
+
 interface SelectInputProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onClick" | "onChange"> {
   options?: SelectOption[];
   value?: string | number;
@@ -83,20 +113,7 @@ export function SelectInput({
         content={({ close }) => (
           <div className="py-1">
             {options.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                className={clsx(
-                  "w-full text-left px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors",
-                  opt.value === value ? "bg-accent/50 font-medium" : "",
-                )}
-                onClick={() => {
-                  handleSelect(opt.value);
-                  close();
-                }}
-              >
-                {opt.label}
-              </button>
+              <OptionItem key={opt.value} opt={opt} value={value} onSelect={handleSelect} close={close} />
             ))}
             {children}
           </div>
