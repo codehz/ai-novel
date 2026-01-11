@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, ElementType, ReactNode, useEffect, useRef } from "react";
+import { CSSProperties, ComponentPropsWithoutRef, ElementType, ReactNode, useEffect, useRef } from "react";
 
 interface AutoHeightProps<T extends ElementType = "div"> {
   as?: T;
@@ -10,7 +10,7 @@ interface AutoHeightProps<T extends ElementType = "div"> {
   duration?: number;
 }
 
-type ComponentProps<T extends ElementType> = React.ComponentPropsWithoutRef<T> & AutoHeightProps<T>;
+type ComponentProps<T extends ElementType> = ComponentPropsWithoutRef<T> & AutoHeightProps<T>;
 
 export function AutoHeight<T extends ElementType = "div">({
   as: Component = "div" as T,

@@ -7,7 +7,7 @@ import { SelectInput } from "@/components/select-input";
 import { Switch } from "@/components/switch";
 import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
-import { upsertProvider } from "@/src/actions/models";
+import { FormEvent, upsertProvider } from "@/src/actions/models";
 import { modelProviders } from "@/src/db/schema";
 import { useState } from "react";
 
@@ -29,7 +29,7 @@ export function ProviderForm({ provider, onSuccess }: ProviderFormProps) {
     isEnabled: provider?.isEnabled ?? true,
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {

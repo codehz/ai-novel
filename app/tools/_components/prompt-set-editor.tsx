@@ -6,6 +6,7 @@ import { TextAreaInput } from "@/components/text-area-input";
 import { useEventHandler } from "@/hooks/useEventHandler";
 import { PromptSet } from "@/shared/tool-types";
 import { Sparkles } from "lucide-react";
+import type { ChangeEvent } from "react";
 
 interface FieldPlaceholderButtonProps {
   field: string;
@@ -35,11 +36,11 @@ export function PromptSetEditor({ value, onChange, availableFields }: PromptSetE
     onChange({ ...value, ...updates });
   });
 
-  const handleSystemChange = useEventHandler((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleSystemChange = useEventHandler((e: ChangeEvent<HTMLTextAreaElement>) => {
     updatePrompt({ systemTemplate: e.target.value });
   });
 
-  const handleUserChange = useEventHandler((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleUserChange = useEventHandler((e: ChangeEvent<HTMLTextAreaElement>) => {
     updatePrompt({ userTemplate: e.target.value });
   });
 

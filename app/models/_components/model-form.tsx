@@ -7,7 +7,7 @@ import { useOverlayRef } from "@/components/overlay/overlay-context";
 import { Switch } from "@/components/switch";
 import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
-import { upsertModel } from "@/src/actions/models";
+import { FormEvent, upsertModel } from "@/src/actions/models";
 import { models } from "@/src/db/schema";
 import { useState } from "react";
 
@@ -45,7 +45,7 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
       : "{}",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {

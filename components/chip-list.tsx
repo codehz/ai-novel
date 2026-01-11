@@ -1,12 +1,12 @@
 "use client";
 
 import { clsx } from "clsx";
-import React from "react";
+import { ReactNode } from "react";
 
 export type ChipOption = {
   value: string;
   label: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   activeBg?: string;
   activeText?: string;
 };

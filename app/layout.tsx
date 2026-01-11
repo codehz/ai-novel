@@ -3,6 +3,7 @@ import { PageTransition } from "@/components/page-transition";
 import { ResponsiveNav, type NavItem } from "@/components/responsive-nav";
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   const navItems: NavItem[] = [
     { label: "首页", href: "/" },

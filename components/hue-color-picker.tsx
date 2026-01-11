@@ -3,6 +3,7 @@
 import { useEventHandler } from "@/hooks/useEventHandler";
 import { CATEGORY_HUES } from "@/src/constants/colors";
 import { clsx } from "clsx";
+import type { ChangeEvent } from "react";
 import { Button } from "./button";
 import { Dropdown } from "./dropdown";
 
@@ -64,12 +65,12 @@ export function HueColorPicker({ value, onChange, disabled = false, className = 
     onChange(undefined);
   });
 
-  const handleNumberChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNumberChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     onChange(val === "" ? undefined : Math.min(360, Math.max(0, parseInt(val))));
   });
 
-  const handleSliderChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSliderChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
     onChange(parseInt(e.target.value));
   });
 

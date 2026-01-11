@@ -3,6 +3,7 @@ import { getWorld } from "@workflow/core/runtime";
 import { Step } from "@workflow/world";
 import { clsx } from "clsx";
 import { AlertCircle, CheckCircle2, Circle, Loader2 } from "lucide-react";
+import type { ReactNode } from "react";
 import { StepDetail } from "./step-detail";
 
 interface StepsTimelineProps {
@@ -17,7 +18,7 @@ const statusLabels: Record<string, string> = {
   cancelled: "已取消",
 };
 
-const statusIcons: Record<string, React.ReactNode> = {
+const statusIcons: Record<string, ReactNode> = {
   pending: <Circle className="w-5 h-5" />,
   running: <Loader2 className="w-5 h-5 animate-spin" />,
   completed: <CheckCircle2 className="w-5 h-5 text-success" />,
@@ -48,7 +49,7 @@ function StepItem({
 }: {
   step: Step;
   isLast: boolean;
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   borderColor: string;
 }) {

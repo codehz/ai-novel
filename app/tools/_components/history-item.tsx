@@ -6,6 +6,7 @@ import { useEventHandler } from "@/hooks/useEventHandler";
 import { ToolHistoryItem } from "@/shared/tool-types";
 import { clsx } from "clsx";
 import { ChevronRight, Clock, Trash2 } from "lucide-react";
+import type { MouseEvent } from "react";
 
 interface HistoryItemProps {
   item: ToolHistoryItem;
@@ -28,7 +29,7 @@ export function HistoryItem({ item, currentId, titleField, onSelect, onDelete }:
     onSelect(item);
   });
 
-  const handleDeleteClick = useEventHandler((e: React.MouseEvent) => {
+  const handleDeleteClick = useEventHandler((e: MouseEvent) => {
     e.stopPropagation();
     onDelete(item.id);
   });

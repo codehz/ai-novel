@@ -1,10 +1,11 @@
 import clsx from "clsx";
 import { ChevronDown } from "lucide-react";
+import { ReactNode } from "react";
 
 interface DetailsCardProps {
   label: string;
   name?: string;
-  children: React.ReactNode;
+  children: ReactNode;
   variant?: "default" | "destructive" | "minimal" | "card";
   open?: boolean;
   className?: string;

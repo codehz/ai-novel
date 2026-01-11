@@ -2,14 +2,14 @@
 
 import { clsx } from "clsx";
 import { X } from "lucide-react";
-import React, { ReactNode, useCallback, useEffect, useRef } from "react";
+import { FormEvent, ReactNode, useCallback, useEffect, useRef } from "react";
 import { Button } from "./button";
 import { IconButton } from "./icon-button";
 import { useOverlayRef } from "./overlay/overlay-context";
 
 interface ModalFormProps {
   title: string;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: FormEvent) => void;
   loading?: boolean;
   children: ReactNode;
   submitLabel?: string;

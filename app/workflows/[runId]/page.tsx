@@ -9,6 +9,7 @@ import { clsx } from "clsx";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { ModelCallLogs } from "./_components/model-call-logs";
 import { StepsTimeline } from "./_components/steps-timeline";
@@ -28,7 +29,7 @@ const statusLabels: Record<string, string> = {
   cancelled: "已取消",
 };
 
-const statusColors: Record<string, { bg: string; text: string; icon: React.ReactNode }> = {
+const statusColors: Record<string, { bg: string; text: string; icon: ReactNode }> = {
   pending: { bg: "bg-amber-500/10", text: "text-amber-700 dark:text-amber-400", icon: <Clock className="w-5 h-5" /> },
   running: {
     bg: "bg-blue-500/10",
@@ -52,7 +53,7 @@ const LoadingPlaceholder = () => (
   </div>
 );
 
-const TabContent = ({ children }: { children: React.ReactNode }) => (
+const TabContent = ({ children }: { children: ReactNode }) => (
   <Suspense fallback={<LoadingPlaceholder />}>{children}</Suspense>
 );
 

@@ -1,6 +1,15 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useId, type ReactElement, type ReactNode } from "react";
+import {
+  cloneElement,
+  createContext,
+  useCallback,
+  useContext,
+  useId,
+  type HTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 
 const DropdownContext = createContext<{ close: () => void } | null>(null);
 
@@ -46,9 +55,9 @@ export function Dropdown({ children, content, className, id, span = "left", matc
   }, [popoverId]);
 
   // 为子元素（触发器）注入 popoverTarget 属性
-  const trigger = React.cloneElement(children, {
+  const trigger = cloneElement(children, {
     popoverTarget: popoverId,
-  } as React.HTMLAttributes<HTMLElement>);
+  } as HTMLAttributes<HTMLElement>);
 
   // 根据 span 选择对应的 Tailwind 类
   const positionAreaClass = {

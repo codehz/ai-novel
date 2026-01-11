@@ -66,6 +66,9 @@
 ### React组件约定
 
 - **组件定义**：优先使用 named function 形式定义 React 组件，例如 `function ComponentName() {}`，而不是 `const ComponentName = () => {}`。
+- **类型导入**：React 类型（如 `ReactNode`、`FormEvent`、`ChangeEvent` 等）应从 `react` 直接导入，而不是使用 `React.` 前缀。例如：
+  - 使用 `import { useState, type ReactNode } from "react";`
+  - 而不是 `children: React.ReactNode;`
 
 ### 数据流与 Server Actions
 

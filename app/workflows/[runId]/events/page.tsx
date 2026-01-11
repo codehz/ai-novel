@@ -6,6 +6,7 @@ import { clsx } from "clsx";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Zap } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { ReactNode } from "react";
 
 interface PageProps {
   params: Promise<{ runId: string }>;
@@ -26,7 +27,7 @@ const eventTypeLabels: Record<string, string> = {
   workflow_failed: "工作流失败",
 };
 
-const eventTypeColors: Record<string, { bg: string; text: string; icon: React.ReactNode }> = {
+const eventTypeColors: Record<string, { bg: string; text: string; icon: ReactNode }> = {
   step_started: {
     bg: "bg-blue-500/10",
     text: "text-blue-700 dark:text-blue-400",

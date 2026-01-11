@@ -11,6 +11,7 @@ import { WorkflowRun, WorkflowRunStatus } from "@workflow/world";
 import { clsx } from "clsx";
 import { AlertCircle, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import type { ReactNode } from "react";
 import { useCallback } from "react";
 
 interface WorkflowRunsListProps {
@@ -20,7 +21,7 @@ interface WorkflowRunsListProps {
   cursor: string | null;
 }
 
-const statusConfigs: Record<WorkflowRunStatus, { label: string; bg: string; text: string; icon: React.ReactNode }> = {
+const statusConfigs: Record<WorkflowRunStatus, { label: string; bg: string; text: string; icon: ReactNode }> = {
   pending: {
     label: "等待中",
     bg: "bg-amber-500/10",

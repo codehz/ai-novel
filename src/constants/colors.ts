@@ -2,6 +2,7 @@
  * 项目中使用的颜色变量名常量
  * 对应 app/globals.css 中的 CSS 变量
  */
+import type { CSSProperties } from "react";
 export const COLORS = {
   // 基础背景与文字
   BACKGROUND: "var(--background)",
@@ -107,7 +108,7 @@ export function toHslColor(hue: number, saturation: number = 100): string {
  * @param hue - HSL hue 值，默认为 PRIMARY (210)
  * @returns 包含 color 和 backgroundColor 的 React 样式对象
  */
-export function getCategoryStyle(hue: number = CATEGORY_HUES.PRIMARY): React.CSSProperties {
+export function getCategoryStyle(hue: number = CATEGORY_HUES.PRIMARY): CSSProperties {
   return {
     color: `light-dark(hsl(${hue}, 100%, 30%), hsl(${hue}, 100%, 60%))`,
     backgroundColor: `light-dark(hsl(${hue}, 100%, 95%), hsl(${hue}, 100%, 15%))`,

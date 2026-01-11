@@ -10,6 +10,7 @@ import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
 import { InputSchema, OutputSchema, PromptSet, ToolConfig } from "@/shared/tool-types";
 import { upsertToolConfig } from "@/src/actions/tools";
+import type { FormEvent } from "react";
 import { useState } from "react";
 import { InputSchemaEditor } from "./input-schema-editor";
 import { OutputSchemaEditor } from "./output-schema-editor";
@@ -38,7 +39,7 @@ export function ToolForm({ tool, onSuccess }: ToolFormProps) {
   const [outputSchema, setOutputSchema] = useState<OutputSchema>(tool?.outputSchema || { type: "text" });
   const [prompts, setPrompts] = useState<PromptSet>(tool?.prompts || { userTemplate: "" });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
