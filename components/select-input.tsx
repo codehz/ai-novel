@@ -1,6 +1,7 @@
 "use client";
 
 import { useEventHandler } from "@/hooks/useEventHandler";
+import { AutoTransition } from "@codehz/auto-transition";
 import clsx from "clsx";
 import { ChevronDown } from "lucide-react";
 import { useRef, type ButtonHTMLAttributes, type ChangeEvent, type ReactNode } from "react";
@@ -76,7 +77,7 @@ export function SelectInput({
   });
 
   const combinedClassName = clsx(
-    "flex items-center justify-between w-full outline-none text-left",
+    "flex items-center justify-between w-full outline-none text-left relative",
     "px-4 py-2 rounded-lg border border-input-border bg-input text-foreground focus:ring-2 focus:ring-ring focus:border-primary transition-all",
     className,
     disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
@@ -116,15 +117,18 @@ export function SelectInput({
           </div>
         )}
       >
-        <button
+        <AutoTransition
+          as="button"
           type="button"
           {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
           className={combinedClassName}
           disabled={disabled}
         >
-          <span className="truncate">{label}</span>
+          <span key={label} className="truncate">
+            {label}
+          </span>
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </button>
+        </AutoTransition>
       </Dropdown>
     </div>
   );
