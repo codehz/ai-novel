@@ -1,10 +1,5 @@
 "use server";
 
-import { db } from "@/src/db";
-import { toolConfigs } from "@/src/db/schema";
-import { toolHistoryStore } from "@/src/lib/tool-history-store";
-import { getToolConfig } from "@/src/lib/tool-registry";
-import { toolRegistryCache } from "@/src/lib/tool-registry-cache";
 import {
   InputSchema,
   OutputSchema,
@@ -12,7 +7,12 @@ import {
   ToolConfig,
   ToolExecutionResult,
   ToolHistoryItem,
-} from "@/src/lib/tool-types";
+} from "@/shared/tool-types";
+import { db } from "@/src/db";
+import { toolConfigs } from "@/src/db/schema";
+import { toolHistoryStore } from "@/src/lib/tool-history-store";
+import { getToolConfig } from "@/src/lib/tool-registry";
+import { toolRegistryCache } from "@/src/lib/tool-registry-cache";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { start } from "workflow/api";

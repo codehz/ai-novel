@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/button";
 import { useConfirm } from "@/hooks/useConfirm";
-import { ToolHistoryItem } from "@/src/lib/tool-types";
+import { ToolHistoryItem } from "@/shared/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import { History } from "lucide-react";
 import { HistoryItem } from "./history-item";

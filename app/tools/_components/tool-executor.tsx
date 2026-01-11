@@ -2,8 +2,8 @@
 "use client";
 
 import { useConfirm } from "@/hooks/useConfirm";
+import { ToolConfig, ToolHistoryItem } from "@/shared/tool-types";
 import { clearToolHistory, deleteToolHistory, getToolHistory } from "@/src/actions/tools";
-import { ToolConfig, ToolHistoryItem } from "@/src/lib/tool-types";
 import { AutoTransition } from "@codehz/auto-transition";
 import { useEffect, useState } from "react";
 import { DynamicForm } from "./dynamic-form";

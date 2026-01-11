@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/button";
 import { DetailsCard } from "@/components/details-card";
+import { downloadContent, formatJsonContent } from "@/components/lib/format";
 import { useEventHandler } from "@/hooks/useEventHandler";
-import { downloadContent, formatJsonContent } from "@/src/lib/format";
 import { Download } from "lucide-react";
 import { useMemo } from "react";
 

@@ -1,9 +1,9 @@
 "use client";
 
 import { IconButton } from "@/components/icon-button";
+import { formatDateToShortLocaleString } from "@/components/lib/format";
 import { useEventHandler } from "@/hooks/useEventHandler";
-import { formatDateToShortLocaleString } from "@/src/lib/format";
-import { ToolHistoryItem } from "@/src/lib/tool-types";
+import { ToolHistoryItem } from "@/shared/tool-types";
 import { clsx } from "clsx";
 import { ChevronRight, Clock, Trash2 } from "lucide-react";
 

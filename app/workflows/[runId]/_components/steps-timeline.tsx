@@ -1,4 +1,4 @@
-import { formatDateToLocaleString } from "@/src/lib/format";
+import { formatDateToLocaleString } from "@/components/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { Step } from "@workflow/world";
 import { clsx } from "clsx";

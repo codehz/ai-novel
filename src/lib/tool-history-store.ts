@@ -1,7 +1,7 @@
+import { ToolHistoryItem } from "@/shared/tool-types";
 import { db } from "@/src/db";
 import { models, toolHistories } from "@/src/db/schema";
 import { desc, eq } from "drizzle-orm";
-import { ToolHistoryItem } from "./tool-types";
 
 export interface ToolExecutionStore {
   save(item: Omit<ToolHistoryItem, "id" | "modelName" | "providerName">): Promise<void>;

@@ -1,4 +1,4 @@
-import { getIconButtonClasses, type ButtonColor, type IconButtonShape } from "@/src/lib/button-styles";
+import { getIconButtonClasses, type ButtonColor, type IconButtonShape } from "@/components/lib/button-styles";
 import clsx from "clsx";
 import { ComponentProps } from "react";
 

@@ -1,4 +1,4 @@
-import { StreamStepResult } from "../lib/tool-types";
+import { StreamStepResult } from "@/shared/tool-types";
 
 export default async function reportStreamError<T>(
   writable: WritableStream<StreamStepResult<T>>,

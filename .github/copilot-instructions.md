@@ -111,12 +111,12 @@
 
 #### formatJson 工具函数
 
-- **文件**：[src/lib/format.ts](src/lib/format.ts)
+- **文件**：[components/lib/format.ts](components/lib/format.ts)
 - **用途**：安全地将数据对象序列化为格式化 JSON 字符串，异常时返回 `"[Unserializable Object]"`。
 - **签名**：`formatJson(data: unknown): string`
 - **使用示例**：
   ```tsx
-  import { formatJson } from "@/src/lib/format";
+  import { formatJson } from "@/components/lib/format";
   const jsonString = formatJson(data);
   ```
 

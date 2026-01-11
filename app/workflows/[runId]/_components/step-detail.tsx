@@ -3,7 +3,7 @@
 import { CodeBlock } from "@/components/code-block";
 import { CopyButton } from "@/components/copy-button";
 import { DetailsCard } from "@/components/details-card";
-import { formatJson } from "@/src/lib/format";
+import { formatJson } from "@/components/lib/format";
 import { Step } from "@workflow/world";
 
 interface StepDetailProps {

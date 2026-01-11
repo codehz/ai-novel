@@ -1,5 +1,5 @@
+import { StreamStepResult, ToolConfig } from "@/shared/tool-types";
 import { getWritable } from "workflow";
-import { StreamStepResult, ToolConfig } from "../lib/tool-types";
 import markStreamComplete from "../steps/markStreamComplete";
 import reportStreamError from "../steps/reportStreamError";
 import saveToolHistoryStep from "../steps/saveToolHistoryStep";

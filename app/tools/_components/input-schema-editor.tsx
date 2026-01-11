@@ -4,7 +4,7 @@ import { Button } from "@/components/button";
 import { FormField } from "@/components/form-field";
 import { SelectInput } from "@/components/select-input";
 import { TextInput } from "@/components/text-input";
-import { InputField, InputSchema } from "@/src/lib/tool-types";
+import { InputField, InputSchema } from "@/shared/tool-types";
 import { Plus } from "lucide-react";
 import { FieldEditor } from "./field-editor";
 

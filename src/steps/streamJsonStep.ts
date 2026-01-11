@@ -1,8 +1,8 @@
+import { StreamStepResult } from "@/shared/tool-types";
 import { ModelMessage, streamText } from "ai";
 import { parse } from "jsonriver";
 import { getWorkflowMetadata } from "workflow";
 import { aiRegistry } from "../lib/ai-registry";
-import { StreamStepResult } from "../lib/tool-types";
 
 export default async function streamJsonStep<T>(
   modelId: number,

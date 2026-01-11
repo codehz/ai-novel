@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ToolConfig, ToolExecutionResult } from "@/shared/tool-types";
 import { generateText } from "ai";
 import { aiRegistry } from "../ai-registry";
-import { ToolConfig, ToolExecutionResult } from "../tool-types";
 
 /**
  * 通用工具执行器，根据工具配置调用 AI 模型

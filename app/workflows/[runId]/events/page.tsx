@@ -1,5 +1,5 @@
 import { DetailsCard } from "@/components/details-card";
-import { formatDateToLocaleString } from "@/src/lib/format";
+import { formatDateToLocaleString } from "@/components/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { Event } from "@workflow/world";
 import { clsx } from "clsx";

@@ -2,7 +2,7 @@
 
 import { DetailsCard } from "@/components/details-card";
 import { ItemCard } from "@/components/item-card";
-import { formatDateToLocaleString } from "@/src/lib/format";
+import { formatDateToLocaleString } from "@/components/lib/format";
 import Link from "next/link";
 
 interface ModelCallLog {

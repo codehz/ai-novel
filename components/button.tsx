@@ -1,4 +1,4 @@
-import { getButtonClasses, type ButtonSize, type ButtonVariant } from "@/src/lib/button-styles";
+import { getButtonClasses, type ButtonSize, type ButtonVariant } from "@/components/lib/button-styles";
 import clsx from "clsx";
 import { Loader2 } from "lucide-react";
 import { ComponentProps } from "react";

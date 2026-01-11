@@ -7,7 +7,7 @@ import { ModelSelector } from "@/components/model-selector";
 import { SelectInput } from "@/components/select-input";
 import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
-import { InputSchema } from "@/src/lib/tool-types";
+import { InputSchema } from "@/shared/tool-types";
 import { Sparkles } from "lucide-react";
 
 interface DynamicFormProps {

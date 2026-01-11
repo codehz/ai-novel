@@ -6,7 +6,7 @@ import { SelectInput } from "@/components/select-input";
 import { Switch } from "@/components/switch";
 import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
-import { InputField, InputType } from "@/src/lib/tool-types";
+import { InputField, InputType } from "@/shared/tool-types";
 import { OptionsListEditor } from "./options-list-editor";
 import { ReorderControls } from "./reorder-controls";
 

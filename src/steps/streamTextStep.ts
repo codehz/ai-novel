@@ -1,7 +1,7 @@
+import { StreamStepResult } from "@/shared/tool-types";
 import { ModelMessage, streamText } from "ai";
 import { getWorkflowMetadata } from "workflow";
 import { aiRegistry } from "../lib/ai-registry";
-import { StreamStepResult } from "../lib/tool-types";
 
 export default async function streamTextStep(
   modelId: number,

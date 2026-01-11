@@ -1,6 +1,6 @@
+import { InputSchema, OutputSchema, PromptSet } from "@/shared/tool-types";
 import { relations, sql } from "drizzle-orm";
 import { index, integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { InputSchema, OutputSchema, PromptSet } from "../lib/tool-types";
 
 export const modelProviders = sqliteTable("model_providers", {
   id: integer("id").primaryKey({ autoIncrement: true }),

@@ -3,8 +3,8 @@
 
 import { CopyButton } from "@/components/copy-button";
 import { Icon } from "@/components/icon";
+import { OutputSchema } from "@/shared/tool-types";
 import { getCategoryStyle } from "@/src/constants/colors";
-import { OutputSchema } from "@/src/lib/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import * as Icons from "lucide-react";
 

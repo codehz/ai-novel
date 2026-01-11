@@ -1,7 +1,7 @@
+import { ToolConfig } from "@/shared/tool-types";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { toolConfigs } from "../db/schema";
-import { ToolConfig } from "./tool-types";
 
 class ToolRegistryCache {
   private static instance: ToolRegistryCache;

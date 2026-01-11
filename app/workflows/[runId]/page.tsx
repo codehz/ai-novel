@@ -1,9 +1,9 @@
 import { CodeBlock } from "@/components/code-block";
 import { CopyButton } from "@/components/copy-button";
 import { DetailsCard } from "@/components/details-card";
+import { formatDateToLocaleString, formatJson } from "@/components/lib/format";
 import { Tabs } from "@/components/tabs";
 import { getCallLogs } from "@/src/actions/models";
-import { formatDateToLocaleString, formatJson } from "@/src/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { clsx } from "clsx";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Pause, X } from "lucide-react";

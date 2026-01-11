@@ -6,7 +6,7 @@ import { HueColorPicker } from "@/components/hue-color-picker";
 import { IconPicker } from "@/components/icon-picker";
 import { SelectInput } from "@/components/select-input";
 import { TextInput } from "@/components/text-input";
-import { CategoryConfig, OutputRenderType, OutputSchema } from "@/src/lib/tool-types";
+import { CategoryConfig, OutputRenderType, OutputSchema } from "@/shared/tool-types";
 import { Plus } from "lucide-react";
 import { ReorderControls } from "./reorder-controls";
 

@@ -3,7 +3,7 @@
 import { Button } from "@/components/button";
 import { FormField } from "@/components/form-field";
 import { TextAreaInput } from "@/components/text-area-input";
-import { PromptSet } from "@/src/lib/tool-types";
+import { PromptSet } from "@/shared/tool-types";
 import { Sparkles } from "lucide-react";
 
 interface PromptSetEditorProps {
