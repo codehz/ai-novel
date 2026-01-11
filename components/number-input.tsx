@@ -2,19 +2,11 @@
 
 import { InputHTMLAttributes } from "react";
 
-interface NumberInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
-  variant?: "default";
-}
+export function NumberInput({ className = "", ...props }: InputHTMLAttributes<HTMLInputElement>) {
+  const baseStyles =
+    "w-full outline-none transition-all px-4 py-2 rounded-lg border border-input-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-primary";
 
-export function NumberInput({ variant = "default", className = "", ...props }: NumberInputProps) {
-  const baseStyles = "w-full outline-none transition-all";
-
-  const variants = {
-    default:
-      "px-4 py-2 rounded-lg border border-input-border bg-input text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-primary",
-  };
-
-  const combinedClassName = `${baseStyles} ${variants[variant]} ${className}`;
+  const combinedClassName = `${baseStyles} ${className}`;
 
   return <input type="number" {...props} className={combinedClassName} />;
 }
