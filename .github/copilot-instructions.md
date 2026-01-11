@@ -30,6 +30,8 @@
   - `src/lib/`：工具函数和库
   - `src/workflows/`：工作流定义
   - `src/steps/`：工作流步骤定义
+- **共享代码**：位于 `shared/` 目录
+  - `shared/tool-types.ts`：前后端共享的类型定义（如 `ToolConfig`、`InputSchema`、`OutputSchema` 等）
 
 ### AI 工作流引擎
 
