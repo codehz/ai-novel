@@ -1,4 +1,7 @@
+"use client";
+
 import { IconButton } from "@/components/icon-button";
+import { useEventHandler } from "@/hooks/useEventHandler";
 import { formatDateToShortLocaleString } from "@/src/lib/format";
 import { ToolHistoryItem } from "@/src/lib/tool-types";
 import { clsx } from "clsx";
@@ -21,6 +24,15 @@ export function HistoryItem({ item, currentId, titleField, onSelect, onDelete }:
   const isText = typeof item.outputs === "string";
   const resultCount = Array.isArray(item.outputs) ? item.outputs.length : 1;
 
+  const handleClick = useEventHandler(() => {
+    onSelect(item);
+  });
+
+  const handleDeleteClick = useEventHandler((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete(item.id);
+  });
+
   return (
     <div
       className={clsx(
@@ -29,7 +41,7 @@ export function HistoryItem({ item, currentId, titleField, onSelect, onDelete }:
           ? "bg-primary/5 border-primary/30 ring-1 ring-primary/30"
           : "bg-card border-border hover:border-primary/20 hover:bg-muted/50",
       )}
-      onClick={() => onSelect(item)}
+      onClick={handleClick}
     >
       <div className="flex items-center gap-2 min-w-0">
         <div className="flex-1 min-w-0">
@@ -39,10 +51,7 @@ export function HistoryItem({ item, currentId, titleField, onSelect, onDelete }:
         </div>
         <div className="flex items-center gap-1 shrink-0">
           <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(item.id);
-            }}
+            onClick={handleDeleteClick}
             color="destructive"
             title="删除"
             className="opacity-0 group-hover:opacity-100 h-auto w-auto"
