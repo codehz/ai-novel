@@ -1,5 +1,6 @@
 "use client";
 
+import { useEventHandler } from "@/hooks/useEventHandler";
 import { CATEGORY_HUES } from "@/src/constants/colors";
 import { clsx } from "clsx";
 import { Button } from "./button";
@@ -23,9 +24,54 @@ const PRESET_HUES = [
   { label: "粉", value: CATEGORY_HUES.PINK },
 ];
 
+interface PresetButtonProps {
+  preset: (typeof PRESET_HUES)[number];
+  isSelected: boolean;
+  onChange: (value: number) => void;
+}
+
+function PresetButton({ preset, isSelected, onChange }: PresetButtonProps) {
+  const handleClick = useEventHandler(() => {
+    onChange(preset.value);
+  });
+
+  return (
+    <button
+      key={preset.value}
+      type="button"
+      onClick={handleClick}
+      className={clsx(
+        "px-1 py-1.5 text-[10px] rounded-lg border transition-all flex flex-col items-center gap-1.5",
+        isSelected
+          ? "border-primary bg-primary/10 text-primary font-medium"
+          : "border-border bg-background hover:border-primary/50 text-muted-foreground",
+      )}
+    >
+      <div
+        className="w-full h-2 rounded-full shadow-inner"
+        style={{ backgroundColor: `hsl(${preset.value}, 70%, 50%)` }}
+      />
+      {preset.label}
+    </button>
+  );
+}
+
 export function HueColorPicker({ value, onChange, disabled = false, className = "" }: HueColorPickerProps) {
   const hue = value ?? 0;
   const hasValue = value !== undefined;
+
+  const handleClear = useEventHandler(() => {
+    onChange(undefined);
+  });
+
+  const handleNumberChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    onChange(val === "" ? undefined : Math.min(360, Math.max(0, parseInt(val))));
+  });
+
+  const handleSliderChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(parseInt(e.target.value));
+  });
 
   return (
     <Dropdown
@@ -34,7 +80,7 @@ export function HueColorPicker({ value, onChange, disabled = false, className = 
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase text-muted-foreground">调整颜色</span>
             {hasValue && (
-              <Button type="button" variant="destructive-link" size="xs" onClick={() => onChange(undefined)}>
+              <Button type="button" variant="destructive-link" size="xs" onClick={handleClear}>
                 清除选择
               </Button>
             )}
@@ -48,10 +94,7 @@ export function HueColorPicker({ value, onChange, disabled = false, className = 
                 min="0"
                 max="360"
                 value={hasValue ? hue : ""}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  onChange(val === "" ? undefined : Math.min(360, Math.max(0, parseInt(val))));
-                }}
+                onChange={handleNumberChange}
                 placeholder="0-360"
                 className="w-full p-1.5 text-xs rounded border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
@@ -65,7 +108,7 @@ export function HueColorPicker({ value, onChange, disabled = false, className = 
               min="0"
               max="360"
               value={hue}
-              onChange={(e) => onChange(parseInt(e.target.value))}
+              onChange={handleSliderChange}
               className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-white"
               style={{
                 background:
@@ -77,23 +120,12 @@ export function HueColorPicker({ value, onChange, disabled = false, className = 
           {/* 预设按钮 */}
           <div className="grid grid-cols-4 gap-2">
             {PRESET_HUES.map((preset) => (
-              <button
+              <PresetButton
                 key={preset.value}
-                type="button"
-                onClick={() => onChange(preset.value)}
-                className={`px-1 py-1.5 text-[10px] rounded-lg border transition-all flex flex-col items-center gap-1.5
-                  ${
-                    value === preset.value
-                      ? "border-primary bg-primary/10 text-primary font-medium"
-                      : "border-border bg-background hover:border-primary/50 text-muted-foreground"
-                  }`}
-              >
-                <div
-                  className="w-full h-2 rounded-full shadow-inner"
-                  style={{ backgroundColor: `hsl(${preset.value}, 70%, 50%)` }}
-                />
-                {preset.label}
-              </button>
+                preset={preset}
+                isSelected={value === preset.value}
+                onChange={onChange}
+              />
             ))}
           </div>
         </div>
