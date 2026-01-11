@@ -1,13 +1,46 @@
 "use client";
 
 import { Dropdown } from "@/components/dropdown";
+import { useEventHandler } from "@/hooks/useEventHandler";
 import { getDistinctCallReasons } from "@/src/actions/models";
+import clsx from "clsx";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface LogsFilterProps {
   selectedCallReason?: string;
+}
+
+function FilterOption({
+  label,
+  isSelected,
+  callReason,
+  onSelect,
+  close,
+}: {
+  label: string;
+  isSelected: boolean;
+  callReason: string | null;
+  onSelect: (reason: string | null) => void;
+  close: () => void;
+}) {
+  const handleClick = useEventHandler(() => {
+    onSelect(callReason);
+    close();
+  });
+
+  return (
+    <button
+      onClick={handleClick}
+      className={clsx(
+        "w-full text-left px-4 py-2 hover:bg-muted transition-colors",
+        isSelected && "bg-primary/10 font-medium",
+      )}
+    >
+      <p className="text-sm truncate">{label}</p>
+    </button>
+  );
 }
 
 export function LogsFilter({ selectedCallReason }: LogsFilterProps) {
@@ -42,17 +75,13 @@ export function LogsFilter({ selectedCallReason }: LogsFilterProps) {
     <Dropdown
       content={({ close }) => (
         <div>
-          <button
-            onClick={() => {
-              handleSelect(null);
-              close();
-            }}
-            className={`w-full text-left px-4 py-2 hover:bg-muted transition-colors ${
-              !selectedCallReason ? "bg-primary/10 font-medium" : ""
-            }`}
-          >
-            全部日志
-          </button>
+          <FilterOption
+            label="全部日志"
+            isSelected={!selectedCallReason}
+            callReason={null}
+            onSelect={handleSelect}
+            close={close}
+          />
 
           {isLoading ? (
             <div className="px-4 py-8 text-center text-muted-foreground text-sm flex items-center justify-center gap-2">
@@ -63,18 +92,14 @@ export function LogsFilter({ selectedCallReason }: LogsFilterProps) {
             <div className="px-4 py-8 text-center text-muted-foreground text-sm">暂无 callReason</div>
           ) : (
             reasons.map((reason) => (
-              <button
+              <FilterOption
                 key={reason}
-                onClick={() => {
-                  handleSelect(reason);
-                  close();
-                }}
-                className={`w-full text-left px-4 py-2 hover:bg-muted transition-colors border-t border-border ${
-                  selectedCallReason === reason ? "bg-primary/10 font-medium" : ""
-                }`}
-              >
-                <p className="text-sm truncate">{reason}</p>
-              </button>
+                label={reason}
+                isSelected={selectedCallReason === reason}
+                callReason={reason}
+                onSelect={handleSelect}
+                close={close}
+              />
             ))
           )}
         </div>
