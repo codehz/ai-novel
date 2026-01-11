@@ -1,5 +1,6 @@
 "use client";
 
+import { useConfirm } from "@/hooks/useConfirm";
 import { cancelWorkflowRun, pauseWorkflowRun, resumeWorkflowRun } from "@/src/actions/workflows";
 import { clsx } from "clsx";
 import { Pause, Play, X } from "lucide-react";
@@ -44,6 +45,7 @@ interface WorkflowControlsProps {
 export function WorkflowControls({ runId, status }: WorkflowControlsProps) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const confirm = useConfirm();
 
   const handlePause = () => {
     startTransition(async () => {
@@ -69,8 +71,8 @@ export function WorkflowControls({ runId, status }: WorkflowControlsProps) {
     });
   };
 
-  const handleCancel = () => {
-    if (!confirm("确定要取消工作流运行吗？此操作无法撤销。")) {
+  const handleCancel = async () => {
+    if (!(await confirm("确定要取消工作流运行吗？此操作无法撤销。"))) {
       return;
     }
     startTransition(async () => {

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useConfirm } from "@/hooks/useConfirm";
 import { clearToolHistory, deleteToolHistory, getToolHistory } from "@/src/actions/tools";
 import { ToolConfig, ToolHistoryItem } from "@/src/lib/tool-types";
 import { AutoTransition } from "@codehz/auto-transition";
@@ -30,6 +31,7 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
   const [history, setHistory] = useState<ToolHistoryItem[]>([]);
   const [currentHistoryId, setCurrentHistoryId] = useState<number | undefined>(undefined);
   const [selectedModelId, setSelectedModelId] = useState<number | undefined>(undefined);
+  const confirm = useConfirm();
 
   // Initialize inputs with default values when config changes
   useEffect(() => {
@@ -155,7 +157,7 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
   };
 
   const handleDeleteHistory = async (id: number) => {
-    if (confirm("确定要删除这条记录吗？")) {
+    if (await confirm("确定要删除这条记录吗？")) {
       await deleteToolHistory(id);
       await loadHistory();
       if (currentHistoryId === id) {

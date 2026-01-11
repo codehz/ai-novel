@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/button";
 import { IconButton } from "@/components/icon-button";
+import { useConfirm } from "@/hooks/useConfirm";
 import { formatDateToShortLocaleString } from "@/src/lib/format";
 import { ToolHistoryItem } from "@/src/lib/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
@@ -27,6 +28,7 @@ function GenericHistoryListInner({
   currentId,
   titleField,
 }: GenericHistoryListProps) {
+  const confirm = useConfirm();
   if (history.length === 0) {
     return (
       <div
@@ -49,8 +51,8 @@ function GenericHistoryListInner({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => {
-            if (confirm("确定要清空所有历史记录吗？")) {
+          onClick={async () => {
+            if (await confirm("确定要清空所有历史记录吗？")) {
               onClear();
             }
           }}
