@@ -183,3 +183,7 @@ details[open]::details-content {
 textarea {
   field-sizing: content;
 }
+
+:root:has(dialog[open]) {
+  overflow: hidden;
+}
