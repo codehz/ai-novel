@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/button";
 import { useConfirm } from "@/hooks/useConfirm";
+import { useEventHandler } from "@/hooks/useEventHandler";
 import { ToolHistoryItem } from "@/shared/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import { History } from "lucide-react";
@@ -27,6 +28,12 @@ function GenericHistoryListInner({
   titleField,
 }: GenericHistoryListProps) {
   const confirm = useConfirm();
+  const handleClearClick = useEventHandler(async () => {
+    if (await confirm("确定要清空所有历史记录吗？")) {
+      onClear();
+    }
+  });
+
   if (history.length === 0) {
     return (
       <div
@@ -49,11 +56,7 @@ function GenericHistoryListInner({
         <Button
           variant="ghost"
           size="sm"
-          onClick={async () => {
-            if (await confirm("确定要清空所有历史记录吗？")) {
-              onClear();
-            }
-          }}
+          onClick={handleClearClick}
           className="h-7 text-xs text-muted-foreground hover:text-destructive"
         >
           清空
