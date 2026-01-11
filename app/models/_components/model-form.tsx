@@ -10,7 +10,7 @@ import { TextInput } from "@/components/text-input";
 import { useEventHandler } from "@/hooks/useEventHandler";
 import { upsertModel } from "@/src/actions/models";
 import { models } from "@/src/db/schema";
-import { useState, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 
 interface ModelFormProps {
   model?: typeof models.$inferSelect | null;
@@ -82,39 +82,39 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
     setFormData({ ...formData, isEnabled: checked });
   });
 
-  const handleDisplayNameChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDisplayNameChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, displayName: e.target.value });
   });
 
-  const handleModelNameChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleModelNameChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, modelName: e.target.value });
   });
 
-  const handleDescriptionChange = useEventHandler((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleDescriptionChange = useEventHandler((e: ChangeEvent<HTMLTextAreaElement>) => {
     setFormData({ ...formData, description: e.target.value });
   });
 
-  const handleInputPriceChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputPriceChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, inputPrice: parseFloat(e.target.value) });
   });
 
-  const handleOutputPriceChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOutputPriceChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, outputPrice: parseFloat(e.target.value) });
   });
 
-  const handleTemperatureChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTemperatureChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, temperature: parseFloat(e.target.value) });
   });
 
-  const handleMaxTokensChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMaxTokensChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, maxTokens: parseInt(e.target.value) });
   });
 
-  const handleTopPChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTopPChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, topP: parseFloat(e.target.value) });
   });
 
-  const handleOtherParametersChange = useEventHandler((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleOtherParametersChange = useEventHandler((e: ChangeEvent<HTMLTextAreaElement>) => {
     setFormData({ ...formData, otherParameters: e.target.value });
   });
 
