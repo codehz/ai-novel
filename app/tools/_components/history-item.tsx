@@ -4,7 +4,7 @@ import { IconButton } from "@/components/icon-button";
 import { formatDateToShortLocaleString } from "@/components/lib/format";
 import { useEventHandler } from "@/hooks/useEventHandler";
 import { ToolHistoryItem } from "@/shared/tool-types";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { ChevronRight, Clock, Trash2 } from "lucide-react";
 import type { MouseEvent } from "react";
 

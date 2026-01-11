@@ -1,7 +1,7 @@
 "use client";
 
 import { useEventHandler } from "@/hooks/useEventHandler";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { Search } from "lucide-react";
 import { useState, type ChangeEvent } from "react";
 import { Dropdown } from "./dropdown";

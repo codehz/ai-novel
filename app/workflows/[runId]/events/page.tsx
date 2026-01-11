@@ -2,7 +2,7 @@ import { DetailsCard } from "@/components/details-card";
 import { formatDateToLocaleString } from "@/components/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { Event } from "@workflow/world";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Zap } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";

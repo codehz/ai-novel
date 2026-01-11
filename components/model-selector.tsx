@@ -2,7 +2,7 @@
 import { IconButton } from "@/components/icon-button";
 import { useEventHandler } from "@/hooks/useEventHandler";
 import { getAvailableModels, type ModelInfo, type ProviderWithModels } from "@/src/actions/models";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { ChevronDown, Package, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Dropdown } from "./dropdown";

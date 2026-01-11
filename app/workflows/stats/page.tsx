@@ -1,6 +1,6 @@
 import { formatDateToLocaleString } from "@/components/lib/format";
 import { getWorld } from "@workflow/core/runtime";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { BarChart3, TrendingUp } from "lucide-react";
 import Link from "next/link";
 

@@ -8,7 +8,7 @@ import { usePagination } from "@/hooks/usePagination";
 import { loadMoreWorkflowRuns } from "@/src/actions/workflows";
 import { AutoTransition } from "@codehz/auto-transition";
 import { WorkflowRun, WorkflowRunStatus } from "@workflow/world";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { AlertCircle, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";

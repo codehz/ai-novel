@@ -1,7 +1,7 @@
 "use client";
 
 import { useEventHandler } from "@/hooks/useEventHandler";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { ReactNode } from "react";
 
 export type ChipOption = {

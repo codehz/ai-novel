@@ -5,7 +5,7 @@ import { formatDateToLocaleString, formatJson } from "@/components/lib/format";
 import { Tabs } from "@/components/tabs";
 import { getCallLogs } from "@/src/actions/models";
 import { getWorld } from "@workflow/core/runtime";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { AlertCircle, ArrowLeft, CheckCircle2, Clock, Pause, X } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";

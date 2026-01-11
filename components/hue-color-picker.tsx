@@ -2,7 +2,7 @@
 
 import { useEventHandler } from "@/hooks/useEventHandler";
 import { CATEGORY_HUES } from "@/src/constants/colors";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import type { ChangeEvent } from "react";
 import { Button } from "./button";
 import { Dropdown } from "./dropdown";

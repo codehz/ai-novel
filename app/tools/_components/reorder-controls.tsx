@@ -1,5 +1,5 @@
 import { IconButton } from "@/components/icon-button";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 
 interface ReorderControlsProps {

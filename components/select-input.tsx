@@ -1,13 +1,19 @@
 "use client";
 
 import { useEventHandler } from "@/hooks/useEventHandler";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { ChevronDown } from "lucide-react";
-import { type ButtonHTMLAttributes, type SelectHTMLAttributes } from "react";
+import { type ButtonHTMLAttributes, type ReactElement } from "react";
 import { Dropdown } from "./dropdown";
 
-interface SelectInputProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, "onChange"> {
-  options?: { label: string; value: string | number }[];
+interface Option {
+  label: string;
+  value: string | number;
+}
+
+interface SelectInputProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onClick" | "onChange"> {
+  options?: Option[];
+  value?: string | number;
   onChange?: (e: { target: { value: string } }) => void;
   placeholder?: string;
 }
@@ -20,7 +26,7 @@ interface SelectOptionProps {
   close: () => void;
 }
 
-function SelectOption({ label, value, isSelected, onSelect, close }: SelectOptionProps) {
+function SelectOption({ label, value, isSelected, onSelect, close }: SelectOptionProps): ReactElement {
   const handleClick = useEventHandler(() => {
     onSelect(value);
     close();
@@ -48,8 +54,8 @@ export function SelectInput({
   onChange,
   placeholder = "请选择...",
   disabled,
-  ...props
-}: SelectInputProps) {
+  ...rest
+}: SelectInputProps): ReactElement {
   const selectedOption = options.find((opt) => opt.value === value);
   const label = selectedOption ? selectedOption.label : placeholder;
 
@@ -90,7 +96,7 @@ export function SelectInput({
     >
       <button
         type="button"
-        {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}
+        {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
         className={combinedClassName}
         disabled={disabled}
       >

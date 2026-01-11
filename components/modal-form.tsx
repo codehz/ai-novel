@@ -1,6 +1,6 @@
 "use client";
 
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { X } from "lucide-react";
 import { FormEvent, ReactNode, useCallback, useEffect, useRef } from "react";
 import { Button } from "./button";

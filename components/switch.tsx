@@ -1,7 +1,7 @@
 "use client";
 
 import { useEventHandler } from "@/hooks/useEventHandler";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import type { ChangeEvent } from "react";
 
 interface SwitchProps {

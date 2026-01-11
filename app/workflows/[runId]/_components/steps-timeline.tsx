@@ -1,7 +1,7 @@
 import { formatDateToLocaleString } from "@/components/lib/format";
 import { getWorld } from "@workflow/core/runtime";
 import { Step } from "@workflow/world";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { AlertCircle, CheckCircle2, Circle, Loader2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { StepDetail } from "./step-detail";

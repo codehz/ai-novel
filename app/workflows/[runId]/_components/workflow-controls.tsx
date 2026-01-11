@@ -2,7 +2,7 @@
 
 import { useConfirm } from "@/hooks/useConfirm";
 import { cancelWorkflowRun, pauseWorkflowRun, resumeWorkflowRun } from "@/src/actions/workflows";
-import { clsx } from "clsx";
+import clsx from "clsx";
 import { Pause, Play, X } from "lucide-react";
 import { ReactNode, useState, useTransition } from "react";
 
