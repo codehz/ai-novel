@@ -1,8 +1,9 @@
 "use client";
 
+import { useEventHandler } from "@/hooks/useEventHandler";
 import { clsx } from "clsx";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import { Dropdown } from "./dropdown";
 import { Icon } from "./icon";
 
@@ -98,51 +99,25 @@ interface IconPickerProps {
 export function IconPicker({ value, onChange, disabled = false }: IconPickerProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredIcons = COMMON_ICONS.filter((icon) => icon.toLowerCase().includes(searchQuery.toLowerCase()));
+  const handleSearchChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  });
+
+  const handleSelectIcon = useEventHandler((iconName: string) => {
+    onChange(iconName);
+    setSearchQuery("");
+  });
 
   return (
     <Dropdown
       content={({ close }) => (
-        <div className="p-4 bg-background border border-input rounded-lg shadow-lg z-50">
-          {/* 搜索框 */}
-          <div className="mb-4 flex items-center gap-2">
-            <Search className="w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="搜索图标..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 px-2 py-1 rounded border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-              autoFocus
-            />
-          </div>
-
-          {/* 图标网格 */}
-          <div className="grid grid-cols-6 gap-2 max-h-80 overflow-y-auto">
-            {filteredIcons.length > 0 ? (
-              filteredIcons.map((iconName) => (
-                <button
-                  key={iconName}
-                  onClick={() => {
-                    onChange(iconName);
-                    setSearchQuery("");
-                    close();
-                  }}
-                  className={clsx(
-                    "p-3 rounded-lg border-2 transition-all hover:bg-primary/10",
-                    value === iconName ? "border-primary bg-primary/10" : "border-transparent",
-                  )}
-                  title={iconName}
-                  type="button"
-                >
-                  <Icon iconName={iconName} className="w-5 h-5 mx-auto text-foreground" />
-                </button>
-              ))
-            ) : (
-              <div className="col-span-6 text-center py-8 text-sm text-muted-foreground">未找到匹配的图标</div>
-            )}
-          </div>
-        </div>
+        <IconPickerDropdownContent
+          value={value}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearchChange}
+          onSelect={handleSelectIcon}
+          close={close}
+        />
       )}
     >
       <button
@@ -157,5 +132,83 @@ export function IconPicker({ value, onChange, disabled = false }: IconPickerProp
         </svg>
       </button>
     </Dropdown>
+  );
+}
+
+interface IconPickerDropdownContentProps {
+  value: string;
+  searchQuery: string;
+  onSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSelect: (iconName: string) => void;
+  close: () => void;
+}
+
+function IconPickerDropdownContent({
+  value,
+  searchQuery,
+  onSearchChange,
+  onSelect,
+  close,
+}: IconPickerDropdownContentProps) {
+  const handleIconSelect = useEventHandler((iconName: string) => {
+    onSelect(iconName);
+    close();
+  });
+
+  const filteredIcons = COMMON_ICONS.filter((icon) => icon.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  return (
+    <div className="p-4 bg-background border border-input rounded-lg shadow-lg z-50">
+      {/* 搜索框 */}
+      <div className="mb-4 flex items-center gap-2">
+        <Search className="w-4 h-4 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder="搜索图标..."
+          value={searchQuery}
+          onChange={onSearchChange}
+          className="flex-1 px-2 py-1 rounded border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+          autoFocus
+        />
+      </div>
+
+      {/* 图标网格 */}
+      <div className="grid grid-cols-6 gap-2 max-h-80 overflow-y-auto">
+        {filteredIcons.length > 0 ? (
+          filteredIcons.map((iconName) => (
+            <IconItem key={iconName} iconName={iconName} isSelected={value === iconName} onSelect={handleIconSelect} />
+          ))
+        ) : (
+          <div className="col-span-6 text-center py-8 text-sm text-muted-foreground">未找到匹配的图标</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface IconItemProps {
+  iconName: string;
+  isSelected: boolean;
+  onSelect: (name: string) => void;
+}
+
+function IconItem({ iconName, isSelected, onSelect }: IconItemProps) {
+  const handleClick = useEventHandler(() => {
+    onSelect(iconName);
+  });
+
+  return (
+    <button
+      key={iconName}
+      onClick={handleClick}
+      className={clsx(
+        "p-3 rounded-lg border-2 transition-all hover:bg-primary/10",
+        isSelected ? "border-primary bg-primary/10" : "border-transparent",
+      )}
+      title={iconName}
+      type="button"
+    >
+      <Icon iconName={iconName} className="w-5 h-5 mx-auto text-foreground" />
+    </button>
   );
 }
