@@ -1,9 +1,11 @@
 "use client";
 
 import { IconButton } from "@/components/icon-button";
+import { ModalForm } from "@/components/modal-form";
+import { useOverlayQueue } from "@/components/overlay/overlay-context";
 import { Edit2, Power, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useCallback } from "react";
 
 interface ItemCardProps {
   title: ReactNode;
@@ -28,6 +30,23 @@ export function ItemCard({
   children,
   href,
 }: ItemCardProps) {
+  const overlayQueue = useOverlayQueue();
+
+  const handleDeleteClick = useCallback(() => {
+    overlayQueue.show(
+      <ModalForm
+        title="确认删除"
+        onSubmit={() => {
+          onDelete?.();
+        }}
+        submitLabel="删除"
+        maxWidth="max-w-sm"
+      >
+        <p className="text-muted-foreground">{deleteConfirmMessage}</p>
+      </ModalForm>,
+    );
+  }, [deleteConfirmMessage, onDelete, overlayQueue]);
+
   const content = (
     <>
       <div className="flex justify-between items-start mb-3">
@@ -61,15 +80,7 @@ export function ItemCard({
             </IconButton>
           )}
           {onDelete && (
-            <IconButton
-              onClick={() => {
-                if (confirm(deleteConfirmMessage)) {
-                  onDelete();
-                }
-              }}
-              color="destructive"
-              title="删除"
-            >
+            <IconButton onClick={handleDeleteClick} color="destructive" title="删除">
               <Trash2 size={14} />
             </IconButton>
           )}
