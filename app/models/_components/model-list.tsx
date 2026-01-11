@@ -7,20 +7,23 @@ import { useEventHandler } from "@/hooks/useEventHandler";
 import { deleteModel, toggleModelStatus } from "@/src/actions/models";
 import { modelProviders, models } from "@/src/db/schema";
 import { Plus } from "lucide-react";
+import type { ReactElement } from "react";
 import { ModelForm } from "./model-form";
 
+type ModelType = typeof models.$inferSelect;
+
 type ProviderWithModels = typeof modelProviders.$inferSelect & {
-  models: (typeof models.$inferSelect)[];
+  models: ModelType[];
 };
 
 interface ModelListProps {
   initialProviders: ProviderWithModels[];
 }
 
-export function ModelList({ initialProviders }: ModelListProps) {
+export function ModelList({ initialProviders }: ModelListProps): ReactElement {
   const queue = useOverlayQueue();
 
-  const handleEdit = useEventHandler((model: typeof models.$inferSelect) => {
+  const handleEdit = useEventHandler((model: ModelType) => {
     queue.show(<ModelForm model={model} providerId={model.providerId} />);
   });
 
@@ -55,7 +58,7 @@ export function ModelList({ initialProviders }: ModelListProps) {
 interface ProviderModelSectionProps {
   provider: ProviderWithModels;
   handleAdd: (providerId: number) => void;
-  handleEdit: (model: typeof models.$inferSelect) => void;
+  handleEdit: (model: ModelType) => void;
   toggleModelStatus: (modelId: number, isEnabled: boolean) => Promise<void>;
   deleteModel: (modelId: number) => Promise<void>;
 }
@@ -66,11 +69,11 @@ function ProviderModelSection({
   handleEdit,
   toggleModelStatus,
   deleteModel,
-}: ProviderModelSectionProps) {
+}: ProviderModelSectionProps): ReactElement {
   const onAdd = useEventHandler(() => handleAdd(provider.id));
 
   return (
-    <div key={provider.id} className="space-y-4">
+    <div className="space-y-4">
       <div className="flex items-center justify-between border-b border-border pb-2">
         <h3 className="text-lg font-bold flex items-center gap-2">
           {provider.providerName}
@@ -109,13 +112,13 @@ function ProviderModelSection({
 }
 
 interface ModelItemProps {
-  model: typeof models.$inferSelect;
+  model: ModelType;
   toggleModelStatus: (modelId: number, isEnabled: boolean) => Promise<void>;
-  handleEdit: (model: typeof models.$inferSelect) => void;
+  handleEdit: (model: ModelType) => void;
   deleteModel: (modelId: number) => Promise<void>;
 }
 
-function ModelItem({ model, toggleModelStatus, handleEdit, deleteModel }: ModelItemProps) {
+function ModelItem({ model, toggleModelStatus, handleEdit, deleteModel }: ModelItemProps): ReactElement {
   const onToggle = useEventHandler(() => toggleModelStatus(model.id, !model.isEnabled));
   const onEdit = useEventHandler(() => handleEdit(model));
   const onDelete = useEventHandler(() => deleteModel(model.id));
