@@ -13,16 +13,18 @@ import { OptionsListEditor } from "./options-list-editor";
 import { ReorderControls } from "./reorder-controls";
 
 interface FieldEditorProps {
+  index: number;
   field: InputField;
-  onChange: (field: InputField) => void;
-  onDelete: () => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
+  onChange: (index: number, field: InputField) => void;
+  onDelete: (index: number) => void;
+  onMoveUp: (index: number) => void;
+  onMoveDown: (index: number) => void;
   canMoveUp: boolean;
   canMoveDown: boolean;
 }
 
 export function FieldEditor({
+  index,
   field,
   onChange,
   onDelete,
@@ -32,55 +34,55 @@ export function FieldEditor({
   canMoveDown,
 }: FieldEditorProps) {
   const handleNameChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...field, name: e.target.value });
+    onChange(index, { ...field, name: e.target.value });
   });
 
   const handleLabelChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...field, label: e.target.value });
+    onChange(index, { ...field, label: e.target.value });
   });
 
   const handleTypeChange = useEventHandler((e: { target: { value: string } }) => {
-    onChange({ ...field, type: e.target.value as InputType });
+    onChange(index, { ...field, type: e.target.value as InputType });
   });
 
   const handlePlaceholderChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...field, placeholder: e.target.value });
+    onChange(index, { ...field, placeholder: e.target.value });
   });
 
   const handleDescriptionChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...field, description: e.target.value });
+    onChange(index, { ...field, description: e.target.value });
   });
 
   const handleDefaultNumberChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...field, defaultValue: e.target.value ? parseFloat(e.target.value) : undefined });
+    onChange(index, { ...field, defaultValue: e.target.value ? parseFloat(e.target.value) : undefined });
   });
 
   const handleDefaultSelectChange = useEventHandler((e: { target: { value: string } }) => {
-    onChange({ ...field, defaultValue: e.target.value });
+    onChange(index, { ...field, defaultValue: e.target.value });
   });
 
   const handleDefaultTextAreaChange = useEventHandler((e: ChangeEvent<HTMLTextAreaElement>) => {
-    onChange({ ...field, defaultValue: e.target.value });
+    onChange(index, { ...field, defaultValue: e.target.value });
   });
 
   const handleDefaultTextChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...field, defaultValue: e.target.value });
+    onChange(index, { ...field, defaultValue: e.target.value });
   });
 
   const handleRequiredChange = useEventHandler((checked: boolean) => {
-    onChange({ ...field, required: checked });
+    onChange(index, { ...field, required: checked });
   });
 
   const handleMinLengthChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...field, minLength: e.target.value ? parseInt(e.target.value) : undefined });
+    onChange(index, { ...field, minLength: e.target.value ? parseInt(e.target.value) : undefined });
   });
 
   const handleMaxLengthChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...field, maxLength: e.target.value ? parseInt(e.target.value) : undefined });
+    onChange(index, { ...field, maxLength: e.target.value ? parseInt(e.target.value) : undefined });
   });
 
   const handleOptionsChange = useEventHandler((options: typeof field.options) => {
-    onChange({ ...field, options });
+    onChange(index, { ...field, options });
   });
 
   return (
@@ -95,9 +97,9 @@ export function FieldEditor({
           </FormField>
         </div>
         <ReorderControls
-          onMoveUp={onMoveUp}
-          onMoveDown={onMoveDown}
-          onDelete={onDelete}
+          onMoveUp={() => onMoveUp(index)}
+          onMoveDown={() => onMoveDown(index)}
+          onDelete={() => onDelete(index)}
           canMoveUp={canMoveUp}
           canMoveDown={canMoveDown}
           className="mt-7"

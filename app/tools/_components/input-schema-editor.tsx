@@ -4,8 +4,10 @@ import { Button } from "@/components/button";
 import { FormField } from "@/components/form-field";
 import { SelectInput } from "@/components/select-input";
 import { TextInput } from "@/components/text-input";
+import { useEventHandler } from "@/hooks/useEventHandler";
 import { InputField, InputSchema } from "@/shared/tool-types";
 import { Plus } from "lucide-react";
+import type { ChangeEvent } from "react";
 import { FieldEditor } from "./field-editor";
 
 interface InputSchemaEditorProps {
@@ -14,7 +16,7 @@ interface InputSchemaEditorProps {
 }
 
 export function InputSchemaEditor({ value, onChange }: InputSchemaEditorProps) {
-  const addField = () => {
+  const addField = useEventHandler(() => {
     const newFields = [
       ...value.fields,
       {
@@ -25,25 +27,36 @@ export function InputSchemaEditor({ value, onChange }: InputSchemaEditorProps) {
       },
     ];
     onChange({ ...value, fields: newFields });
-  };
+  });
 
-  const updateField = (index: number, field: InputField) => {
+  const updateField = useEventHandler((index: number, field: InputField) => {
     const newFields = [...value.fields];
     newFields[index] = field;
     onChange({ ...value, fields: newFields });
-  };
+  });
 
-  const removeField = (index: number) => {
+  const removeField = useEventHandler((index: number) => {
     const newFields = value.fields.filter((_, i) => i !== index);
     onChange({ ...value, fields: newFields });
-  };
+  });
 
-  const moveField = (index: number, direction: "up" | "down") => {
+  const moveField = useEventHandler((index: number, direction: "up" | "down") => {
     const newFields = [...value.fields];
     const targetIndex = direction === "up" ? index - 1 : index + 1;
     [newFields[index], newFields[targetIndex]] = [newFields[targetIndex], newFields[index]];
     onChange({ ...value, fields: newFields });
-  };
+  });
+
+  const moveUp = useEventHandler((index: number) => moveField(index, "up"));
+  const moveDown = useEventHandler((index: number) => moveField(index, "down"));
+
+  const handleTitleFieldChange = useEventHandler((e: { target: { value: string } }) => {
+    onChange({ ...value, titleField: e.target.value });
+  });
+
+  const handleSubmitLabelChange = useEventHandler((e: ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...value, submitLabel: e.target.value });
+  });
 
   return (
     <div className="space-y-6">
@@ -64,11 +77,12 @@ export function InputSchemaEditor({ value, onChange }: InputSchemaEditorProps) {
           value.fields.map((field, index) => (
             <FieldEditor
               key={index}
+              index={index}
               field={field}
-              onChange={(updated) => updateField(index, updated)}
-              onDelete={() => removeField(index)}
-              onMoveUp={() => moveField(index, "up")}
-              onMoveDown={() => moveField(index, "down")}
+              onChange={updateField}
+              onDelete={removeField}
+              onMoveUp={moveUp}
+              onMoveDown={moveDown}
               canMoveUp={index > 0}
               canMoveDown={index < value.fields.length - 1}
             />
@@ -80,7 +94,7 @@ export function InputSchemaEditor({ value, onChange }: InputSchemaEditorProps) {
         <FormField label="标题字段" description="选择一个字段作为历史记录的标题">
           <SelectInput
             value={value.titleField || ""}
-            onChange={(e) => onChange({ ...value, titleField: e.target.value })}
+            onChange={handleTitleFieldChange}
             options={[
               { label: "自动选择", value: "" },
               ...value.fields.map((f) => ({ label: f.label || f.name, value: f.name })),
@@ -89,11 +103,7 @@ export function InputSchemaEditor({ value, onChange }: InputSchemaEditorProps) {
         </FormField>
 
         <FormField label="提交按钮文字" description="自定义表单提交按钮显示的文字">
-          <TextInput
-            value={value.submitLabel || ""}
-            onChange={(e) => onChange({ ...value, submitLabel: e.target.value })}
-            placeholder="例如: 开始生成"
-          />
+          <TextInput value={value.submitLabel || ""} onChange={handleSubmitLabelChange} placeholder="例如: 开始生成" />
         </FormField>
       </div>
     </div>
