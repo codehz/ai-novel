@@ -1,8 +1,7 @@
 "use client";
 
 import { IconButton } from "@/components/icon-button";
-import { ModalForm } from "@/components/modal-form";
-import { useOverlayQueue } from "@/components/overlay/overlay-context";
+import { useConfirm } from "@/hooks/useConfirm";
 import { Edit2, Power, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { ReactNode, useCallback } from "react";
@@ -30,22 +29,13 @@ export function ItemCard({
   children,
   href,
 }: ItemCardProps) {
-  const overlayQueue = useOverlayQueue();
+  const confirm = useConfirm();
 
-  const handleDeleteClick = useCallback(() => {
-    overlayQueue.show(
-      <ModalForm
-        title="确认删除"
-        onSubmit={() => {
-          onDelete?.();
-        }}
-        submitLabel="删除"
-        maxWidth="max-w-sm"
-      >
-        <p className="text-muted-foreground">{deleteConfirmMessage}</p>
-      </ModalForm>,
-    );
-  }, [deleteConfirmMessage, onDelete, overlayQueue]);
+  const handleDeleteClick = useCallback(async () => {
+    if (await confirm(deleteConfirmMessage, { title: "确认删除", actionLabel: "删除" })) {
+      onDelete?.();
+    }
+  }, [deleteConfirmMessage, onDelete, confirm]);
 
   const content = (
     <>
