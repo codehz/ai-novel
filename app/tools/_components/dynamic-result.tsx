@@ -3,10 +3,11 @@
 
 import { CopyButton } from "@/components/copy-button";
 import { Icon } from "@/components/icon";
-import { OutputSchema } from "@/shared/tool-types";
+import { type OutputSchema } from "@/shared/tool-types";
 import { getCategoryStyle } from "@/src/constants/colors";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import * as Icons from "lucide-react";
+import { type ReactNode } from "react";
 
 interface DynamicResultProps {
   schema: OutputSchema;
@@ -14,8 +15,11 @@ interface DynamicResultProps {
   isLoading: boolean;
 }
 
-export const DynamicResult = withAutoTransition(DynamicResultInner, { as: "div", className: "relative" });
-function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) {
+export const DynamicResult = withAutoTransition(DynamicResultInner, {
+  as: "div",
+  className: "relative",
+});
+function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps): ReactNode {
   if (schema.type === "card-list") {
     return <CardListResult schema={schema} results={results} isLoading={isLoading} />;
   }
@@ -23,7 +27,12 @@ function DynamicResultInner({ schema, results, isLoading }: DynamicResultProps) 
   return <TextResult results={results} isLoading={isLoading} />;
 }
 
-function TextResult({ results, isLoading }: { results: any; isLoading: boolean }) {
+interface TextResultProps {
+  results: any;
+  isLoading: boolean;
+}
+
+function TextResult({ results, isLoading }: TextResultProps): ReactNode {
   const text = Array.isArray(results) ? results.join("") : String(results || "");
 
   if (isLoading && !text) {
@@ -65,7 +74,13 @@ function TextResult({ results, isLoading }: { results: any; isLoading: boolean }
   );
 }
 
-function CardListResult({ schema, results, isLoading }: { schema: OutputSchema; results: any; isLoading: boolean }) {
+interface CardListResultProps {
+  schema: OutputSchema;
+  results: any;
+  isLoading: boolean;
+}
+
+function CardListResult({ schema, results, isLoading }: CardListResultProps): ReactNode {
   const resultsArray = Array.isArray(results) ? results : [];
 
   if (isLoading && resultsArray.length === 0) {
@@ -86,45 +101,45 @@ function CardListResult({ schema, results, isLoading }: { schema: OutputSchema; 
         {resultsArray.map((result, index) => (
           <ResultCard key={result.id || index} result={result} schema={schema} />
         ))}
-        {isLoading && (
-          <div className="grid gap-6">
-            <div className="h-48 rounded-2xl border border-border bg-card animate-pulse" />
-          </div>
-        )}
+        {isLoading && <div className="h-48 rounded-2xl border border-border bg-card animate-pulse" />}
       </AutoTransition>
     </div>
   );
 }
 
-function ResultCard({ result, schema }: { result: any; schema: OutputSchema }) {
+interface ResultCardProps {
+  result: any;
+  schema: OutputSchema;
+}
+
+function ResultCard({ result, schema }: ResultCardProps): ReactNode {
   const title = result.title || "Result";
   const description = result.description || (typeof result === "string" ? result : JSON.stringify(result));
-  const category = result.category || null;
+  const categoryId = result.category;
 
-  let categoryEl = null;
-  if (category) {
-    const config = schema.categories?.find((c) => c.id === category) || {
-      id: category,
-      label: category,
-      icon: "Tag",
-      hue: 210,
-    };
-    const IconElement = <Icon iconName={config.icon || "Tag"} defaultIcon={Icons.Tag} className="w-3 h-3" />;
-    categoryEl = (
-      <div
-        className="flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium"
-        style={getCategoryStyle(config.hue || 210)}
-      >
-        {IconElement}
-        {config.label}
-      </div>
-    );
-  }
+  const category = categoryId
+    ? schema.categories?.find((c) => c.id === categoryId) || {
+        id: categoryId,
+        label: categoryId,
+        icon: "Tag",
+        hue: 210,
+      }
+    : null;
 
   return (
     <div className="group relative flex flex-col p-6 rounded-2xl border border-border bg-card hover:shadow-md hover:border-primary/30 transition-all">
       <div className="flex items-start justify-between mb-4">
-        {categoryEl || <div />}
+        {category ? (
+          <div
+            className="flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium"
+            style={getCategoryStyle(category.hue ?? 210)}
+          >
+            <Icon iconName={category.icon ?? "Tag"} defaultIcon={Icons.Tag} className="w-3 h-3" />
+            {category.label}
+          </div>
+        ) : (
+          <div />
+        )}
         <AutoTransition as="div" className="flex gap-2">
           <CopyButton text={`${title}\n${description}`} label="" size="md" />
         </AutoTransition>

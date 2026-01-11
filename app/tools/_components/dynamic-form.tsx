@@ -8,9 +8,9 @@ import { SelectInput } from "@/components/select-input";
 import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
 import { useEventHandler } from "@/hooks/useEventHandler";
-import { InputSchema } from "@/shared/tool-types";
+import { type InputField, type InputSchema } from "@/shared/tool-types";
 import { Sparkles } from "lucide-react";
-import type { ChangeEvent } from "react";
+import { type ChangeEvent, type ReactNode } from "react";
 
 interface DynamicFormProps {
   schema: InputSchema;
@@ -30,7 +30,7 @@ export function DynamicForm({
   isLoading,
   selectedModelId,
   onSelectModel,
-}: DynamicFormProps) {
+}: DynamicFormProps): ReactNode {
   const handleFieldChange = useEventHandler((name: string, value: any) => {
     onChange({ ...values, [name]: value });
   });
@@ -43,19 +43,21 @@ export function DynamicForm({
     onSubmit();
   });
 
-  const isValid = () => {
+  const isValid = (): boolean => {
     if (!selectedModelId) return false;
-    for (const field of schema.fields) {
+    return schema.fields.every((field) => {
       const value = values[field.name];
-      if (field.required && (value === undefined || value === null || value === "")) return false;
+      if (field.required && (value === undefined || value === null || value === "")) {
+        return false;
+      }
       if (field.type === "textarea" || field.type === "text") {
         if (typeof value === "string") {
           if (field.minLength && value.length < field.minLength) return false;
           if (field.maxLength && value.length > field.maxLength) return false;
         }
       }
-    }
-    return true;
+      return true;
+    });
   };
 
   return (
@@ -91,18 +93,18 @@ export function DynamicForm({
 }
 
 interface FormFieldWrapperProps {
-  field: InputSchema["fields"][0];
+  field: InputField;
   value: any;
   isLoading: boolean;
   onFieldChange: (name: string, value: any) => void;
 }
 
-function FormFieldWrapper({ field, value, isLoading, onFieldChange }: FormFieldWrapperProps) {
+function FormFieldWrapper({ field, value, isLoading, onFieldChange }: FormFieldWrapperProps): ReactNode {
   const handleTextAreaChange = useEventHandler((e: ChangeEvent<HTMLTextAreaElement>) => {
     onFieldChange(field.name, e.target.value);
   });
 
-  const handleSelectChange = useEventHandler((e: { target: { value: string } }) => {
+  const handleSelectChange = useEventHandler((e: ChangeEvent<HTMLSelectElement>) => {
     onFieldChange(field.name, e.target.value);
   });
 
@@ -112,39 +114,48 @@ function FormFieldWrapper({ field, value, isLoading, onFieldChange }: FormFieldW
 
   return (
     <FormField label={field.label} required={field.required} description={field.description} className="relative">
-      {field.type === "textarea" ? (
-        <div className="relative">
-          <TextAreaInput
-            value={value ?? ""}
-            onChange={handleTextAreaChange}
-            placeholder={field.placeholder}
-            disabled={isLoading}
-            className="min-h-30 resize-y"
-            maxLength={field.maxLength}
-          />
-          {field.maxLength && (
-            <div className="absolute bottom-2 right-2 text-xs text-muted-foreground bg-background/80 px-1 rounded">
-              {(value ?? "").length}/{field.maxLength}
-            </div>
-          )}
-        </div>
-      ) : field.type === "select" ? (
-        <SelectInput
-          value={value ?? ""}
-          onChange={handleSelectChange}
-          disabled={isLoading}
-          options={[{ label: "请选择", value: "" }, ...(field.options || [])]}
-        />
-      ) : (
-        <TextInput
-          type={field.type}
-          value={value ?? ""}
-          onChange={handleInputChange}
-          placeholder={field.placeholder}
-          disabled={isLoading}
-          maxLength={field.maxLength}
-        />
-      )}
+      {(() => {
+        switch (field.type) {
+          case "textarea":
+            return (
+              <div className="relative">
+                <TextAreaInput
+                  value={value ?? ""}
+                  onChange={handleTextAreaChange}
+                  placeholder={field.placeholder}
+                  disabled={isLoading}
+                  className="min-h-30 resize-y"
+                  maxLength={field.maxLength}
+                />
+                {field.maxLength && (
+                  <div className="absolute bottom-2 right-2 text-xs text-muted-foreground bg-background/80 px-1 rounded">
+                    {(value ?? "").length}/{field.maxLength}
+                  </div>
+                )}
+              </div>
+            );
+          case "select":
+            return (
+              <SelectInput
+                value={value ?? ""}
+                onChange={handleSelectChange}
+                disabled={isLoading}
+                options={[{ label: "请选择", value: "" }, ...(field.options || [])]}
+              />
+            );
+          default:
+            return (
+              <TextInput
+                type={field.type}
+                value={value ?? ""}
+                onChange={handleInputChange}
+                placeholder={field.placeholder}
+                disabled={isLoading}
+                maxLength={field.maxLength}
+              />
+            );
+        }
+      })()}
     </FormField>
   );
 }

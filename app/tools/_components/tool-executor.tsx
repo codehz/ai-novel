@@ -2,10 +2,10 @@
 "use client";
 
 import { useConfirm } from "@/hooks/useConfirm";
-import { ToolConfig, ToolHistoryItem } from "@/shared/tool-types";
+import { type ToolConfig, type ToolHistoryItem } from "@/shared/tool-types";
 import { clearToolHistory, deleteToolHistory, getToolHistory } from "@/src/actions/tools";
 import { AutoTransition } from "@codehz/auto-transition";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { DynamicForm } from "./dynamic-form";
 import { DynamicResult } from "./dynamic-result";
 import { GenericHistoryList } from "./generic-history-list";
@@ -15,58 +15,48 @@ interface ToolExecutorProps {
   config: ToolConfig;
 }
 
-export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [inputs, setInputs] = useState<Record<string, any>>(() => {
-    const initialInputs: Record<string, any> = {};
-    config.inputSchema.fields.forEach((field) => {
-      if (field.defaultValue !== undefined) {
-        initialInputs[field.name] = field.defaultValue;
-      }
-    });
-    return initialInputs;
+function getInitialInputs(config: ToolConfig): Record<string, any> {
+  const initialInputs: Record<string, any> = {};
+  config.inputSchema.fields.forEach((field) => {
+    if (field.defaultValue !== undefined) {
+      initialInputs[field.name] = field.defaultValue;
+    }
   });
+  return initialInputs;
+}
+
+export function ToolExecutor({ toolId, config }: ToolExecutorProps): ReactNode {
+  const [isLoading, setIsLoading] = useState(false);
+  const [inputs, setInputs] = useState<Record<string, any>>(() => getInitialInputs(config));
   const [results, setResults] = useState<any>([]);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<ToolHistoryItem[]>([]);
-  const [currentHistoryId, setCurrentHistoryId] = useState<number | undefined>(undefined);
-  const [selectedModelId, setSelectedModelId] = useState<number | undefined>(undefined);
+  const [currentHistoryId, setCurrentHistoryId] = useState<number>();
+  const [selectedModelId, setSelectedModelId] = useState<number>();
   const confirm = useConfirm();
 
-  // Initialize inputs with default values when config changes
-  useEffect(() => {
-    const initialInputs: Record<string, any> = {};
-    config.inputSchema.fields.forEach((field) => {
-      if (field.defaultValue !== undefined) {
-        initialInputs[field.name] = field.defaultValue;
-      }
-    });
-    setInputs(initialInputs);
-  }, [toolId, config.inputSchema.fields]);
-
-  // Load history on mount
-  useEffect(() => {
-    const loadHistory = async () => {
-      try {
-        const data = await getToolHistory(toolId);
-        setHistory(data);
-      } catch (err) {
-        console.error("Failed to load history", err);
-      }
-    };
-    loadHistory();
-  }, [toolId]);
-
-  const loadHistory = async () => {
+  const fetchHistory = useCallback(async () => {
     try {
       const data = await getToolHistory(toolId);
       setHistory(data);
+      return data;
     } catch (err) {
       console.error("Failed to load history", err);
+      return [];
     }
-  };
+  }, [toolId]);
 
-  const handleExecute = async () => {
+  // Initialize inputs with default values when config changes
+  useEffect(() => {
+    setInputs(getInitialInputs(config));
+  }, [config]);
+
+  // Load history on mount or toolId change
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
+
+  const handleExecute = async (): Promise<void> => {
     if (!selectedModelId) {
       setError("请先选择一个模型");
       return;
@@ -106,34 +96,31 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
 
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split("\n\n");
-        buffer = lines.pop() || "";
+        buffer = lines.pop() ?? "";
 
         for (const line of lines) {
           const trimmedLine = line.trim();
-          if (!trimmedLine) continue;
+          if (!trimmedLine || !trimmedLine.startsWith("data: ")) continue;
 
-          if (trimmedLine.startsWith("data: ")) {
-            try {
-              const chunk = JSON.parse(trimmedLine.substring(6));
-              if (chunk.type === "item") {
-                setResults((prev: any) => {
-                  if (Array.isArray(prev)) {
-                    return [...prev, chunk.data];
-                  }
-                  return [chunk.data];
-                });
-              } else if (chunk.type === "error") {
+          try {
+            const chunk = JSON.parse(trimmedLine.substring(6));
+            switch (chunk.type) {
+              case "item":
+                setResults((prev: any) => (Array.isArray(prev) ? [...prev, chunk.data] : [chunk.data]));
+                break;
+              case "error":
                 setError(chunk.error);
-              } else if (chunk.type === "complete") {
-                await loadHistory();
-                const newHistory = await getToolHistory(toolId);
-                if (newHistory.length > 0) {
-                  setCurrentHistoryId(newHistory[0].id);
+                break;
+              case "complete": {
+                const updatedHistory = await fetchHistory();
+                if (updatedHistory.length > 0) {
+                  setCurrentHistoryId(updatedHistory[0].id);
                 }
+                break;
               }
-            } catch (e) {
-              console.error("Failed to parse chunk", trimmedLine, e);
             }
+          } catch (e) {
+            console.error("Failed to parse chunk", trimmedLine, e);
           }
         }
       }
@@ -145,7 +132,7 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
     }
   };
 
-  const handleSelectHistory = (item: ToolHistoryItem) => {
+  const handleSelectHistory = (item: ToolHistoryItem): void => {
     setInputs(item.inputs);
     setResults(item.outputs);
     setCurrentHistoryId(item.id);
@@ -156,10 +143,10 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleDeleteHistory = async (id: number) => {
+  const handleDeleteHistory = async (id: number): Promise<void> => {
     if (await confirm("确定要删除这条记录吗？")) {
       await deleteToolHistory(id);
-      await loadHistory();
+      await fetchHistory();
       if (currentHistoryId === id) {
         setCurrentHistoryId(undefined);
         setResults([]);
@@ -167,12 +154,16 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
     }
   };
 
-  const handleClearHistory = async () => {
-    await clearToolHistory(toolId);
-    await loadHistory();
-    setCurrentHistoryId(undefined);
-    setResults([]);
+  const handleClearHistory = async (): Promise<void> => {
+    if (await confirm("确定要清空所有历史记录吗？")) {
+      await clearToolHistory(toolId);
+      await fetchHistory();
+      setCurrentHistoryId(undefined);
+      setResults([]);
+    }
   };
+
+  const hasResults = Array.isArray(results) ? results.length > 0 : !!results;
 
   return (
     <div className="grid lg:grid-cols-[1fr_300px] gap-8 items-start">
@@ -184,17 +175,15 @@ export function ToolExecutor({ toolId, config }: ToolExecutorProps) {
           onSubmit={handleExecute}
           isLoading={isLoading}
           selectedModelId={selectedModelId}
-          onSelectModel={(mid) => {
-            setSelectedModelId(mid);
-          }}
+          onSelectModel={setSelectedModelId}
         />
 
-        {error && <div className="p-4 rounded-lg bg-destructive/10 text-destructive text-sm">{error}</div>}
+        {error && <div className="p-4 rounded-lg bg-destructive/10 text-destructive text-sm font-medium">{error}</div>}
 
         <div className="space-y-4">
           <AutoTransition as="div" className="flex items-center justify-between relative">
             <h2 className="text-lg font-semibold">生成结果</h2>
-            {results && (Array.isArray(results) ? results.length > 0 : true) && (
+            {hasResults && (
               <span className="text-sm text-muted-foreground">
                 {config.outputSchema.type === "card-list" ? `${results.length} 个结果` : "已生成"}
               </span>

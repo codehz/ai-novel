@@ -3,10 +3,10 @@
 import { IconButton } from "@/components/icon-button";
 import { formatDateToShortLocaleString } from "@/components/lib/format";
 import { useEventHandler } from "@/hooks/useEventHandler";
-import { ToolHistoryItem } from "@/shared/tool-types";
+import { type ToolHistoryItem } from "@/shared/tool-types";
 import clsx from "clsx";
 import { ChevronRight, Clock, Trash2 } from "lucide-react";
-import type { MouseEvent } from "react";
+import { type MouseEvent, type ReactNode } from "react";
 
 interface HistoryItemProps {
   item: ToolHistoryItem;
@@ -16,12 +16,13 @@ interface HistoryItemProps {
   onDelete: (id: number) => void;
 }
 
-export function HistoryItem({ item, currentId, titleField, onSelect, onDelete }: HistoryItemProps) {
+export function HistoryItem({ item, currentId, titleField, onSelect, onDelete }: HistoryItemProps): ReactNode {
   // Try to find a meaningful title from inputs
   const title =
-    titleField && item.inputs[titleField] !== undefined && item.inputs[titleField] !== null
+    titleField && item.inputs[titleField] != null
       ? String(item.inputs[titleField])
       : Object.values(item.inputs).find((v) => typeof v === "string" && v.length > 0) || "Untitled Execution";
+
   const isText = typeof item.outputs === "string";
   const resultCount = Array.isArray(item.outputs) ? item.outputs.length : 1;
 

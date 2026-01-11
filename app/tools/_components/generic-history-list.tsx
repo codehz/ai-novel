@@ -1,11 +1,11 @@
 "use client";
 
 import { Button } from "@/components/button";
-import { useConfirm } from "@/hooks/useConfirm";
 import { useEventHandler } from "@/hooks/useEventHandler";
-import { ToolHistoryItem } from "@/shared/tool-types";
+import { type ToolHistoryItem } from "@/shared/tool-types";
 import { AutoTransition, withAutoTransition } from "@codehz/auto-transition";
 import { History } from "lucide-react";
+import { type ReactNode } from "react";
 import { HistoryItem } from "./history-item";
 
 interface GenericHistoryListProps {
@@ -17,21 +17,21 @@ interface GenericHistoryListProps {
   titleField?: string;
 }
 
-export const GenericHistoryList = withAutoTransition(GenericHistoryListInner, { as: "div", className: "relative" });
+export const GenericHistoryList = withAutoTransition(HistoryList, {
+  as: "div",
+  className: "relative",
+});
 
-function GenericHistoryListInner({
+function HistoryList({
   history,
   onSelect,
   onDelete,
   onClear,
   currentId,
   titleField,
-}: GenericHistoryListProps) {
-  const confirm = useConfirm();
-  const handleClearClick = useEventHandler(async () => {
-    if (await confirm("确定要清空所有历史记录吗？")) {
-      onClear();
-    }
+}: GenericHistoryListProps): ReactNode {
+  const handleClearClick = useEventHandler(() => {
+    onClear();
   });
 
   if (history.length === 0) {
