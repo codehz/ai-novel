@@ -5,8 +5,8 @@
 ## 快速开始
 
 - **必需工具**：bun；所有命令在仓库根目录执行。
-- **常用命令**：`bun install`、`bun run dev`、`bun run build`、`bun run start`、`bun run lint`、`bun run format`（见 [package.json](package.json)）。
-- **环境变量**：`DB_FILE_NAME`（数据库文件路径，bun 自动从 `.env` 加载；未设置会在 [src/db/index.ts](src/db/index.ts) 抛错）。
+- **常用命令**：`bun install`、`bun run dev`、`bun run build`、`bun run start`、`bun run lint`、`bun run format`（见 [package.json](../package.json)）。
+- **环境变量**：`DB_FILE_NAME`（数据库文件路径，bun 自动从 `.env` 加载；未设置会在 [src/db/index.ts](../src/db/index.ts) 抛错）。
 - **数据库迁移**：Drizzle 在应用启动时自动执行，无需手动操作。
 
 ## 核心架构
@@ -36,18 +36,18 @@
 ### AI 工作流引擎
 
 - **标记**：`"use workflow"` 标记工作流函数，`"use step"` 标记原子步骤。
-- **编排示例**：[src/workflows/executeToolWorkflow.ts](src/workflows/executeToolWorkflow.ts) 协调 [src/steps/streamJsonStep.ts](src/steps/streamJsonStep.ts)、[src/steps/saveToolHistoryStep.ts](src/steps/saveToolHistoryStep.ts) 等步骤。
-- **流式处理**：使用 `getWritable()` 返回流结果，消费端通过 Server-Sent Events（[app/api/tools/execute/route.ts](app/api/tools/execute/route.ts)）接收。
+- **编排示例**：[src/workflows/executeToolWorkflow.ts](../src/workflows/executeToolWorkflow.ts) 协调 [src/steps/streamJsonStep.ts](../src/steps/streamJsonStep.ts)、[src/steps/saveToolHistoryStep.ts](../src/steps/saveToolHistoryStep.ts) 等步骤。
+- **流式处理**：使用 `getWritable()` 返回流结果，消费端通过 Server-Sent Events（[app/api/tools/execute/route.ts](../app/api/tools/execute/route.ts)）接收。
 
 ### AI 模型管理
 
-- **注册表**：`AIRegistry` ([src/lib/ai-registry.ts](src/lib/ai-registry.ts)) 单例，提供模型客户端的懒加载缓存。获取模型：`await aiRegistry.getModel(modelId)`。
-- **中间件**：`wrapLanguageModelWithLogging` ([src/lib/ai-middleware.ts](src/lib/ai-middleware.ts)) 自动记录调用日志、计算成本、注入默认参数；需传入 `callReason`（如 `"/tools/seed-expander"`）用于日志分类。
-- **提供商工厂**：[src/lib/provider-factory.ts](src/lib/provider-factory.ts) 根据 `providerType` 创建 OpenAI 兼容客户端。
+- **注册表**：`AIRegistry` ([src/lib/ai-registry.ts](../src/lib/ai-registry.ts)) 单例，提供模型客户端的懒加载缓存。获取模型：`await aiRegistry.getModel(modelId)`。
+- **中间件**：`wrapLanguageModelWithLogging` ([src/lib/ai-middleware.ts](../src/lib/ai-middleware.ts)) 自动记录调用日志、计算成本、注入默认参数；需传入 `callReason`（如 `"/tools/seed-expander"`）用于日志分类。
+- **提供商工厂**：[src/lib/provider-factory.ts](../src/lib/provider-factory.ts) 根据 `providerType` 创建 OpenAI 兼容客户端。
 
 ### 数据库设计（SQLite + Drizzle）
 
-- **模式**：[src/db/schema.ts](src/db/schema.ts) 定义 5 个主表：
+- **模式**：[src/db/schema.ts](../src/db/schema.ts) 定义 5 个主表：
   - `modelProviders`：供应商配置（`providerType` 如 "openai-compatible"、`apiKey`、`config` JSON）
   - `models`：模型定义（`parameters` JSON 存默认参数、`inputPrice`/`outputPrice` 用于成本计算）
   - `modelCallLogs`：调用历史（每次 AI 调用自动记录，含 token 数和成本）
@@ -60,8 +60,8 @@
 
 ### 目录结构（Next.js App Router）
 
-- **公共组件**：[components/](components/) 目录（如 [components/item-card.tsx](components/item-card.tsx)、[components/form-field.tsx](components/form-field.tsx)）。
-- **页面组件**：`app/[page]/_components/` 子目录（如 [app/models/\_components/model-form.tsx](app/models/_components/model-form.tsx)）。避免在 `app/` 下创建 `components/` 目录。
+- **公共组件**：[components/](../components/) 目录（如 [components/item-card.tsx](../components/item-card.tsx)、[components/form-field.tsx](../components/form-field.tsx)）。
+- **页面组件**：`app/[page]/_components/` 子目录（如 [app/models/\_components/model-form.tsx](../app/models/_components/model-form.tsx)）。避免在 `app/` 下创建 `components/` 目录。
 
 ### React组件约定
 
@@ -73,7 +73,7 @@
 ### 数据流与 Server Actions
 
 - **查询**：Server Components 调用 DB，使用 `db.query.*` 方法（Drizzle 关系查询）。
-- **变更**：集中在 [src/actions/](src/actions/) 的 `"use server"` 函数（如 `upsertToolConfig`、`executeTool`）。
+- **变更**：集中在 [src/actions/](../src/actions/) 的 `"use server"` 函数（如 `upsertToolConfig`、`executeTool`）。
 - **缓存更新**：变更后必须调用 `revalidatePath("/path")` 刷新 UI，视情况调用 `aiRegistry.invalidate*` 或 `toolRegistryCache.invalidateTool()`。
 - **UI 响应性**：使用 `startTransition` 包裹 server action 调用，保持按钮/表单无阻塞。
 
@@ -87,7 +87,7 @@
 
 #### CodeBlock 组件
 
-- **文件**：[components/code-block.tsx](components/code-block.tsx)
+- **文件**：[components/code-block.tsx](../components/code-block.tsx)
 - **用途**：以格式化代码块形式展示内容，支持自定义高度和样式。
 - **Props**：
   - `content: string` — 待显示的内容
@@ -101,7 +101,7 @@
 
 #### CopyButton 组件
 
-- **文件**：[components/copy-button.tsx](components/copy-button.tsx)
+- **文件**：[components/copy-button.tsx](../components/copy-button.tsx)
 - **用途**：提供一键复制功能，点击时复制文本到剪贴板，并显示反馈状态（Copy → Check 图标）。
 - **Props**：
   - `text: string` — 待复制的内容
@@ -116,7 +116,7 @@
 
 #### formatJson 工具函数
 
-- **文件**：[components/lib/format.ts](components/lib/format.ts)
+- **文件**：[components/lib/format.ts](../components/lib/format.ts)
 - **用途**：安全地将数据对象序列化为格式化 JSON 字符串，异常时返回 `"[Unserializable Object]"`。
 - **签名**：`formatJson(data: unknown): string`
 - **使用示例**：
@@ -127,7 +127,7 @@
 
 #### Button 组件
 
-- **文件**：[components/button.tsx](components/button.tsx)
+- **文件**：[components/button.tsx](../components/button.tsx)
 - **用途**：通用按钮组件，支持多种样式变体和大小，包含加载状态
 - **Props**：
   - `variant?: ButtonVariant` — 按钮样式变体（如 "primary", "destructive", "outline" 等），默认 "primary"
@@ -145,7 +145,7 @@
 
 #### IconButton 组件
 
-- **文件**：[components/icon-button.tsx](components/icon-button.tsx)
+- **文件**：[components/icon-button.tsx](../components/icon-button.tsx)
 - **用途**：图标按钮组件，用于展示仅包含图标的小按钮
 - **Props**：
   - `color?: ButtonColor` — 按钮颜色（如 "primary", "destructive", "default"），默认 "default"
@@ -163,7 +163,7 @@
 
 #### TextInput 组件
 
-- **文件**：[components/text-input.tsx](components/text-input.tsx)
+- **文件**：[components/text-input.tsx](../components/text-input.tsx)
 - **用途**：文本输入框组件，提供统一的样式和交互体验
 - **Props**：
   - `className?: string` — 额外 CSS 类名
