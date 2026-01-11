@@ -69,6 +69,10 @@
 - **类型导入**：React 类型（如 `ReactNode`、`FormEvent`、`ChangeEvent` 等）应从 `react` 直接导入，而不是使用 `React.` 前缀。例如：
   - 使用 `import { useState, type ReactNode } from "react";`
   - 而不是 `children: React.ReactNode;`
+- **事件处理**：对于组件中的事件处理器，特别是涉及异步操作的处理器，必须使用 `useEventHandler` hook 包装，以避免闭包陷阱和重复调用问题。例如：
+  - 使用 `import { useEventHandler } from "@/hooks/useEventHandler";`
+  - 在组件中：`const handleClick = useEventHandler((event) => { /* 处理逻辑 */ });`
+  - 这样可以确保始终调用最新的回调函数，并可选择性地防止异步操作期间的重复调用。
 
 ### 数据流与 Server Actions
 
