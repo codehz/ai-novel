@@ -2,9 +2,10 @@
 
 import { IconButton } from "@/components/icon-button";
 import { useConfirm } from "@/hooks/useConfirm";
+import { useEventHandler } from "@/hooks/useEventHandler";
 import { Edit2, Power, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { ReactNode, useCallback } from "react";
+import { ReactNode } from "react";
 
 interface ItemCardProps {
   title: ReactNode;
@@ -31,11 +32,11 @@ export function ItemCard({
 }: ItemCardProps) {
   const confirm = useConfirm();
 
-  const handleDeleteClick = useCallback(async () => {
+  const handleDeleteClick = useEventHandler(async () => {
     if (await confirm(deleteConfirmMessage, { title: "确认删除", actionLabel: "删除" })) {
       onDelete?.();
     }
-  }, [deleteConfirmMessage, onDelete, confirm]);
+  });
 
   const content = (
     <>
