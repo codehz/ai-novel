@@ -7,9 +7,10 @@ import { useOverlayRef } from "@/components/overlay/overlay-context";
 import { Switch } from "@/components/switch";
 import { TextAreaInput } from "@/components/text-area-input";
 import { TextInput } from "@/components/text-input";
-import { FormEvent, upsertModel } from "@/src/actions/models";
+import { useEventHandler } from "@/hooks/useEventHandler";
+import { upsertModel } from "@/src/actions/models";
 import { models } from "@/src/db/schema";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 
 interface ModelFormProps {
   model?: typeof models.$inferSelect | null;
@@ -45,7 +46,7 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
       : "{}",
   });
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = useEventHandler(async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -75,7 +76,47 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
     } finally {
       setLoading(false);
     }
-  };
+  });
+
+  const handleIsEnabledChange = useEventHandler((checked: boolean) => {
+    setFormData({ ...formData, isEnabled: checked });
+  });
+
+  const handleDisplayNameChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, displayName: e.target.value });
+  });
+
+  const handleModelNameChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, modelName: e.target.value });
+  });
+
+  const handleDescriptionChange = useEventHandler((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData({ ...formData, description: e.target.value });
+  });
+
+  const handleInputPriceChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, inputPrice: parseFloat(e.target.value) });
+  });
+
+  const handleOutputPriceChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, outputPrice: parseFloat(e.target.value) });
+  });
+
+  const handleTemperatureChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, temperature: parseFloat(e.target.value) });
+  });
+
+  const handleMaxTokensChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, maxTokens: parseInt(e.target.value) });
+  });
+
+  const handleTopPChange = useEventHandler((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, topP: parseFloat(e.target.value) });
+  });
+
+  const handleOtherParametersChange = useEventHandler((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData({ ...formData, otherParameters: e.target.value });
+  });
 
   return (
     <ModalForm
@@ -89,18 +130,14 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
           <div className="text-sm font-medium">启用状态</div>
           <div className="text-xs text-muted-foreground">控制该模型是否在对话或工作流中可用</div>
         </div>
-        <Switch
-          checked={formData.isEnabled}
-          onChange={(checked) => setFormData({ ...formData, isEnabled: checked })}
-          disabled={loading}
-        />
+        <Switch checked={formData.isEnabled} onChange={handleIsEnabledChange} disabled={loading} />
       </div>
 
       <FormField label="显示名称" required>
         <TextInput
           required
           value={formData.displayName}
-          onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
+          onChange={handleDisplayNameChange}
           placeholder="例如: GPT-4o"
           disabled={loading}
         />
@@ -110,7 +147,7 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
         <TextInput
           required
           value={formData.modelName}
-          onChange={(e) => setFormData({ ...formData, modelName: e.target.value })}
+          onChange={handleModelNameChange}
           placeholder="例如: gpt-4o"
           className="font-mono"
           disabled={loading}
@@ -120,7 +157,7 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
       <FormField label="描述">
         <TextAreaInput
           value={formData.description || ""}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={handleDescriptionChange}
           placeholder="模型描述..."
           className="h-20"
           disabled={loading}
@@ -132,7 +169,7 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
           <NumberInput
             step="0.001"
             value={formData.inputPrice || 0}
-            onChange={(e) => setFormData({ ...formData, inputPrice: parseFloat(e.target.value) })}
+            onChange={handleInputPriceChange}
             disabled={loading}
           />
         </FormField>
@@ -140,7 +177,7 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
           <NumberInput
             step="0.001"
             value={formData.outputPrice || 0}
-            onChange={(e) => setFormData({ ...formData, outputPrice: parseFloat(e.target.value) })}
+            onChange={handleOutputPriceChange}
             disabled={loading}
           />
         </FormField>
@@ -153,7 +190,7 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
             min="0"
             max="2"
             value={formData.temperature}
-            onChange={(e) => setFormData({ ...formData, temperature: parseFloat(e.target.value) })}
+            onChange={handleTemperatureChange}
             disabled={loading}
           />
         </FormField>
@@ -162,7 +199,7 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
             step="1"
             min="1"
             value={formData.maxTokens}
-            onChange={(e) => setFormData({ ...formData, maxTokens: parseInt(e.target.value) })}
+            onChange={handleMaxTokensChange}
             disabled={loading}
           />
         </FormField>
@@ -172,7 +209,7 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
             min="0"
             max="1"
             value={formData.topP}
-            onChange={(e) => setFormData({ ...formData, topP: parseFloat(e.target.value) })}
+            onChange={handleTopPChange}
             disabled={loading}
           />
         </FormField>
@@ -181,7 +218,7 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
       <FormField label="其他参数 (JSON)">
         <TextAreaInput
           value={formData.otherParameters}
-          onChange={(e) => setFormData({ ...formData, otherParameters: e.target.value })}
+          onChange={handleOtherParametersChange}
           placeholder="{}"
           rows={3}
           className="font-mono text-sm"
