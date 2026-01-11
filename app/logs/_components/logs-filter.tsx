@@ -63,7 +63,7 @@ function FilterDropdown({
   return (
     <Dropdown
       content={({ close }) => (
-        <div>
+        <AutoTransition as="div" className="relative">
           <FilterOption label="全部" isSelected={!selectedValue} value={null} onSelect={onSelect} close={close} />
 
           {isLoading ? (
@@ -85,13 +85,13 @@ function FilterDropdown({
               />
             ))
           )}
-        </div>
+        </AutoTransition>
       )}
     >
       <AutoTransition
         as="button"
         type="button"
-        className="flex w-full justify-between items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card hover:bg-muted transition-colors font-medium text-sm"
+        className="relative flex w-full justify-between items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card hover:bg-muted transition-colors font-medium text-sm"
         disabled={isLoading}
       >
         <span key={selectedValue ? `${label}: ${selectedValue}` : placeholder} className="truncate min-w-0">
