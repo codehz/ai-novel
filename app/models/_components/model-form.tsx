@@ -159,7 +159,6 @@ export function ModelForm({ model, providerId, onSuccess }: ModelFormProps) {
           value={formData.description || ""}
           onChange={handleDescriptionChange}
           placeholder="模型描述..."
-          className="h-20"
           disabled={loading}
         />
       </FormField>
