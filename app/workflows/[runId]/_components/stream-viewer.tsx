@@ -3,6 +3,7 @@
 import { Button } from "@/components/button";
 import { DetailsCard } from "@/components/details-card";
 import { useEventHandler } from "@/hooks/useEventHandler";
+import { downloadContent, formatJsonContent } from "@/src/lib/format";
 import { Download } from "lucide-react";
 import { useMemo } from "react";
 
@@ -21,47 +22,9 @@ interface StreamItemProps {
   open: boolean;
 }
 
-function isValidJSON(str: string): boolean {
-  try {
-    JSON.parse(str);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function formatContent(content: string): { isJson: boolean; formatted: string } {
-  if (isValidJSON(content)) {
-    try {
-      const parsed = JSON.parse(content);
-      return {
-        isJson: true,
-        formatted: JSON.stringify(parsed, null, 2),
-      };
-    } catch {
-      return { isJson: false, formatted: content };
-    }
-  }
-  return { isJson: false, formatted: content };
-}
-
-function downloadStream(name: string, content: string, isJson: boolean) {
-  const { formatted } = formatContent(content);
-  const filename = `${name}.${isJson ? "json" : "txt"}`;
-  const blob = new Blob([formatted], { type: isJson ? "application/json" : "text/plain" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
 function StreamItem({ name, content, isJson, formatted, open }: StreamItemProps) {
   const handleDownload = useEventHandler(() => {
-    downloadStream(name, content, isJson);
+    downloadContent(content, name, { type: isJson ? "json" : "text" });
   });
 
   return (
@@ -82,7 +45,7 @@ function StreamItem({ name, content, isJson, formatted, open }: StreamItemProps)
 export function StreamViewer({ streamData }: StreamViewerProps) {
   const formattedData = useMemo(() => {
     return streamData.map(({ name, content }) => {
-      const { isJson, formatted } = formatContent(content);
+      const { isJson, formatted } = formatJsonContent(content);
       return { name, content, isJson, formatted };
     });
   }, [streamData]);
