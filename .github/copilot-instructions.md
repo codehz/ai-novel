@@ -61,6 +61,10 @@
 - **公共组件**：[components/](components/) 目录（如 [components/item-card.tsx](components/item-card.tsx)、[components/form-field.tsx](components/form-field.tsx)）。
 - **页面组件**：`app/[page]/_components/` 子目录（如 [app/models/\_components/model-form.tsx](app/models/_components/model-form.tsx)）。避免在 `app/` 下创建 `components/` 目录。
 
+### React组件约定
+
+- **组件定义**：优先使用 named function 形式定义 React 组件，例如 `function ComponentName() {}`，而不是 `const ComponentName = () => {}`。
+
 ### 数据流与 Server Actions
 
 - **查询**：Server Components 调用 DB，使用 `db.query.*` 方法（Drizzle 关系查询）。
