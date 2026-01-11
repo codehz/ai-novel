@@ -9,7 +9,7 @@ import { useCallback, useInsertionEffect, useRef } from "react";
  * - 返回稳定的函数引用，不会因依赖变化而变化
  * - 自动始终调用最新的 callback
  * - 避免闭包陷阱
- * - 支持异步函数防重复调用（可选）
+ * - 支持异步函数防重复调用
  *
  * @param callback 要包装的事件处理函数
  * @param options 配置选项
@@ -25,18 +25,6 @@ import { useCallback, useInsertionEffect, useRef } from "react";
  *   });
  *
  *   return <button onClick={handleClick}>点击</button>;
- * }
- * ```
- *
- * @example
- * 异步防重复调用（推荐用于按钮提交等场景）：
- * ```tsx
- * function SubmitButton({ onSubmit }) {
- *   const handleSubmit = useEventHandler(async (data) => {
- *     await submitToServer(data);
- *   }, { dropOnPending: true }); // 启用防重复调用
- *
- *   return <button onClick={handleSubmit}>提交</button>;
  * }
  * ```
  */
