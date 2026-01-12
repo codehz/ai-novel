@@ -7,6 +7,7 @@ import { LoadMoreButton } from "@/components/load-more-button";
 import { usePagination } from "@/hooks/usePagination";
 import { getCallLogs } from "@/src/actions/models";
 import { AutoTransition } from "@codehz/auto-transition";
+import Link from "next/link";
 import { useCallback } from "react";
 
 interface CallLog {
@@ -56,12 +57,12 @@ function CallLogItem({ log }: { log: CallLog }) {
           <span>耗时: {log.durationMs ?? "-"}ms</span>
           <div className="flex items-center gap-2">
             {log.workflowRunId && (
-              <a
+              <Link
                 href={`/workflows/${log.workflowRunId}`}
                 className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-500/20 transition-colors"
               >
                 🔗 工作流 {log.workflowRunId.slice(0, 8)}...
-              </a>
+              </Link>
             )}
           </div>
         </div>
