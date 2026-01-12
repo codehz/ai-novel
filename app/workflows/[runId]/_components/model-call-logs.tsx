@@ -30,6 +30,19 @@ export function ModelCallLogs({ callLogs, showSection = true }: ModelCallLogsPro
     return <div className="text-center py-12 text-muted-foreground">暂无模型调用日志</div>;
   }
 
+  // 提取统计数据，避免重复计算
+  const successCount = callLogs.filter((log) => log.status === "success").length;
+  const totalTokens = callLogs.reduce((sum, log) => sum + (log.inputTokens || 0) + (log.outputTokens || 0), 0);
+  const totalCost = callLogs.reduce((sum, log) => sum + (log.totalCost || 0), 0);
+  const successRate = callLogs.length > 0 ? (successCount / callLogs.length) * 100 : 0;
+
+  const statsCards = [
+    { label: "调用次数", value: callLogs.length },
+    { label: "总 Token 数", value: totalTokens },
+    { label: "总成本", value: `$${totalCost.toFixed(6)}` },
+    { label: "成功率", value: `${successRate.toFixed(1)}%` },
+  ];
+
   const content = (
     <>
       {showSection && (
@@ -43,31 +56,12 @@ export function ModelCallLogs({ callLogs, showSection = true }: ModelCallLogsPro
 
       {/* 日志统计卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="p-4 rounded-lg border border-border bg-card">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">调用次数</p>
-          <p className="text-2xl font-bold">{callLogs.length}</p>
-        </div>
-        <div className="p-4 rounded-lg border border-border bg-card">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">总 Token 数</p>
-          <p className="text-2xl font-bold">
-            {callLogs.reduce((sum, log) => sum + (log.inputTokens || 0) + (log.outputTokens || 0), 0)}
-          </p>
-        </div>
-        <div className="p-4 rounded-lg border border-border bg-card">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">总成本</p>
-          <p className="text-2xl font-bold">
-            ${callLogs.reduce((sum, log) => sum + (log.totalCost || 0), 0).toFixed(6)}
-          </p>
-        </div>
-        <div className="p-4 rounded-lg border border-border bg-card">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">成功率</p>
-          <p className="text-2xl font-bold">
-            {callLogs.length > 0
-              ? ((callLogs.filter((l) => l.status === "success").length / callLogs.length) * 100).toFixed(1)
-              : 0}
-            %
-          </p>
-        </div>
+        {statsCards.map((stat, index) => (
+          <div key={index} className="p-4 rounded-lg border border-border bg-card">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono mb-1">{stat.label}</p>
+            <p className="text-2xl font-bold">{stat.value}</p>
+          </div>
+        ))}
       </div>
 
       {/* 日志列表 */}
@@ -98,14 +92,12 @@ export function ModelCallLogs({ callLogs, showSection = true }: ModelCallLogsPro
               </div>
               <div className="flex items-center justify-between gap-2">
                 <span>耗时: {log.durationMs}ms</span>
-                <div className="flex items-center gap-2">
-                  <a
-                    href={`/logs?callReason=${encodeURIComponent(log.callReason || "")}`}
-                    className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-500/20 transition-colors"
-                  >
-                    🔗 相同 callReason
-                  </a>
-                </div>
+                <Link
+                  href={`/logs?callReason=${encodeURIComponent(log.callReason || "")}`}
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-500/20 transition-colors"
+                >
+                  🔗 相同 callReason
+                </Link>
               </div>
               {log.errorMessage && (
                 <div className="bg-red-500/10 border border-red-500/20 rounded p-2 text-red-400 mt-2 font-mono text-xs break-all">
@@ -124,9 +116,5 @@ export function ModelCallLogs({ callLogs, showSection = true }: ModelCallLogsPro
     </>
   );
 
-  if (showSection) {
-    return <section className="space-y-6">{content}</section>;
-  }
-
-  return content;
+  return showSection ? <section className="space-y-6">{content}</section> : content;
 }
