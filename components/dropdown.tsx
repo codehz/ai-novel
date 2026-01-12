@@ -1,15 +1,8 @@
+/* eslint-disable react-hooks/refs */
 "use client";
 
-import {
-  cloneElement,
-  createContext,
-  useCallback,
-  useContext,
-  useId,
-  type HTMLAttributes,
-  type ReactElement,
-  type ReactNode,
-} from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { createContext, useCallback, useContext, useRef, type ReactElement, type ReactNode } from "react";
 
 const DropdownContext = createContext<{ close: () => void } | null>(null);
 
@@ -25,7 +18,6 @@ interface DropdownProps {
   children: ReactElement;
   content: ReactNode | ((props: { close: () => void }) => ReactNode);
   className?: string;
-  id?: string;
   span?: "left" | "right";
   /**
    * 是否让弹出框宽度等于锚点（触发按钮）的宽度
@@ -43,21 +35,22 @@ interface DropdownProps {
  *   <button>点击展开</button>
  * </Dropdown>
  */
-export function Dropdown({ children, content, className, id, span = "left", matchAnchorWidth = true }: DropdownProps) {
-  const internalId = useId();
-  const popoverId = id || internalId;
+export function Dropdown({ children, content, className, span = "left", matchAnchorWidth = true }: DropdownProps) {
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLElement>(null);
 
   const close = useCallback(() => {
-    const popoverElement = document.getElementById(popoverId);
-    if (popoverElement && "hidePopover" in popoverElement) {
-      popoverElement.hidePopover();
+    if (popoverRef.current) {
+      popoverRef.current.hidePopover();
     }
-  }, [popoverId]);
+  }, []);
 
-  // 为子元素（触发器）注入 popoverTarget 属性
-  const trigger = cloneElement(children, {
-    popoverTarget: popoverId,
-  } as HTMLAttributes<HTMLElement>);
+  const handleTriggerClick = useCallback(() => {
+    if (popoverRef.current) {
+      // @ts-expect-error: showPopover 方法的 source 属性未在类型定义中声明
+      popoverRef.current.showPopover({ source: triggerRef.current! });
+    }
+  }, []);
 
   // 根据 span 选择对应的 Tailwind 类
   const positionAreaClass = {
@@ -69,9 +62,11 @@ export function Dropdown({ children, content, className, id, span = "left", matc
 
   return (
     <DropdownContext.Provider value={{ close }}>
-      {trigger}
+      <Slot ref={triggerRef} onClick={handleTriggerClick}>
+        {children}
+      </Slot>
       <div
-        id={popoverId}
+        ref={popoverRef}
         popover="auto"
         className={`
           ${positionAreaClass} my-2 ${widthClass} try-flip-y
